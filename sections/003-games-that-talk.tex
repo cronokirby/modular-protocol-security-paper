@@ -140,3 +140,37 @@ its final value.
 $\square$
 \end{syntax}
 
+Sometimes we want to await several values at once, returning the first
+one which completes. To that end, we define the $\textbf{select}$ statement.
+
+\begin{syntax}[Select Statements]
+Select statements generalize await statements in that they allow waiting
+for multiple events concurrently.
+
+More formally, we define:
+$$
+\begin{aligned}
+&\txbf{select}:\cr
+\pind{1}v_1 \gets \await F_1(\ldots):\cr
+\pind{2} \langle \tx{body}_1 \rangle\cr
+\pind{1}\vdots\cr
+\pind{1}v_n \gets \await F_n(\ldots):\cr
+\pind{2} \langle \tx{body}_n \rangle\cr
+\end{aligned}
+$$
+As follows:
+$$
+\begin{aligned}
+&(\tx{tag}_i, v_i) \gets (\texttt{yield}, \bot)\cr
+&i \gets n\cr
+&\txbf{while } \nexists i.\ \tx{tag}_i \neq \texttt{yield}:\cr
+\pind{1} i \gets i + 1 \mod [n]\cr
+\pind{1} (\tx{tag}_i, v_i) \gets F_i(\ldots)\cr
+&\langle \tx{body}_i \rangle
+\end{aligned}
+$$
+Note that the order in which we call the functions is completely deterministic,
+and fair.
+
+$\square$
+\end{syntax}
