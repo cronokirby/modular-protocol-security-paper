@@ -1,5 +1,7 @@
 \section{Games That Talk}
 
+\subsection{Async Functions}
+
 While the intuition of yield statements is simple, defining
 them precisely is a bit more tricky.
 
@@ -183,3 +185,87 @@ This is so that if one of the function is immediately ready, we never yield.
 
 $\square$
 \end{syntax}
+
+\subsection{Channels and System Composition}
+
+
+\begin{definition}[Systems]
+A \emph{system} is a package which uses channels.
+
+We denote by $\text{InChan(S)}$ the set of channels the system receives on,
+and $\text{OutChan(S)}$ the set of channels the system sends on.
+
+$\square$
+\end{definition}
+
+\begin{definition}
+We can compile systems to not use channels.
+We denote by $\text{NoChan}(S)$ the package corresponding to
+a system $S$, with the use of channels replaced with function calls.
+
+Channels define two new syntactic constructions, for sending and receiving
+along a channel.
+We replace these with function calls as follows:
+
+Sending, with $m \Rightarrow P$ becomes:
+$$
+\text{Channels}.\tx{Send}(m, P)
+$$
+
+Receiving, with $m \Leftarrow P$ becomes:
+$$
+m \gets \await \text{Channels}.\tx{Recv}(P)
+$$
+Receiving is an asynchronous function, because the channel might not have
+any available messages for us.
+
+$\square$
+\end{definition}
+
+\begin{game}{game:Channels}{Channels}
+\package{Channels($\{A_1, \ldots, A_n\}$)}{
+&q[A_i] \gets \text{FifoQueue.New()}\cr
+\cr
+&\pfn{Send}{m, A_i}\cr
+\pind{1} q[A_i].\tx{Push}(m)\cr
+\cr
+&\pfn{Recv}{A_i}\cr
+\pind{1} \txbf{while } q[A_i].\tx{IsEmpty()}\cr
+\pind{2} \txbf{yield}\cr
+\pind{1} q[A_i].\tx{Next}()\cr
+}
+\end{game}
+
+Armed with the syntax sugar for channels, and the $\tx{Channels}$ game,
+we can convert a system $S$ into a package via:
+$$
+\text{SysPack}(S) := \text{NoChan}(S) \circ \text{Channels}(\tx{OutChan}(S))
+$$
+This package will have the same input and output functions as the system $S$,
+but with the usage of channels replaced with actual semantics.
+
+This allows us to lift our standard equality relations on packages onto
+\emph{systems}.
+\begin{definition}
+Given some equality relation $\sim$ on packages, we can lift that relation
+to systems by definining:
+$$
+A \sim B \iff \text{SysPack}(A) \sim \text{SysPack}(b)
+$$
+$\square$
+\end{definition}
+
+\begin{definition}[System Composition]
+Given two systems, $A$ and $B$, we can define their composition $A * B$,
+which is any system satisfying:
+$$
+\tx{SysPack}(A * B) = (\tx{NoChan}(A) \otimes \tx{NoChan}(B)) \circ \text{Channels}(\tx{OutChan}(A) \cup \tx{OutChan}(B))
+$$
+$\square$
+\end{definition}
+
+\begin{lemma}
+System composition is associative, i.e. $(A * B) * C = A * (B * C)$.
+\txbf{Proof:} This follows from the associativity of $\otimes$ and $\cup$.
+$\blacksquare$
+\end{lemma}
