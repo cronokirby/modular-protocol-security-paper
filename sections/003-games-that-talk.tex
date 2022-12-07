@@ -1,1 +1,142 @@
 \section{Games That Talk}
+
+While the intuition of yield statements is simple, defining
+them precisely is a bit more tricky.
+
+\begin{definition}[Yield Statements]
+We define the semantics of $\textbf{yield}$ by compiling functions with
+such statements to functions without them.
+
+Note that we don't define the semantics for functions which still contain references
+to oracles.
+Like before, we can delay the definition of semantics until all of the
+pseudo-code has been inlined.
+
+A first small change is to make it so that the function accepts one
+argument, a binary string, and all yield points also accept binary
+strings as continuation.
+Like with plain packages, we can implement richer types on top by adding
+additional checks to the well-formedness of binary strings, aborting
+otherwise.
+
+The next step is to make it so that all the local variables of the function $F$
+are present in the global state.
+So, if a local variable $v$ is present, then every use
+of $v$ is replaced with a use of the global variable $F.v$ in the package.
+This allows the state of the function to be saved across yields.
+
+The next step is transforming all the control flow of a function to
+use $\textbf{ifgoto}$, rather than structured programming constructs like
+$\textbf{while}$ or $\textbf{if}$.
+The function is broken into lines, each of which contains a single statement.
+Each line is given a number, starting at $0$.
+The execution of a function $F$ involves a special variable $\texttt{pc}$,
+representing the current line being executing.
+Excluding $\textbf{yield}$ and $\textbf{return}$ a single line statement has one of the
+forms:
+$$
+\begin{aligned}
+&\langle \texttt{var} \rangle \gets \langle \texttt{expr} \rangle\cr
+&\langle \texttt{var} \rangle \xleftarrow{\$} \langle \texttt{dist} \rangle\cr
+\end{aligned}
+$$
+which have well defined semantics already.
+Additionally, after these statements, we set $\texttt{pc} \gets \texttt{pc} + 1$.
+
+The semantics of $\textbf{ifgoto } \langle \texttt{expr} \rangle i$ is:
+$$
+\texttt{pc} \gets \textbf{ if } \langle \texttt{expr} \rangle \textbf{ then } i \textbf{ else } \texttt{pc} + 1
+$$
+This gives us a conditional jump, and by using $\texttt{true}$ as the condition,
+we get a standard unconditional jump.
+
+This allows us to define $\textbf{if}$ and $\textbf{while}$ statements
+in the natural way.
+
+Finally, we need to augment functions to handle $\textbf{yield}$ and $\textbf{return}$
+statements.
+To handle this, each function $F$ also has an associated variable
+$F.\texttt{pc}$, which stores the program counter for the function.
+This is different than the local $\texttt{pc}$ which is while the function is
+execution.
+$F.\texttt{pc}$ is simply used to remember the program counter after a yield
+statement.
+
+The function now starts with:
+$$
+\begin{aligned}
+&\textbf{ifgoto } \texttt{true}\ F.\text{pc} 
+\end{aligned}
+$$
+This has the effect of resuming execution at the saved program counter.
+
+Furthermore, the input variable $x$ to $F$ is replaced with a special
+variable $\texttt{input}$, which holds the input supplied to the function.
+At the start of the function body, we add:
+$$
+0: F.x \gets \texttt{input}
+$$
+to capture the fact that the original input variable needs to get assigned
+to the input to the function.
+
+The semantics of $F.m \gets \textbf{yield } v$ are:
+$$
+\begin{aligned}
+(i-1):&\ F.\text{pc} \gets i + 1\cr
+i:&\ \textbf{return } (\texttt{yield}, v)\cr
+(i + 1):&\ F.m \gets \texttt{input}
+\end{aligned}
+$$
+
+The semantics of $\textbf{return } v$ become:
+$$
+\begin{aligned}
+&F.\text{pc} \gets 0\cr
+&\textbf{return } (\texttt{return}, v)
+\end{aligned}
+$$
+The main difference is that we annotate the return value to be different than
+yield statements, but otherwise the semantics are the same.
+
+$\square$
+\end{definition}
+
+Note that while calling a function which can yield will notify the
+caller as to whether or not the return value was \emph{yielded}
+or \emph{returned}, syntactically the caller often ignores this,
+simply doing $x \gets F(\ldots)$, meaning that they simply use
+return value $x$, discarding the tag.
+
+\begin{syntax}
+In many cases, no value is yielded, or returned back, which we can write as:
+$$
+\textbf{yield}
+$$
+which is shorthand for:
+$$
+\bullet \gets \textbf{yield } \bullet
+$$
+i.e. just yielding a dummy value and ignoring the result.
+
+$\square$
+\end{syntax}
+
+In such situations, often we don't particularly care about the intermediate
+yields of a function, and want to wait for the final result,
+potentially yielding to our own caller.
+We define these semantics via the $\textbf{await}$ statement.
+
+\begin{syntax}[Await Statements]
+We define the semantics of $v \gets \await F(\ldots)$ in a straightforward way:
+$$
+\begin{aligned}
+&(\tx{tag}, v) \gets (\texttt{yield}, \bot)\cr
+&\txbf{while } \tx{tag} = \texttt{yield}:\cr
+\pind{1}(\tx{tag}, v) \gets F(\ldots)\cr
+\end{aligned}
+$$
+In other words, we keep calling the function until it actually returns
+its final value.
+$\square$
+\end{syntax}
+

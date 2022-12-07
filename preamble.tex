@@ -31,6 +31,7 @@
 \newtheorem{aclaim}[atheorem]{Claim}
 \newtheorem{acorollary}[atheorem]{Corollary}
 \newtheorem{adefinition}{Definition}[section]
+\newtheorem{asyntax}[adefinition]{Syntax}
 
 \newcounter{theoremcount}[section]
 \renewcommand{\thetheoremcount}{\arabic{theoremcount}}
@@ -91,6 +92,17 @@
 }
 {
 \end{adefinition}
+}
+
+\newcommand{\syntaxcaption}{}
+\newenvironment{syntax}[1][]
+{
+\refstepcounter{definitioncount}
+\renewcommand{\syntaxcaption}{#1}
+\begin{asyntax}[{#1}]
+}
+{
+\end{asyntax}
 }
 
 % For moving the title up
