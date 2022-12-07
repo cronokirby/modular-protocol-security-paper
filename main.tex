@@ -1,0 +1,34 @@
+\include{preamble.tex}
+
+\date{\today}
+\title{On Security Against Time Traveling Adversaries}
+\author{Lúcás Críostóir Meier\\\texttt{lucas@cronokirby.com}}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+    If you had a time machine, what cryptography would you be able to break?
+
+    In this work, we investigate the notion of time travel, formally defining models for adversaries
+    equipped with a time machine, and exploring the consequences
+    for cryptography.
+    We find that being able to rewind time breaks some
+    cryptographic schemes, and being able to freely move both
+    forwards and backwards in time breaks even more schemes.
+
+    We look at the impacts of time travel on encryption and signatures in particular,
+    finding that the $\text{IND-CCA}$ and $\text{EUF-CMA}$ security
+    games are broken, while $\text{IND-CPA}$ and $\text{UUF-CMA}$
+    remain secure.
+\end{abstract}
+
+\input{sections/001-introduction.tex}
+
+\bibliographystyle{alpha}
+{\small \bibliography{bib}}
+\clearpage
+\appendix
+
+\end{document}

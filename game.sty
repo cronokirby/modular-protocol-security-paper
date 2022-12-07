@@ -1,0 +1,37 @@
+\newcommand{\package}[2]{
+\bgroup
+\small
+\addtolength{\jot}{-0.4em}
+\begin{equation}
+\boxed{
+\begin{aligned}
+&\colorbox{gamebg}{#1}\cr
+\cr
+#2
+\end{aligned}
+}
+\end{equation}
+\egroup
+}
+
+\newcommand{\tx}[1]{\text{#1}}
+\newcommand{\txbf}[1]{\textbf{#1}}
+
+\newlength{\pkgindentlen}
+\setlength{\pkgindentlen}{0.5em}
+\newcommand{\pind}[1]{&\hspace{#1\pkgindentlen}}
+\newcommand{\set}[2]{#1 \gets #2}
+\newcommand{\draw}[2]{#1 \xleftarrow{\$} #2}
+\newcommand{\pif}[1]{\txbf{if } #1 \tx{:}}
+\newcommand{\pelsif}[1]{\txbf{else if } #1 \tx{:}}
+\newcommand{\pelse}[1]{\txbf{else } #1 \tx{:}}
+\newcommand{\preturn}[1]{\txbf{return } #1}
+\newcommand{\pyield}[1]{\txbf{yield } #1}
+\newcommand{\psetyield}[2]{#1 \txbf{yield } #2}
+\newcommand{\psend}[2]{#1 \Rightarrow #2}
+\newcommand{\precv}[2]{#1 \Leftarrow #2}
+\newcommand{\pcall}[2]{\tx{#1(}#2\tx{)}}
+\newcommand{\pfn}[2]{\underline{\text{#1(}#2\text{):}}}
+
+\newcommand{\pair}[2]{\langle #1, #2 \rangle}
+\newcommand{\party}[1]{\mathcal{P}_{#1}}
