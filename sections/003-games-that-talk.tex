@@ -132,11 +132,14 @@ $$
 \begin{aligned}
 &(\tx{tag}, v) \gets (\texttt{yield}, \bot)\cr
 &\txbf{while } \tx{tag} = \texttt{yield}:\cr
+\pind{1}\txbf{if } v \neq \bot:\cr
+\pind{2}\txbf{yield}\cr
 \pind{1}(\tx{tag}, v) \gets F(\ldots)\cr
 \end{aligned}
 $$
 In other words, we keep calling the function until it actually returns
-its final value.
+its final value, but we do yield to our caller whenever our function yield, but we do yield to our caller whenever our function yields.
+
 $\square$
 \end{syntax}
 
@@ -162,15 +165,21 @@ As follows:
 $$
 \begin{aligned}
 &(\tx{tag}_i, v_i) \gets (\texttt{yield}, \bot)\cr
-&i \gets n\cr
+&i \gets 0\cr
 &\txbf{while } \nexists i.\ \tx{tag}_i \neq \texttt{yield}:\cr
-\pind{1} i \gets i + 1 \mod [n]\cr
+\pind{1} \txbf{if } i \geq n:\cr
+\pind{2} i \gets 0\cr
+\pind{2} \txbf{yield}\cr
+\pind{1} i \gets i + 1\cr
 \pind{1} (\tx{tag}_i, v_i) \gets F_i(\ldots)\cr
 &\langle \tx{body}_i \rangle
 \end{aligned}
 $$
 Note that the order in which we call the functions is completely deterministic,
 and fair.
+It's also important that we yield, like with await statements, but we only
+do so after having pinged each of our underlying functions at least once.
+This is so that if one of the function is immediately ready, we never yield.
 
 $\square$
 \end{syntax}
