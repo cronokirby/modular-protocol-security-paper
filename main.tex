@@ -1,7 +1,7 @@
 \include{preamble.tex}
 
 \date{\today}
-\title{On Security Against Time Traveling Adversaries}
+\title{Games That Talk:\\New Foundations for Composable Security}
 \author{Lúcás Críostóir Meier\\\texttt{lucas@cronokirby.com}}
 
 \begin{document}
@@ -9,22 +9,17 @@
 \maketitle
 
 \begin{abstract}
-    If you had a time machine, what cryptography would you be able to break?
-
-    In this work, we investigate the notion of time travel, formally defining models for adversaries
-    equipped with a time machine, and exploring the consequences
-    for cryptography.
-    We find that being able to rewind time breaks some
-    cryptographic schemes, and being able to freely move both
-    forwards and backwards in time breaks even more schemes.
-
-    We look at the impacts of time travel on encryption and signatures in particular,
-    finding that the $\text{IND-CCA}$ and $\text{EUF-CMA}$ security
-    games are broken, while $\text{IND-CPA}$ and $\text{UUF-CMA}$
-    remain secure.
+    We do things with UC security.
 \end{abstract}
 
 \input{sections/001-introduction.tex}
+\input{sections/002-games.tex}
+\input{sections/003-games-that-talk.tex}
+\input{sections/004-protocols.tex}
+\input{sections/005-differences.tex}
+\input{sections/006-examples.tex}
+\input{sections/007-further-work.tex}
+\input{sections/008-conclusion.tex}
 
 \bibliographystyle{alpha}
 {\small \bibliography{cryptobib/abbrev3, cryptobib/crypto, bib}}

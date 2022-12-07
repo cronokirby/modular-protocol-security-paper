@@ -1,1 +1,1 @@
-while inotifywait -e close_write *.tex; do make; done
+while inotifywait -e close_write *.tex sections/*.tex; do make; done
