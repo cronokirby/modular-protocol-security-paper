@@ -1,4 +1,4 @@
-\documentclass[11pt]{article}
+\documentclass[12pt]{article}
 \usepackage[a4paper, margin=1.5in]{geometry}
 \usepackage{hyperref}
 \usepackage{fancyhdr}
@@ -29,6 +29,7 @@
 \newtheorem{atheorem}{Theorem}[section]
 \newtheorem{alemma}[atheorem]{Lemma}
 \newtheorem{aclaim}[atheorem]{Claim}
+\newtheorem{acorollary}[atheorem]{Corollary}
 \newtheorem{adefinition}{Definition}[section]
 
 \newcounter{theoremcount}[section]
@@ -68,6 +69,17 @@
 }
 {
 \end{aclaim}
+}
+
+\newcommand{\corollarycaption}{}
+\newenvironment{corollary}[1][]
+{
+\refstepcounter{theoremcount}
+\renewcommand{\corollarycaption}{#1}
+\begin{acorollary}[{#1}]
+}
+{
+\end{acorollary}
 }
 
 \newcommand{\definitioncaption}{}
