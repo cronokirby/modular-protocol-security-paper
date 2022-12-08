@@ -278,6 +278,13 @@ System tensoring is associative, i.e. $A * (B * C) = (A * B) * C$.
 $\blacksquare$
 \end{lemma}
 
+\begin{definition}[Overlapping Systems]
+Two systems $A$ and $B$ overlap if $\text{Chan}(A) \cap \text{Chan}(B) \neq \emptyset$.
+
+In the case of non-overlapping systems, we write $A \otimes B$ instead of $A * B$,
+insisting on the fact that they don't communicate.
+\end{definition}
+
 \begin{definition}[System Composition]
 Given two systems, $A$ and $B$, we can define their (horizontal) composition
 $A \circ B$ as any system satisfying:
@@ -292,4 +299,40 @@ $\square$
 \begin{lemma}
 System composition is associative, i.e. $A \circ (B \circ C) = (A \circ B) \circ C$.
 \txbf{Proof:} This follows from the associativity of $\circ$ for \emph{packages}. $\blacksquare$
+\end{lemma}
+
+\begin{definition}[System Games]
+Analogously to games, we define a \emph{system game} as a pair of systems $S_b$
+with $\tx{In}(S_b) = \emptyset$.
+\end{definition}
+
+\begin{definition}[System Game Reductions]
+We can also define notions of reductions for system games.
+
+First, we define:
+$$
+\epsilon(\mathcal{A} \circ S_b) := \epsilon(\mathcal{A} \circ \tx{SysPack}(S_b))
+$$
+
+We then also use the syntax sugar of:
+$$
+S_b \leq f(G_b^1, G_b^2, \ldots)
+$$
+as shorthand for, $\forall \mathcal{A}.\ \exists \mathcal{B}_1, \ldots$:
+$$
+\epsilon(\mathcal{A} \circ S_b) \leq f(\epsilon(\mathcal{B}_1 \circ G_b^1), \epsilon(\mathcal{B}_2 \circ G_b^2), \ldots)
+$$
+
+We also sometimes omit explicitly writing $S_b$, instead writing just $S$,
+if it's clear that we're talking about a pair of systems.
+
+$\square$
+\end{definition}
+
+Similar properties hold for reductions:
+
+\begin{lemma}
+$A \circ G_b \leq G_b$.
+
+\textbf{Proof:} $\tx{SysPack}(A \circ G_b) = \tx{SysPack}(A) \circ \tx{SysPack}(G_b) \leq \tx{SysPack}(G_b)$. $\blacksquare$
 \end{lemma}
