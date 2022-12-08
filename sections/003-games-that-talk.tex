@@ -193,8 +193,11 @@ $\square$
 A \emph{system} is a package which uses channels.
 
 We denote by $\text{InChan(S)}$ the set of channels the system receives on,
-and $\text{OutChan(S)}$ the set of channels the system sends on.
-
+and $\text{OutChan(S)}$ the set of channels the system sends on,
+and define
+$$
+\text{Chan}(S) := \text{OutChan}(S) \cup \text{InChan}(S)
+$$
 $\square$
 \end{definition}
 
@@ -239,7 +242,7 @@ $\square$
 Armed with the syntax sugar for channels, and the $\tx{Channels}$ game,
 we can convert a system $S$ into a package via:
 $$
-\text{SysPack}(S) := \text{NoChan}(S) \circ \text{Channels}(\tx{OutChan}(S))
+\text{SysPack}(S) := \text{NoChan}(S) \circ (\text{Channels}(\tx{Chan}(S)) \otimes 1(\tx{In}(S)))
 $$
 This package will have the same input and output functions as the system $S$,
 but with the usage of channels replaced with actual semantics.
@@ -250,22 +253,43 @@ This allows us to lift our standard equality relations on packages onto
 Given some equality relation $\sim$ on packages, we can lift that relation
 to systems by definining:
 $$
-A \sim B \iff \text{SysPack}(A) \sim \text{SysPack}(b)
+A \sim B \iff \text{SysPack}(A) \sim \text{SysPack}(B)
 $$
 $\square$
 \end{definition}
 
-\begin{definition}[System Composition]
-Given two systems, $A$ and $B$, we can define their composition $A * B$,
+\begin{definition}[System Tensoring]
+Given two systems, $A$ and $B$, we can define their tensor product $A * B$,
 which is any system satisfying:
 $$
-\tx{SysPack}(A * B) = (\tx{NoChan}(A) \otimes \tx{NoChan}(B)) \circ \text{Channels}(\tx{OutChan}(A) \cup \tx{OutChan}(B))
+\tx{SysPack}(A * B) = (\tx{NoChan}(A) \otimes \tx{NoChan}(B)) \circ
+\begin{pmatrix}
+&\text{Channels}(\tx{Chan}(A) \cup \tx{Chan}(B))\cr
+&\otimes\cr
+&1(\tx{In}(A) \cup \tx{In}(B))\cr
+\end{pmatrix}
 $$
 $\square$
 \end{definition}
 
 \begin{lemma}
-System composition is associative, i.e. $(A * B) * C = A * (B * C)$.
+System tensoring is associative, i.e. $A * (B * C) = (A * B) * C$.
 \txbf{Proof:} This follows from the associativity of $\otimes$ and $\cup$.
 $\blacksquare$
+\end{lemma}
+
+\begin{definition}[System Composition]
+Given two systems, $A$ and $B$, we can define their (horizontal) composition
+$A \circ B$ as any system satisfying:
+\todo{add constraints like for packages}
+$$
+\text{SysPack}(A \circ B) =
+\text{SysPack}(A) \circ \text{SysPack}(B)
+$$
+$\square$
+\end{definition}
+
+\begin{lemma}
+System composition is associative, i.e. $A \circ (B \circ C) = (A \circ B) \circ C$.
+\txbf{Proof:} This follows from the associativity of $\circ$ for \emph{packages}. $\blacksquare$
 \end{lemma}
