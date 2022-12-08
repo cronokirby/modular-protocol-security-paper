@@ -302,12 +302,12 @@ System composition is associative, i.e. $A \circ (B \circ C) = (A \circ B) \circ
 \end{lemma}
 
 \begin{definition}[System Games]
-Analogously to games, we define a \emph{system game} as a pair of systems $S_b$
-with $\tx{In}(S_b) = \emptyset$.
+Analogously to games, we define a \emph{system game} as a system $S$
+with $\tx{In}(S) = \emptyset$.
 \end{definition}
 
 \begin{definition}[System Game Reductions]
-We can also define notions of reductions for system games.
+We can also define notions of reductions for system game (pairs).
 
 First, we define:
 $$
@@ -335,4 +335,30 @@ Similar properties hold for reductions:
 $A \circ G_b \leq G_b$.
 
 \textbf{Proof:} $\tx{SysPack}(A \circ G_b) = \tx{SysPack}(A) \circ \tx{SysPack}(G_b) \leq \tx{SysPack}(G_b)$. $\blacksquare$
+\end{lemma}
+
+\begin{lemma}
+There exists system games $A$, $G_B$ such that $G_B$ is secure
+but $A * G_b$ is insecure.
+
+\textbf{Proof:}
+Consider:
+\package{$G_b$}{
+&\pfn{Cheat}{}\cr
+\pind{1}\psend{b}{P}\cr
+\pind{1}\precv{\hat{b}}{Q}\cr
+\pind{1}\preturn{\hat{b}}\cr
+}
+\package{$A$}{
+&\pfn{Run}{}\cr
+\pind{1}\precv{b}{P}\cr
+\pind{1}\psend{b}{Q}\cr
+}
+Clearly, $G_b$ is secure in isolation, since no other system is present
+to provide a value on $Q$, so $G_b$ will block forever in the cheating function.
+
+However, when linked with $A$, this cheating function will return $b$,
+allowing an adversary to break the game with probability $1$.
+
+$\blacksquare$
 \end{lemma}
