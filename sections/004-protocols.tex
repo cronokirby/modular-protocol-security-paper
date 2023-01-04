@@ -44,4 +44,20 @@ $\square$
 \end{definition}
 
 \begin{definition}[Horizontal Composition]
+Given two open protocols $\mathcal{P}, \mathcal{Q}$,
+we can define the open protocol $\mathcal{P} \lhd \mathcal{Q}$,
+provided a few requirements hold.
+
+First, we need: $\text{In}(\mathcal{P}) \subseteq \text{Out}(\mathcal{Q})$.
+We also require that the functions exposed by a player in $\mathcal{Q}$
+are only used by at most one player in $\mathcal{P}$.
+We express this as:
+\[
+\forall i \in [\mathcal{Q}.n].\ \nexists j \neq j' \in [\mathcal{P}.n].\quad \text{Out}_i \cap \text{In}_j \neq \emptyset \land \text{Out}_i \cap \text{In}_{j'} \neq \emptyset
+\]
+
+Finally, we require that the players share no channels between the two
+protocols.
+In other words $\text{Chan}(\mathcal{P}.P_i) \cap \text{Chan}(\mathcal{Q}.P_j) = \emptyset$, for all $P_i, P_j$.
+
 \end{definition}
