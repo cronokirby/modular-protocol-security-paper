@@ -1,1 +1,33 @@
 \section{Protocols and Composition}
+
+\begin{definition}[Base Protocols]
+A \emph{base protocol} $\mathcal{P}$ consists of:
+\begin{itemize}
+\item Systems $P_1, \ldots, P_n$, called \emph{players}
+\item A game $F$, called the \emph{ideal functionality}
+\end{itemize}
+
+Furthermore, we also impose requirements on the channels and functions
+these elements use.
+
+First, we require that the player systems are jointly closed,
+with no extra channels that aren't connected to other players:
+$$
+\bigcup_{i \in [n]} \text{OutChan}(P_i) = \bigcup_{i \in [n]} \text{InChan}(P_i)
+$$
+
+Second, we require that the functions the systems depend on are disjoint:
+$$
+\forall i, j \in [n].\quad \text{In}(P_i) \cap \text{In}(P_j) = \emptyset
+$$
+
+We can also define a few convenient notations related to the interface of a base
+protocol.
+
+Let $\text{Out}_i(\mathcal{P}) := \text{Out}(P_i)$, and let $\text{In}_i(\mathcal{P}) := \text{In}(P_i) / \text{Out}(F)$.
+We then define $\text{Out}(\mathcal{P}) := \bigcup_{i \in [n]} \text{Out}_i(\mathcal{P})$
+and $\text{In}(\mathcal{P}) := \bigcup_{i \in [n]} \text{In}_i(\mathcal{P})$.
+Finally, we define $\text{IdealIn}(\mathcal{P}) := \text{In}(F)$.
+
+$\square$
+\end{definition}
