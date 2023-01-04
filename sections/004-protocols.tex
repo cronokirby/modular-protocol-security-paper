@@ -1,10 +1,10 @@
 \section{Protocols and Composition}
 
-\begin{definition}[Base Protocols]
-A \emph{base protocol} $\mathcal{P}$ consists of:
+\begin{definition}[Open Protocols]
+An \emph{open protocol} $\mathcal{P}$ consists of:
 \begin{itemize}
 \item Systems $P_1, \ldots, P_n$, called \emph{players}
-\item A game $F$, called the \emph{ideal functionality}
+\item A package $F$, called the \emph{ideal functionality}
 \end{itemize}
 
 Furthermore, we also impose requirements on the channels and functions
@@ -30,4 +30,18 @@ and $\text{In}(\mathcal{P}) := \bigcup_{i \in [n]} \text{In}_i(\mathcal{P})$.
 Finally, we define $\text{IdealIn}(\mathcal{P}) := \text{In}(F)$.
 
 $\square$
+\end{definition}
+
+\begin{definition}[Vertical Composition]
+Given an open protocol $\mathcal{P}$ and a package $G$, satisfying
+$\text{IdealIn}(\mathcal{P}) \subseteq \text{Out}(G)$,
+we can define the open protocol $\mathcal{P} \circ G$.
+
+$\mathcal{P} \circ G$ has the same players as $\mathcal{P}$,
+but its ideal functionality $F$ becomes $F \circ G$.
+
+$\square$
+\end{definition}
+
+\begin{definition}[Horizontal Composition]
 \end{definition}
