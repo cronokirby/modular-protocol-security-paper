@@ -210,17 +210,21 @@ Channels define two new syntactic constructions, for sending and receiving
 along a channel.
 We replace these with function calls as follows:
 
+
 Sending, with $m \Rightarrow P$ becomes:
 $$
-\text{Channels}.\tx{Send}(m, P)
+\text{Channels}.\tx{Send}_P(m)
 $$
 
 Receiving, with $m \Leftarrow P$ becomes:
 $$
-m \gets \await \text{Channels}.\tx{Recv}(P)
+m \gets \await \text{Channels}.\tx{Recv}_P()
 $$
 Receiving is an asynchronous function, because the channel might not have
 any available messages for us.
+
+These function calls are parameterized by the channel, meaning
+that that we have a separate function for each channel.
 
 $\square$
 \end{definition}
@@ -229,15 +233,18 @@ $\square$
 \package{Channels($\{A_1, \ldots, A_n\}$)}{
 &q[A_i] \gets \text{FifoQueue.New()}\cr
 \cr
-&\pfn{Send}{m, A_i}\cr
+&\underline{\tx{Send}_{A_i}(m)\tx{:}}\cr
 \pind{1} q[A_i].\tx{Push}(m)\cr
 \cr
-&\pfn{Recv}{A_i}\cr
+&\underline{\tx{Recv}_{A_i}()\tx{:}}\cr
 \pind{1} \txbf{while } q[A_i].\tx{IsEmpty()}\cr
 \pind{2} \txbf{yield}\cr
 \pind{1} q[A_i].\tx{Next}()\cr
 }
 \end{game}
+
+One consequence of this definition with separate functions for each channel
+is that $\text{Channels}(S) \otimes \text{Channels}(R) = \text{Channels}(S \cup R)$.
 
 Armed with the syntax sugar for channels, and the $\tx{Channels}$ game,
 we can convert a system $S$ into a package via:
@@ -259,7 +266,7 @@ $\square$
 \end{definition}
 
 \begin{definition}[System Tensoring]
-Given two systems, $A$ and $B$, we can define their tensor product $A * B$,
+Given two systems, $A$ and $B$, with \(\text{Out}(A) \cap \text{Out}(B) = \emptyset\), we can define their tensor product $A * B$,
 which is any system satisfying:
 $$
 \tx{SysPack}(A * B) =
@@ -275,6 +282,7 @@ $$
 &1(\tx{In}(A) \cup \tx{In}(B))\cr
 \end{pmatrix}
 $$
+
 $\square$
 \end{definition}
 
@@ -348,18 +356,170 @@ insisting on the fact that they don't communicate.
 
 \begin{definition}[System Composition]
 Given two systems, $A$ and $B$, we can define their (horizontal) composition
-$A \circ B$ as any system satisfying:
-\todo{add constraints like for packages}
+$A \circ B$ as any system, provided a few constraints hold:
+\begin{itemize}
+\item $A$ and $B$ do not overlap ($\text{Chan}(A) \cap \tx{Chan}(B) = \emptyset$)
+\item $\tx{In}(A) \subseteq \tx{Out}(B)$
+\end{itemize}
+
+With these in place, we define the composition as any system such that:
 $$
 \text{SysPack}(A \circ B) =
 \text{SysPack}(A) \circ \text{SysPack}(B)
 $$
+
 $\square$
 \end{definition}
 
 \begin{lemma}
 System composition is associative, i.e. $A \circ (B \circ C) = (A \circ B) \circ C$.
 \txbf{Proof:} This follows from the associativity of $\circ$ for \emph{packages}. $\blacksquare$
+\end{lemma}
+
+\begin{lemma}[Interchange Lemma]
+Given systems $A, B, C, D$ such that $A \circ B$ and $C \circ D$ are well defined,
+$A * C$ and $B * D$ are well defined,
+and neither $A$ nor $C$ overlap with $B$ or $D$, i.e.
+the following relation holds:
+$$
+\begin{pmatrix} 
+A\cr
+*\cr
+C\cr
+\end{pmatrix} 
+\circ
+\begin{pmatrix} 
+B\cr
+*\cr
+D\cr
+\end{pmatrix} 
+=
+\begin{matrix} 
+  (A \circ B)\cr
+*\cr
+  (C \circ D)\cr
+\end{matrix} 
+$$
+
+\txbf{Proof:}
+First, we need to develop a few general facts about $\tx{SysPack}(A \circ B)$, $\tx{Chan}(A \circ B)$
+and $\tx{NoChan}(A \circ B)$, like those we developed for $A * B$.
+
+As a consequence of how $A \circ B$ is defined, by unrolling $\text{SysPack}(A \circ B)$,
+we get:
+$$
+  \tx{SysPack}(A \circ B) =
+  \tx{NC}(A) \circ
+  \begin{pmatrix}
+    \tx{Channels}(\tx{Chan}(A))\cr
+    \otimes\cr
+    1(\tx{In}(A))
+  \end{pmatrix}
+  \circ \tx{NC}(B) \circ
+  \begin{pmatrix}
+    \tx{Channels}(\tx{Chan}(B))\cr
+    \otimes\cr
+    1(\tx{In}(B))
+  \end{pmatrix}
+$$
+Applying the interchange lemma for packages a couple times, we then get:
+$$
+  \tx{NC}(A) \circ
+  \begin{pmatrix}
+    \tx{NC}(B)\cr
+    \otimes\cr
+    1(\tx{Channels}(\tx{Chan}(A)))
+  \end{pmatrix}
+  \circ
+  \begin{pmatrix}
+    \tx{Channels}(\tx{Chan}(A)) \otimes \tx{Channels}(\tx{Chan}(B))\cr
+    \otimes\cr
+    1(\tx{In}(B))
+  \end{pmatrix}
+$$
+
+And then, recalling
+that $\tx{Channels}(S) \otimes \tx{Channels}(R) = \tx{Channels}(S \cup R)$,
+we conclude that:
+$$
+\begin{aligned}
+  &\tx{NoChan}(A \circ B) =
+  \tx{NC}(A) \circ
+  \begin{pmatrix}
+    \tx{NC}(B)\cr
+    \otimes\cr
+    1(\tx{Channels}(\tx{Chan}(A)))
+  \end{pmatrix}
+  \cr
+  &\tx{Chan}(A \circ B) = \tx{Chan}(A) \cup \tx{Chan}(B)\cr
+\end{aligned}
+$$
+
+Next we apply these facts, along with those derived for $A * B$ to tackle the main lemma.
+
+Starting from $\tx{SysPack}((A * C) \circ (B * D))$, we can apply the above
+results to get:
+$$
+  \tx{NC}(A * C) \circ
+  \begin{pmatrix}
+    \tx{NC}(B * D)\cr
+    \otimes\cr
+    1(\tx{Channels}(\tx{Chan}(A * C)))
+  \end{pmatrix}
+  \circ
+  \begin{pmatrix}
+    \tx{Channels}(\tx{Chan}(A * C) \cup \tx{Chan}(B * D))\cr
+    \otimes\cr
+    1(\tx{In}(B * D))
+  \end{pmatrix}
+$$
+Then, applying what we know about $A * B$ in general, we get:
+$$
+  \begin{pmatrix}
+    \tx{NoChan}(A)\cr
+    \otimes\cr
+    \tx{NoChan}(C)
+  \end{pmatrix}
+  \circ
+  \begin{pmatrix}
+    \tx{NoChan}(B)\cr
+    \otimes\cr
+    1(\tx{Channels}(\tx{Chan}(A)))\cr
+    \otimes\cr
+    \tx{NoChan}(D)\cr
+    \otimes\cr
+    1(\tx{Channels}(\tx{Chan}(C))
+  \end{pmatrix}
+  \circ
+  \begin{pmatrix}
+    \tx{Channels}(\tx{Chan}(A, B, C, D))\cr
+    \otimes\cr
+    1(\tx{In}(B, D))
+  \end{pmatrix}
+$$
+Applying the interchange lemma for packages again, along with 
+what we know about $A \circ B$, we get:
+$$
+\begin{pmatrix}
+  \tx{NoChan}(A \circ B)\cr
+  \otimes\cr
+  \tx{NoChan}(C \circ D)
+\end{pmatrix}
+  \circ
+  \begin{pmatrix}
+    \tx{Channels}(\tx{Chan}(A, B, C, D))\cr
+    \otimes\cr
+    1(\tx{In}(B, D))
+  \end{pmatrix}
+$$
+Noting that $\tx{Chan}(A, B, C, D) = \tx{Chan}(A \circ B, C \circ D)$,
+and that $\tx{In}(B, D) = \tx{In}(A \circ B, C \circ D)$, we realize that the
+expression above is equal to:
+$$
+\tx{SysPack}((A \circ B) * (C \circ D))
+$$
+
+$\blacksquare$
 \end{lemma}
 
 \begin{definition}[System Games]
