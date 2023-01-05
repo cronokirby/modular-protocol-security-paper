@@ -262,7 +262,13 @@ $\square$
 Given two systems, $A$ and $B$, we can define their tensor product $A * B$,
 which is any system satisfying:
 $$
-\tx{SysPack}(A * B) = (\tx{NoChan}(A) \otimes \tx{NoChan}(B)) \circ
+\tx{SysPack}(A * B) =
+\begin{pmatrix}
+&\tx{NoChan}(A)\cr
+&\otimes\cr
+&\tx{NoChan}(B)\cr
+\end{pmatrix}
+\circ
 \begin{pmatrix}
 &\text{Channels}(\tx{Chan}(A) \cup \tx{Chan}(B))\cr
 &\otimes\cr
@@ -272,9 +278,64 @@ $$
 $\square$
 \end{definition}
 
+Note that combining the definition above with the definition of $\text{SysPack}$
+means that:
+$$
+\begin{aligned}
+&\text{NoChan}(A * B) = \text{NoChan}(A) \otimes \text{NoChan}(B)\cr
+&\text{Chan}(A * B) = \text{Chan}(A) \cup \text{Chan}(B)\cr
+&\text{In}(A * B) = \text{In}(A) \cup \text{In}(B)\cr
+\end{aligned}
+$$
+
+This implies the following lemma.
+
 \begin{lemma}
 System tensoring is associative, i.e. $A * (B * C) = (A * B) * C$.
-\txbf{Proof:} This follows from the associativity of $\otimes$ and $\cup$.
+\txbf{Proof:} Starting from the definition of tensoring, we have:
+$$
+\tx{SysPack}(A * (B * C)) =
+\begin{pmatrix}
+&\tx{NoChan}(A)\cr
+&\otimes\cr
+&\tx{NoChan}(B * C)\cr
+\end{pmatrix}
+\circ
+\begin{pmatrix}
+&\text{Channels}(\tx{Chan}(A) \cup \tx{Chan}(B * C))\cr
+&\otimes\cr
+&1(\tx{In}(A) \cup \tx{In}(B * C))\cr
+\end{pmatrix}
+$$
+We can then apply the corrollaries we've just derived to show that this
+is equal to:
+$$
+\begin{pmatrix}
+&\tx{NoChan}(A)\cr
+&\otimes\cr
+&\tx{NoChan}(B)\cr
+&\otimes\cr
+&\tx{NoChan}(C)\cr
+\end{pmatrix}
+\circ
+\begin{pmatrix}
+  &\text{Channels}(\tx{Chan}(A) \cup \tx{Chan}(B) \cup \tx{Chan}(C))\cr
+&\otimes\cr
+  &1(\tx{In}(A) \cup \tx{In}(B) \cup \tx{In}(C))\cr
+\end{pmatrix}
+$$
+(Using the associativity of $\otimes$ for \emph{packages} as well).
+
+With the same reasoning, we can derive the same package from $(A * B) * C$,
+letting us conclude that $\text{SysPack}(A * (B * C)) = \text{SysPack}((A * B) * C)$,
+and thus that $A * (B * C) = (A * B) * C$.
+
+$\blacksquare$
+\end{lemma}
+
+\begin{lemma}
+System tensoring is commutative, i.e. $A * B = B * A$
+\txbf{Proof:} This follows from the commutativity of $\otimes$ and $\cup$.
 $\blacksquare$
 \end{lemma}
 
