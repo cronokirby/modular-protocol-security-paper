@@ -56,8 +56,28 @@ We express this as:
 \forall i \in [\mathcal{Q}.n].\ \nexists j \neq j' \in [\mathcal{P}.n].\quad \text{Out}_i \cap \text{In}_j \neq \emptyset \land \text{Out}_i \cap \text{In}_{j'} \neq \emptyset
 \]
 
-Finally, we require that the players share no channels between the two
+Second, we require that the players share no channels between the two
 protocols.
 In other words $\text{Chan}(\mathcal{P}.P_i) \cap \text{Chan}(\mathcal{Q}.P_j) = \emptyset$, for all $P_i, P_j$.
+
+Finally, we require that the ideal functionalities do not overlap, 
+  in the sense that $\text{Out}(\mathcal{P}.F) \cap \text{Out}(\mathcal{Q}.F) = \emptyset$
+
+Our first condition has an interesting consequence: every player $\mathcal{Q}.P_j$
+has its functions used by at most one player $\mathcal{P}.P_i$.
+In that case, we say that $\mathcal{P}.P_i$ \emph{uses} $\mathcal{Q}.P_j$.
+
+With this in hand, we can define $\mathcal{P} \lhd \mathcal{Q}$.
+
+The players will consist of:
+$$
+  \mathcal{P}.P_i \circ \left( \bigast_{\mathcal{Q}.P_j \text{ used by } \mathcal{P}.P_i } \mathcal{Q}.P_j \right)
+$$
+Along with all of the $\mathcal{Q}.P_j$ which are not used by any
+player in $\mathcal{P}$.
+
+The ideal functionality is $\mathcal{P}.F \otimes \mathcal{Q}.F$.
+
+$\square$
 
 \end{definition}
