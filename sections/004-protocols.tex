@@ -21,6 +21,11 @@ $$
 \forall i, j \in [n].\quad \text{In}(P_i) \cap \text{In}(P_j) = \emptyset
 $$
 
+Third, we require that the functions the systems export on are disjoint:
+$$
+\forall i, j \in [n].\quad \text{Out}(P_i) \cap \text{Out}(P_j) = \emptyset
+$$
+
 We can also define a few convenient notations related to the interface of a base
 protocol.
 
@@ -50,10 +55,10 @@ provided a few requirements hold.
 
 First, we need: $\text{In}(\mathcal{P}) \subseteq \text{Out}(\mathcal{Q})$.
 We also require that the functions exposed by a player in $\mathcal{Q}$
-are only used by at most one player in $\mathcal{P}$.
+are used by \emph{exactly} one player in $\mathcal{P}$.
 We express this as:
 \[
-\forall i \in [\mathcal{Q}.n].\ \nexists j \neq j' \in [\mathcal{P}.n].\quad \text{Out}_i \cap \text{In}_j \neq \emptyset \land \text{Out}_i \cap \text{In}_{j'} \neq \emptyset
+  \forall i \in [\mathcal{Q}.n].\ \exists! j \in [\mathcal{P}.n].\quad \text{In}_j \cap \text{Out}_i \neq \emptyset
 \]
 
 Second, we require that the players share no channels between the two
@@ -64,7 +69,7 @@ Finally, we require that the ideal functionalities do not overlap,
   in the sense that $\text{Out}(\mathcal{P}.F) \cap \text{Out}(\mathcal{Q}.F) = \emptyset$
 
 Our first condition has an interesting consequence: every player $\mathcal{Q}.P_j$
-has its functions used by at most one player $\mathcal{P}.P_i$.
+has its functions used by exactly one player $\mathcal{P}.P_i$.
 In that case, we say that $\mathcal{P}.P_i$ \emph{uses} $\mathcal{Q}.P_j$.
 
 With this in hand, we can define $\mathcal{P} \lhd \mathcal{Q}$.
@@ -73,8 +78,8 @@ The players will consist of:
 $$
   \mathcal{P}.P_i \circ \left( \bigast_{\mathcal{Q}.P_j \text{ used by } \mathcal{P}.P_i } \mathcal{Q}.P_j \right)
 $$
-Along with all of the $\mathcal{Q}.P_j$ which are not used by any
-player in $\mathcal{P}$.
+And, because of our assumption, each player in $\mathcal{Q}$ appears
+somewhere in this equation.
 
 The ideal functionality is $\mathcal{P}.F \otimes \mathcal{Q}.F$.
 
@@ -98,6 +103,14 @@ By definition, the dependencies $\text{In}$ of each player in $\mathcal{P} \lhd 
 are the union of several players in $\mathcal{Q}$, so disjointness property
 continues to hold.
 
+Finally, since each player is of the form $\mathcal{P}.P_i \circ \ldots$,
+the condition on $\text{Out}_i$ is also satisfied in $\mathcal{P} \lhd \mathcal{Q}$,
+since $\mathcal{P}$ does.
+
 $\square$
 
+\end{definition}
+
+\begin{definition}[Concurrent Composition]
+Given two open open protocols $\mathcal{P}, \mathcal{Q}$
 \end{definition}
