@@ -86,7 +86,17 @@ $$
   = \left(\bigcup_{i \in [\mathcal{P}.n]} \tx{OutChan}(\mathcal{P}.P_i)\right) \cup
   \left(\bigcup_{i \in [\mathcal{Q}.n]} \tx{OutChan}(\mathcal{Q}.P_i)\right)
 $$
-  since $\text{OutChan}(A \circ B) = \text{OutChan}(A \otimes B) = \text{OutChan}(A, B)$, and ditto for $\text{InChan}$.
+  since $\text{OutChan}(A \circ B) = \text{OutChan}(A \otimes B) = \text{OutChan}(A, B)$.
+A similar reasoning applies to $\text{InChan}$, allowing us to conclude that:
+$$
+  \bigcup_{i \in [(\mathcal{P} \lhd \mathcal{Q}).n]} \tx{OutChan}((\mathcal{P} \lhd \mathcal{Q}).{P_i}) =
+  \bigcup_{i \in [(\mathcal{P} \lhd \mathcal{Q}).n]} \tx{InChan}((\mathcal{P} \lhd \mathcal{Q}).{P_i})
+$$
+as required.
+
+By definition, the dependencies $\text{In}$ of each player in $\mathcal{P} \lhd \mathcal{Q}$
+are the union of several players in $\mathcal{Q}$, so disjointness property
+continues to hold.
 
 $\square$
 
