@@ -294,7 +294,7 @@ means that:
 $$
 \begin{aligned}
 &\text{NoChan}(A * B) = \text{NoChan}(A) \otimes \text{NoChan}(B)\cr
-&\text{Chan}(A * B) = \text{Chan}(A) \cup \text{Chan}(B)\cr
+&\text{(Out/In)Chan}(A * B) = \text{(Out/In)Chan}(A) \cup \text{(Out/In)Chan}(B)\cr
 &\text{In}(A * B) = \text{In}(A) \cup \text{In}(B)\cr
 \end{aligned}
 $$
@@ -454,7 +454,7 @@ $$
     1(\tx{Channels}(\tx{Chan}(A)))
   \end{pmatrix}
   \cr
-  &\tx{Chan}(A \circ B) = \tx{Chan}(A) \cup \tx{Chan}(B)\cr
+  &\tx{(Out/In)Chan}(A \circ B) = \tx{(Out/In)Chan}(A) \cup \tx{(Out/In)Chan}(B)\cr
 \end{aligned}
 $$
 
