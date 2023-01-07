@@ -112,5 +112,39 @@ $\square$
 \end{definition}
 
 \begin{definition}[Concurrent Composition]
-Given two open open protocols $\mathcal{P}, \mathcal{Q}$
+Given two open open protocols $\mathcal{P}, \mathcal{Q}$,
+we can define their concurrent composition---or tensor product---
+$\mathcal{P} \otimes \mathcal{Q}$, provided a few requirements hold.
+We require that:
+\begin{enumerate}
+\item $\tx{In}(\mathcal{P}) \cap \tx{In}(\mathcal{Q}) = \emptyset$.
+\item $\tx{Out}(\mathcal{P}) \cap \tx{Out}(\mathcal{Q}) = \emptyset$.
+\item $\tx{Out}(\mathcal{P}.F) \cap \tx{Out}(\mathcal{Q}.F) = \emptyset$ \emph{or} $\mathcal{P}.F = \mathcal{Q}.F$.
+\end{enumerate}
+
+The players of $\mathcal{P} \otimes \mathcal{Q}$ consist of all the players
+in $\mathcal{P}$ and $\mathcal{Q}$.
+The ideal functionality is $\mathcal{P}.F \otimes \mathcal{Q}.F$, 
+unless $\mathcal{P}.F = \mathcal{Q}.F$, in which case the ideal functionality
+is simply $\mathcal{P}.F$.
+This use of $\otimes$ is well defined by assumption.
+
+The resulting protocol is also clearly well defined.
+
+The jointly closed property holds because we've simply taken the union
+of both player sets.
+
+Since $\tx{In}(\mathcal{P}) \cap \tx{In}(\mathcal{Q}) = \emptyset$,
+it also holds that for every $P_i, P_j$ in $\mathcal{P} \otimes \mathcal{Q}$,
+we have $\tx{In}(P_i) \cap \tx{In}(P_j) = \emptyset$,
+since each player comes from either $\mathcal{P}$ or $\mathcal{Q}$.
+      
+Finally, $\tx{Out}(\mathcal{P}) \cap \tx{Out}(\mathcal{Q}) = \emptyset$,
+we have that $\tx{Out}(P_i) \cap \tx{Out}(P_j) = \emptyset$,
+by the same reasoning.
+    
+$\square$
 \end{definition}
+
+\todo{The reason why we allow for $F = G$ is so that you can have like the same $1$}
+
