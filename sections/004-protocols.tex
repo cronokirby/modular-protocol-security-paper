@@ -78,7 +78,15 @@ player in $\mathcal{P}$.
 
 The ideal functionality is $\mathcal{P}.F \otimes \mathcal{Q}.F$.
 
-\todo{Show that this is well defined}
+We can also easily show that this definition is well defined, satisfying
+the required properties of an open protocol.
+Because of the definition of the players, we see that:
+$$
+  \bigcup_{i \in [(\mathcal{P} \lhd \mathcal{Q}).n]} \tx{OutChan}((\mathcal{P} \lhd \mathcal{Q}).{P_i})
+  = \left(\bigcup_{i \in [\mathcal{P}.n]} \tx{OutChan}(\mathcal{P}.P_i)\right) \cup
+  \left(\bigcup_{i \in [\mathcal{Q}.n]} \tx{OutChan}(\mathcal{Q}.P_i)\right)
+$$
+  since $\text{OutChan}(A \circ B) = \text{OutChan}(A \otimes B) = \text{OutChan}(A, B)$, and ditto for $\text{InChan}$.
 
 $\square$
 
