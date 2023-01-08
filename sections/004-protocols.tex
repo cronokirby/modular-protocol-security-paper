@@ -37,6 +37,19 @@ Finally, we define $\text{IdealIn}(\mathcal{P}) := \text{In}(F)$.
 $\square$
 \end{definition}
 
+\begin{definition}[Literal Equality]
+Given two open protocols $\mathcal{P}$ and $\mathcal{Q}$, we say that
+they are \emph{literally equal}, written as $\mathcal{P} \equiv \mathcal{Q}$
+when:
+\begin{itemize}
+\item $\mathcal{P}.n = \mathcal{Q}.n$
+\item $\forall i \in [n].\enspace \mathcal{P}.P_i = \mathcal{Q}.P_i$
+\item $\mathcal{P}.F = \mathcal{P}.G$
+\end{itemize}
+
+$\square$
+\end{definition}
+
 \begin{definition}[Vertical Composition]
 Given an open protocol $\mathcal{P}$ and a package $G$, satisfying
 $\text{IdealIn}(\mathcal{P}) \subseteq \text{Out}(G)$,
