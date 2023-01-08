@@ -43,7 +43,10 @@ they are \emph{literally equal}, written as $\mathcal{P} \equiv \mathcal{Q}$
 when:
 \begin{itemize}
 \item $\mathcal{P}.n = \mathcal{Q}.n$
-\item $\forall i \in [n].\enspace \mathcal{P}.P_i = \mathcal{Q}.P_i$
+\item There exists a permuation $\pi : [n] \leftrightarrow [n]$ such that
+$
+{\forall i \in [n].\enspace \mathcal{P}.P_i = \mathcal{Q}.P_{\pi(i)}}
+$
 \item $\mathcal{P}.F = \mathcal{P}.G$
 \end{itemize}
 
@@ -60,6 +63,18 @@ but its ideal functionality $F$ becomes $F \circ G$.
 
 $\square$
 \end{definition}
+
+\begin{claim}[Vertical Composition is Associative]
+For any protocol $\mathcal{P}$, and packages $G, H$, such that their composition
+is well defined, we have
+$$
+\mathcal{P} \circ (G \circ H) = (\mathcal{P} \circ G) \circ H
+$$
+
+\txbf{Proof:} This follows from the definition of vertical composition
+and the associativity of $\circ$ for packages.
+$\blacksquare$
+\end{claim}
 
 \begin{definition}[Horizontal Composition]
 Given two open protocols $\mathcal{P}, \mathcal{Q}$,
@@ -161,3 +176,24 @@ $\square$
 
 \todo{The reason why we allow for $F = G$ is so that you can have like the same $1$}
 
+\begin{lemma}
+Concurrent composition is associative and commutative.
+I.e. $\mathcal{P} \otimes (\mathcal{Q} \otimes \mathcal{R}) \equiv (\mathcal{P} \otimes \mathcal{Q}) \otimes \mathcal{R}$,
+and $\mathcal{P} \otimes \mathcal{Q} \equiv \mathcal{Q} \otimes \mathcal{P}$ for
+all open protocols $\mathcal{P}, \mathcal{Q}, \mathcal{R}$ where these expressions
+are well defined.
+
+\txbf{Proof:}
+
+By the definition of $\equiv$, all that matter is the \emph{set} of players,
+and not their order.
+Because $\cup$ is associative, and so is $\otimes$ for systems,
+we conclude that concurrent composition is associative as well,
+since the resulting set of players and ideal functionality are the same
+in both cases.
+
+Similarly, since $\cup$ and $\otimes$ (for systems) are commutative,
+we conclude that concurrenty composition is commutative.
+
+$\blacksquare$
+\end{lemma}
