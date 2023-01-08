@@ -32,7 +32,14 @@ protocol.
 Let $\text{Out}_i(\mathcal{P}) := \text{Out}(P_i)$, and let $\text{In}_i(\mathcal{P}) := \text{In}(P_i) / \text{Out}(F)$.
 We then define $\text{Out}(\mathcal{P}) := \bigcup_{i \in [n]} \text{Out}_i(\mathcal{P})$
 and $\text{In}(\mathcal{P}) := \bigcup_{i \in [n]} \text{In}_i(\mathcal{P})$.
-Finally, we define $\text{IdealIn}(\mathcal{P}) := \text{In}(F)$.
+
+Finally, we define
+$$
+\begin{aligned}
+&\text{IdealIn}(\mathcal{P}) := \text{In}(F)\cr
+&\text{Leakage}(\mathcal{P}) := \text{Out}(F) / \left(\bigcup_{i \in [n]} \tx{In}(P_i)\right)
+\end{aligned}
+$$
 
 $\square$
 \end{definition}
@@ -92,6 +99,14 @@ We express this as:
 Second, we require that the players share no channels between the two
 protocols.
 In other words $\text{Chan}(\mathcal{P}.P_i) \cap \text{Chan}(\mathcal{Q}.P_j) = \emptyset$, for all $P_i, P_j$.
+
+Third, we require that the leakages of one game aren't use in the other:
+$$
+\begin{aligned}
+&\tx{Leakage}(\mathcal{P}) \cap \tx{In}(\mathcal{Q}) = \emptyset\cr
+&\tx{Leakage}(\mathcal{Q}) \cap \tx{In}(\mathcal{P}) = \emptyset
+\end{aligned}
+$$
 
 Finally, we require that the ideal functionalities do not overlap, 
   in the sense that $\text{Out}(\mathcal{P}.F) \cap \text{Out}(\mathcal{Q}.F) = \emptyset$
@@ -216,6 +231,7 @@ We require that:
 \item $\tx{In}(\mathcal{P}) \cap \tx{In}(\mathcal{Q}) = \emptyset$.
 \item $\tx{Out}(\mathcal{P}) \cap \tx{Out}(\mathcal{Q}) = \emptyset$.
 \item $\tx{Out}(\mathcal{P}.F) \cap \tx{Out}(\mathcal{Q}.F) = \emptyset$ \emph{or} $\mathcal{P}.F = \mathcal{Q}.F$.
+\item $\tx{Leakage}(\mathcal{P}) \cap \tx{In}(\mathcal{Q}) = \emptyset = \tx{Leakage}(\mathcal{Q}) \cap \tx{In}(\mathcal{P})$
 \end{enumerate}
 
 The players of $\mathcal{P} \otimes \mathcal{Q}$ consist of all the players
