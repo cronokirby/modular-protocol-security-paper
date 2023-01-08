@@ -139,6 +139,74 @@ $\square$
 
 \end{definition}
 
+\begin{lemma}
+Horizontal composition is associative, i.e.
+${\mathcal{P} \lhd (\mathcal{Q} \lhd \mathcal{R}) \equiv (\mathcal{P} \lhd \mathcal{Q}) \lhd \mathcal{R}}$
+for all open protocols $\mathcal{P}, \mathcal{Q}, \mathcal{R}$ where this expression is well defined.
+
+$\txbf{Proof:}$
+For the ideal functionalities, it's clear that by the associativity
+of $\otimes$ for systems, the resulting functionality is the same
+in both cases.
+
+The trickier part of the proof is showing that the resulting players
+are identical.
+
+It's convenient to define a relation for the players in $\mathcal{R}$
+that get used in $\mathcal{P}$ via the players in $\mathcal{Q}$.
+To that end, we say that $\mathcal{P}.P_i$ \emph{uses} $\mathcal{R}.P_j$
+if there exists $\mathcal{Q}.P_k$ such that $\mathcal{P}.P_i$ uses
+$\mathcal{Q}.P_k$, and $\mathcal{Q}.P_k$ uses $\mathcal{R}.P_j$.
+
+The players of $\mathcal{P} \lhd (\mathcal{Q} \lhd \mathcal{R})$ are of the form:
+$$
+  \mathcal{P}.P_i \circ
+  \left( \bigast_{\mathcal{Q}.P_j \text{ used by } \mathcal{P}.P_i } 
+  \mathcal{Q}.P_j \circ
+  \left( \bigast_{\mathcal{R}.P_k \text{ used by } \mathcal{Q}.P_j } \mathcal{R}.P_k
+  \right)
+  \right)
+$$
+While those in $(\mathcal{P} \lhd \mathcal{Q}) \mathcal{R}$ are of the form:
+$$
+  \left( \mathcal{P}.P_i \circ
+  \bigast_{\mathcal{Q}.P_j \text{ used by } \mathcal{P}.P_i } 
+  \mathcal{Q}.P_j
+  \right)
+  \circ
+  \left(\bigast_{\mathcal{R}.P_k \text{ used by } \mathcal{P}.P_i } \mathcal{R}.P_k
+  \right)
+$$
+Now, we can apply the associativity of $\circ$ for systems, and also
+group the $\mathcal{R}.P_k$ players based on which $\mathcal{Q}.P_j$ uses them:
+$$
+  \mathcal{P}.P_i \circ
+  \left(
+  \bigast_{\mathcal{Q}.P_j \text{ used by } \mathcal{P}.P_i } 
+  \mathcal{Q}.P_j
+  \right)
+  \circ
+  \left(
+    \bigast_{\mathcal{Q}.P_j}
+  \left(\bigast_{\mathcal{R}.P_k \text{ used by } \mathcal{Q}.P_j } \mathcal{R}.P_k
+  \right)
+  \right)
+$$
+Now, the conditions are satisfied for applying the interchange lemma (Lemma~\ref{thm:interchange_system}),
+giving us:
+$$
+  \mathcal{P}.P_i \circ
+  \left( \bigast_{\mathcal{Q}.P_j \text{ used by } \mathcal{P}.P_i } 
+  \mathcal{Q}.P_j \circ
+  \left( \bigast_{\mathcal{R}.P_k \text{ used by } \mathcal{Q}.P_j } \mathcal{R}.P_k
+  \right)
+  \right)
+$$
+Which is non other than the players in $\mathcal{P} \lhd (\mathcal{Q} \lhd \mathcal{R})$.
+
+$\blacksquare$
+\end{lemma}
+
 \begin{definition}[Concurrent Composition]
 Given two open open protocols $\mathcal{P}, \mathcal{Q}$,
 we can define their concurrent composition---or tensor product---
