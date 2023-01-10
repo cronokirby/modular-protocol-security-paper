@@ -281,3 +281,17 @@ we conclude that concurrenty composition is commutative.
 
 $\blacksquare$
 \end{lemma}
+
+\subsection{Corruption and Simulation}
+
+\begin{definition}[``Honest'' Corruption]
+Given a system $P$, and a paackage $A$, such that $\text{Out}(P) \subseteq \tx{In}(A)$,
+and $A$ exposes a single function $\tx{Run} : \bullet \xrightarrow{\$} \{0, 1\}$,
+we define the ``honest'' corruption of $P$ with $A$ as:
+$$
+\tx{Corrupt}_H^A(P) := A \circ P
+$$
+treating $A$ as a system.
+
+$\square$
+\end{definition}
