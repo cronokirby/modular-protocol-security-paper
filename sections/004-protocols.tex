@@ -302,3 +302,34 @@ treating $A$ as a system.
 
 $\square$
 \end{definition}
+
+\begin{definition}[Semi-Honest Corruption]
+Given a system $P$, and an agent $A$ for $P$, we can define
+the semi-honest corruption $\tx{Corrupt}_{\tx{SH}}^A(P)$.
+
+First, we need to define $\tx{Logged}(P)$, which is a transformation
+of $P$, providing access to its ``view''.
+More formally, $\tx{Logged}(P)$ is a system which works the same
+as $P$, but with an additional public variable $\tx{log}$,
+initialized with ${\tx{log} \gets \tx{FifoQueue.New()}}$.
+Additionally, $\tx{Logged}(P)$ modifies $P$ by pushing events to this
+log at different points in time.
+These events are:
+\begin{itemize}
+\item $(\texttt{rand}, x)$ when a random value $x$ is sampled.
+\item $(\texttt{call}, F, (x_1, \ldots, x_n))$ when a function call $F(x_1, \ldots, x_n)$ happens.
+\item $(\texttt{ret}, F, y)$ when the function $F$ returns a value $y$.
+\item $(\texttt{send}, A, m)$ when a value $m$ is sent on channel $A$.
+\item $(\texttt{recv}, B, m)$ when a value $m$ is received on channel $B$.
+\end{itemize}
+
+Finally, we define:
+$$
+\tx{Corrupt}_{\tx{SH}}^A(P) := (A \otimes 1(\{\tx{log}\})) \circ \tx{Logged}(P)
+$$
+
+$\square$
+\end{definition}
+
+\begin{definition}[Malicious Corruption]
+\end{definition}
