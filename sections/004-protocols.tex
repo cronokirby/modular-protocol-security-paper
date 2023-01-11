@@ -332,4 +332,28 @@ $\square$
 \end{definition}
 
 \begin{definition}[Malicious Corruption]
+Given a system $P$ with:
+$$
+\begin{aligned}
+  &\tx{In}(P) = \{F_1, \ldots, F_n\}\cr
+  &\tx{OutChan}(P) = \{A_1, \ldots, A_m\}\cr
+  &\tx{InChan}(P) = \{B_1, \ldots, B_l\}\cr
+\end{aligned}
+$$
+we define the malicious corruption $\tx{Corrupt}_M(P)$ as the following game:
+\package{$\tx{Corrupt}_M(P)$}{
+&\underline{\tx{Call}_{F_i}((x_1, \ldots, x_n))\tx{:}}\cr
+\pind{1} \preturn{F_i(x_1, \ldots, x_n)}\cr
+\cr
+&\underline{\tx{Send}_{A_i}(m)\tx{:}}\cr
+\pind{1} \psend{m}{A_i}\cr
+\cr
+&\underline{\tx{Recv}_{B_i}()\tx{:}}\cr
+\pind{1} \preturn{\precv{m}{B_i}}\cr
+}
+
+In other words, malicious corruption provides access to the functions
+and channels used by $P$, but no more than that.
+
+$\square$
 \end{definition}
