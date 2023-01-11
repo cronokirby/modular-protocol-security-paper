@@ -376,17 +376,32 @@ as one of:
 \end{itemize}
 depending on the type of corruption from the association.
 
+Corruption models have a natural partial order associated with them. 
+We have:
+$$
+\tx{Honest} < \tx{SemiHonest} < \tx{Malicious}
+$$
+and then we say that an association $C_1, \ldots, C_n$ is $\geq$
+than another $C'_1, \ldots, C'_n$ if $\forall i.\ C_i \geq C'_i$.
+
 A \emph{class of corruptions} $\mathcal{C}$ is simply a set of corruption models.
+We say that such a class is \emph{closed} if whenever it contains
+an honest (resp. semi-honest) corruption for a player $P_i$ with agent $A$,
+then it also contains honest (resp. semi-honest) corruptions for $P_i$
+with every efficient agent $A'$.
+Unless otherwise specified, we only consider \emph{closed} classes.
+For closed classes, we defined a partial order, via:
+$$
+\mathcal{C} \geq \mathcal{C'} \iff \forall C' \in \mathcal{C'}. \exists C \in \mathcal{C}.\ C \geq C'
+$$
 
 $\square$
 \end{definition}
 
 Some common classes are:
 \begin{itemize}
-  \item The class of malicious corruptions, where all but one player is malicious,
-  and the agent for the remaining player is an arbitrary efficient package.
-  \item The class of malicious corruptions, where all but one player is semi-honest,
-  and the agents for each player are arbitrary efficient packages.
+  \item The class of malicious corruptions, where all but one player is malicious.
+  \item The class of malicious corruptions, where all but one player is semi-honest.
 \end{itemize}
 
 \begin{definition}[Instantiation]
@@ -417,6 +432,61 @@ With this in hand, we define:
 $$
 \tx{Inst}_C(\mathcal{P}) := \left(\mathcal{R} * \bigast_{i \in [n]} \tx{Routed}(\tx{Corrupt}_C(P_i))\right) \circ F
 $$
+
+
+$\square$
+\end{definition}
+
+\begin{definition}[Semantic Equality]
+  We say that two protocols $\mathcal{P}$ and $\mathcal{Q}$
+  are equal under a class of corruptions $\mathcal{C}$,
+  written as $\mathcal{P} =_{\mathcal{C}} \mathcal{Q}$, when we have:
+  $$
+  \forall C \in \mathcal{C}.\quad \tx{Inst}_C(\mathcal{P}) = \tx{Inst}_C(\mathcal{Q})
+  $$
+  as systems.
+
+  $\square$
+
+\end{definition}
+
+\begin{lemma}[Literal $\implies$ Semantic]
+For any corruption class $\mathcal{C}$
+$$
+\mathcal{P} \equiv \mathcal{Q} \implies \mathcal{P} =_\mathcal{C} \mathcal{Q}.
+$$
+
+\txbf{Proof:} This follows directly from the definition of $\tx{Inst}_C(\ldots)$,
+which will yield an equal system if its components are equal. $\blacksquare$
+\end{lemma}
+
+\begin{definition}[Associated Corruption Classes]
+\label{def:assoccc}
+Given two protocols $\mathcal{P}, \mathcal{Q}$ where $\otimes$ is well
+defined, a corruption class $\mathcal{C}$ for $\mathcal{Q}$ has a natural
+corruption class $\mathcal{C}'$ for $\mathcal{P} \otimes \mathcal{Q}$.
+
+For each model $C \in \mathcal{C}$, the resulting $\mathcal{C}'$ will
+contain a model for each possible honest corruption of the players
+in $P$ with efficient agents $A_1, \ldots$.
+In other words, the corruptions in this class will be those of $\mathcal{C}$,
+with $\mathcal{P}$ always behaving honestly.
+
+
+We can also do the same for $\mathcal{P} \circ \mathcal{Q}$,
+but the corruption class $\mathcal{C}'$ is a bit trickier.
+We say that a corruption model $C$ for $\mathcal{P}$ is compatible with
+a corruption model $C'$ for $\mathcal{Q}$ if for every
+$\mathcal{Q}.P_j$ used by $\mathcal{P}.P_i$, the corruption
+level of $\mathcal{Q}.P_j$ in $\mathcal{C}'$ is $\geq$ the corruption level of $\mathcal{P}.P_i$
+in $\mathcal{C}$.
+A corruption model $C$ for $\mathcal{P}$ is compatible
+with a \emph{class} of corruptions $\mathcal{C}$, if
+there exists a compatible model $C'$ in $\mathcal{C}$.
+
+With this in hand, the corruption class $\mathcal{C}'$ for $\mathcal{P} \circ \mathcal{Q}$
+is the largest (closed) corruption class $\mathcal{C}'$ such
+that each $C \in \mathcal{C}'$ is compatible with $\mathcal{C}$.
 
 
 $\square$
