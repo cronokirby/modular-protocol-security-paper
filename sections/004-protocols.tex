@@ -284,9 +284,16 @@ $\blacksquare$
 
 \subsection{Corruption and Simulation}
 
+\begin{definition}
+Given a system $P$, an \emph{agent for $P$} is a package $A$ such that
+$\text{Out}(P) \subseteq \tx{In}(A)$, and $A$ exposes a single function
+$\tx{Run} : \bullet \xrightarrow{\$} \{0, 1\}$.
+
+$\square$
+\end{definition}
+
 \begin{definition}[``Honest'' Corruption]
-Given a system $P$, and a paackage $A$, such that $\text{Out}(P) \subseteq \tx{In}(A)$,
-and $A$ exposes a single function $\tx{Run} : \bullet \xrightarrow{\$} \{0, 1\}$,
+Given a system $P$, and an agent $A$ for $P$,
 we define the ``honest'' corruption of $P$ with $A$ as:
 $$
 \tx{Corrupt}_H^A(P) := A \circ P
