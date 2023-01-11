@@ -357,3 +357,34 @@ and channels used by $P$, but no more than that.
 
 $\square$
 \end{definition}
+
+\begin{definition}[Corruption Models]
+Given a set of players $P_1, \ldots, P_n$, a \emph{corruption model} $C$
+is an association between each player $P_i$ and a \emph{corruption} $C_i$,
+which is one of:
+\begin{itemize}
+  \item Honest, with an agent $A$ for $P_i$,
+  \item Semi-Honest, with an agent $A$ for $P_i$,
+  \item Malicious.
+\end{itemize}
+Given a corruption model $C$ we can define $\tx{Corrupt}_{C}(P_i)$
+as one of:
+\begin{itemize}
+  \item $\tx{Corrupt}_H^A(P)$
+  \item $\tx{Corrupt}_{\tx{SH}}^A(P)$
+  \item $\tx{Corrupt}_{M}(P)$
+\end{itemize}
+depending on the type of corruption from the association.
+
+A \emph{class of corruptions} $\mathcal{C}$ is simply a set of corruption models.
+
+$\square$
+\end{definition}
+
+Some common classes are:
+\begin{itemize}
+  \item The class of malicious corruptions, where all but one player is malicious,
+  and the agent for the remaining player is an arbitrary efficient package.
+  \item The class of malicious corruptions, where all but one player is semi-honest,
+  and the agents for each player are arbitrary efficient packages.
+\end{itemize}
