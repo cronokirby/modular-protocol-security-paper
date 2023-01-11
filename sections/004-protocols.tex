@@ -405,7 +405,7 @@ Some common classes are:
 \end{itemize}
 
 \begin{definition}[Instantiation]
-  Given a protocol $\mathcal{P}$ and a corruption model $C$, we can
+  Given a protocol $\mathcal{P}$ with $\text{In}(\mathcal{P}) = \emptyset$ and a corruption model $C$, we can
   define an \emph{instantiation} $\tx{Inst}_C(\mathcal{P})$, which
   is a system defining the semantics of the protocol.
 
@@ -494,3 +494,70 @@ so this is well defined.
 
 $\square$
 \end{definition}
+
+\begin{lemma}[Tensoring respects semantic equality]
+For any corruption class $\mathcal{C}$, if $\mathcal{Q} =_\mathcal{C} \mathcal{Q}'$,
+then $\mathcal{P} \otimes \mathcal{Q} =_\mathcal{C'} \mathcal{P} \otimes \mathcal{Q}'$,
+with $\mathcal{C}'$ as per Definition~\ref{def:assoccc}.
+
+\txbf{Proof:} If we unroll $\text{Inst}_{C'}(\mathcal{P} \otimes \mathcal{Q})$, we get:
+$$
+\begin{pmatrix}
+\mathcal{R}\cr
+*\cr
+\left(\bigast_{i \in [\mathcal{P}.n]} \tx{Routed}(\tx{Corrupt}_{C'}(\mathcal{P}.P_i))\right)\cr
+*\cr
+\left(\bigast_{i \in [\mathcal{Q}.n]} \tx{Routed}(\tx{Corrupt}_{C'}(\mathcal{Q}.P_i))\right)
+\end{pmatrix}
+\circ
+\begin{pmatrix}
+\mathcal{P}.F\cr
+\otimes\cr
+\mathcal{Q}.F\cr
+\end{pmatrix}
+$$
+
+We can apply a few observations here:
+\begin{enumerate}
+  \item $C'$ is such that $\mathcal{P}.P_i$ is always honest, and $\mathcal{Q}.P_i$ follows
+  some corruption model $C \in \mathcal{C}$, by the definition of $\mathcal{C}'$.
+  \item $\mathcal{R}$ can be written as $\mathcal{R}_\mathcal{P} \otimes \mathcal{R}_\mathcal{Q}$,
+  with one system using channels in $\mathcal{P}$, and the other using channels in $\mathcal{Q}$.
+  \item Since protocols are closed, we can use $\otimes$ between the players in $\mathcal{P}$ and $\mathcal{Q}$,
+  since they never send messages to each other.
+\end{enumerate}
+This results in the following:
+$$
+\begin{pmatrix}
+\mathcal{R}_{\mathcal{P}} * \left(\bigast_{i \in [\mathcal{P}.n]} \tx{Routed}(\tx{Corrupt}_{C'}(\mathcal{P}.P_i))\right)\cr
+\otimes\cr
+\mathcal{R}_{\mathcal{Q}} * \left(\bigast_{i \in [\mathcal{Q}.n]} \tx{Routed}(\tx{Corrupt}_{C}(\mathcal{Q}.P_i))\right)
+\end{pmatrix}
+\circ
+\begin{pmatrix}
+\mathcal{P}.F\cr
+\otimes\cr
+\mathcal{Q}.F\cr
+\end{pmatrix}
+$$
+From here, we apply Lemma~\ref{thm:interchange_system} (interchange), to get:
+$$
+\begin{matrix}
+\tx{Inst}_{C'}(\mathcal{P})\cr
+\otimes\cr
+\tx{Inst}_{C}(\mathcal{Q})\cr
+\end{matrix}
+$$
+And since $Q =_\mathcal{C} Q'$, this is equal to:
+$$
+\begin{matrix}
+\tx{Inst}_{C'}(\mathcal{P})\cr
+\otimes\cr
+\tx{Inst}_{C}(\mathcal{Q'})\cr
+\end{matrix}
+$$
+and we can reverse the logic above to see that this is equal
+to $\tx{Inst}_{C'}(\mathcal{P} \otimes \mathcal{Q}')$.
+
+$\blacksquare$
+\end{lemma}
