@@ -359,7 +359,7 @@ $\square$
 \end{definition}
 
 \begin{definition}[Corruption Models]
-Given a set of players $P_1, \ldots, P_n$, a \emph{corruption model} $C$
+Given a protocol $\mathcal{P}$ with players $P_1, \ldots, P_n$, a \emph{corruption model} $C$
 is an association between each player $P_i$ and a \emph{corruption} $C_i$,
 which is one of:
 \begin{itemize}
@@ -388,3 +388,36 @@ Some common classes are:
   \item The class of malicious corruptions, where all but one player is semi-honest,
   and the agents for each player are arbitrary efficient packages.
 \end{itemize}
+
+\begin{definition}[Instantiation]
+  Given a protocol $\mathcal{P}$ and a corruption model $C$, we can
+  define an \emph{instantiation} $\tx{Inst}_C(\mathcal{P})$, which
+  is a system defining the semantics of the protocol.
+
+  First, we need to define a transformation of systems to use
+  a \emph{router} $\mathcal{R}$, which will be a special system
+  allowing an adversary to control the order of delivery of messages.
+
+  Let $\{A_1, \ldots, A_n\} = \tx{Chan}(P_1, \ldots, P_n)$.
+  We then define $\mathcal{R}$ as the syten:
+\package{$\mathcal{R}$}{
+&\underline{\tx{Deliver}_{A_i}()\tx{:}}\cr
+\pind{1} \precv{m}{\langle A_i, \mathcal{R} \rangle}\cr
+\pind{1} \psend{m}{\langle \mathcal{R}, A_i \rangle}\cr
+}
+
+  Next, we define a transformation $\tx{Routed}(S)$ of a system,
+  which makes communication pass via the router:
+  \begin{itemize}
+    \item Whenever $S$ sends $m$ via $A$, $\tx{Routed}(S)$ sends $m$ via $\langle A , \mathcal{R} \rangle$.
+    \item Whenever $S$ receives $m$ via $B$, $\tx{Routed}(S)$ recieves $m$ via $\langle \mathcal{R}, B \rangle$.
+  \end{itemize}
+
+With this in hand, we define:
+$$
+\tx{Inst}_C(\mathcal{P}) := \left(\mathcal{R} * \bigast_{i \in [n]} \tx{Routed}(\tx{Corrupt}_C(P_i))\right) \circ F
+$$
+
+
+$\square$
+\end{definition}
