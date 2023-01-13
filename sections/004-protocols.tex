@@ -284,35 +284,26 @@ $\blacksquare$
 
 \subsection{Corruption and Simulation}
 
-\begin{definition}
-Given a system $P$, an \emph{agent for $P$} is a package $A$ such that
-$\text{Out}(P) \subseteq \tx{In}(A)$, and $A$ exposes a single function
-$\tx{Run} : \bullet \xrightarrow{\$} \{0, 1\}$.
-
-$\square$
-\end{definition}
-
 \begin{definition}[``Honest'' Corruption]
-Given a system $P$, and an agent $A$ for $P$,
-we define the ``honest'' corruption of $P$ with $A$ as:
+Given a system $P$,
+we define the ``honest'' corruption of $P$
 $$
-\tx{Corrupt}_H^A(P) := A \circ P
+\tx{Corrupt}_H(P) := P
 $$
-treating $A$ as a system.
 
 $\square$
 \end{definition}
 
 \begin{definition}[Semi-Honest Corruption]
-Given a system $P$, and an agent $A$ for $P$, we can define
-the semi-honest corruption $\tx{Corrupt}_{\tx{SH}}^A(P)$.
+Given a system $P$, we can define
+the semi-honest corruption $\tx{Corrupt}_{\tx{SH}}(P)$.
 
-First, we need to define $\tx{Logged}(P)$, which is a transformation
+This is a transformation of
 of $P$, providing access to its ``view''.
-More formally, $\tx{Logged}(P)$ is a system which works the same
+More formally, $\tx{Corrupt}_{\tx{SH}}(P)$ is a system which works the same
 as $P$, but with an additional public variable $\tx{log}$,
 initialized with ${\tx{log} \gets \tx{FifoQueue.New()}}$.
-Additionally, $\tx{Logged}(P)$ modifies $P$ by pushing events to this
+Additionally, $\tx{Corrupt}_{\tx{SH}}(P)$ modifies $P$ by pushing events to this
 log at different points in time.
 These events are:
 \begin{itemize}
@@ -322,11 +313,6 @@ These events are:
 \item $(\texttt{send}, A, m)$ when a value $m$ is sent on channel $A$.
 \item $(\texttt{recv}, B, m)$ when a value $m$ is received on channel $B$.
 \end{itemize}
-
-Finally, we define:
-$$
-\tx{Corrupt}_{\tx{SH}}^A(P) := (A \otimes 1(\{\tx{log}\})) \circ \tx{Logged}(P)
-$$
 
 $\square$
 \end{definition}
@@ -358,42 +344,51 @@ and channels used by $P$, but no more than that.
 $\square$
 \end{definition}
 
+\begin{lemma}[Simulating Corruptions]
+  We can simulate corruptions using strong forms of corruption.
+  In particular, there exists systems $S_{\tx{SH}}$ and $S_{\tx{H}}$ such that
+  for all systems $P$, we have:
+  \[
+    \begin{aligned}
+      &\tx{Corrupt}_{\tx{SH}}(P) = S_{\tx{SH}} \circ \tx{Corrupt}_M(P)\cr
+      &\tx{Corrupt}_{\tx{H}}(P) = S_{\tx{H}} \circ \tx{Corrupt}_{\tx{SH}}(P)
+    \end{aligned}
+  \]
+
+\txbf{Proof:}
+For the simulation of honest corruption, we can simply ignore
+  the additional log variable, and set $S_{\tx{H}} := 1(\tx{Out}(P))$.
+
+For semi-honest corruption, $S_{\tx{SH}}$ is formed by transforming
+$\tx{Corrupt}_{\tx{SH}}(P)$, replacing:
+\begin{itemize}
+  \item every function call with $\tx{Call}_{F_i}(\ldots)$,
+  \item every sending of a message $m$ on $A$ with $\tx{Send}_A(m)$,
+  \item every reception of a message on $B$ with $\tx{Recv}_B()$.
+\end{itemize}
+The result is clearly a perfect emulation of semi-honest corruption
+using malicious corruption.
+
+$\blacksquare$
+\end{lemma}
+
+Sometimes, it's useful to be able to talk about corruptions in general,
+in which case we write $\text{Corrupt}_\kappa(P)$,
+for $\kappa \in \{\tx{H}, \tx{SH}, \tx{M}\}$.
+
 \begin{definition}[Corruption Models]
 Given a protocol $\mathcal{P}$ with players $P_1, \ldots, P_n$, a \emph{corruption model} $C$
-is an association between each player $P_i$ and a \emph{corruption} $C_i$,
-which is one of:
-\begin{itemize}
-  \item Honest, with an agent $A$ for $P_i$,
-  \item Semi-Honest, with an agent $A$ for $P_i$,
-  \item Malicious.
-\end{itemize}
-Given a corruption model $C$ we can define $\tx{Corrupt}_{C}(P_i)$
-as one of:
-\begin{itemize}
-  \item $\tx{Corrupt}_H^A(P)$
-  \item $\tx{Corrupt}_{\tx{SH}}^A(P)$
-  \item $\tx{Corrupt}_{M}(P)$
-\end{itemize}
-depending on the type of corruption from the association.
+is a function $C : [\mathcal{P}.n] \to \{\tx{H}, \tx{SH}, \tx{M}\}$.
+This provides a corruption $C_i$ associated with each player $P_i$.
 
 Corruption models have a natural partial order associated with them. 
 We have:
 $$
-\tx{Honest} < \tx{SemiHonest} < \tx{Malicious}
+\tx{H} < \tx{SH} < \tx{M}
 $$
-and then we say that an association $C_1, \ldots, C_n$ is $\geq$
-than another $C'_1, \ldots, C'_n$ if $\forall i.\ C_i \geq C'_i$.
+  and then we say that $C \geq C'$ if $\forall i \in [n]. \quad C_i \geq C'_i$.
 
 A \emph{class of corruptions} $\mathcal{C}$ is simply a set of corruption models.
-We say that such a class is \emph{closed} if whenever it contains
-an honest (resp. semi-honest) corruption for a player $P_i$ with agent $A$,
-then it also contains honest (resp. semi-honest) corruptions for $P_i$
-with every efficient agent $A'$.
-Unless otherwise specified, we only consider \emph{closed} classes.
-For closed classes, we defined a partial order, via:
-$$
-\mathcal{C} \geq \mathcal{C'} \iff \forall C' \in \mathcal{C'}. \exists C \in \mathcal{C}.\ C \geq C'
-$$
 
 $\square$
 \end{definition}
