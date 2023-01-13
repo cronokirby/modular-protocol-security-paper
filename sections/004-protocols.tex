@@ -468,6 +468,29 @@ so this is well defined.
 $\square$
 \end{definition}
 
+\begin{definition}[Compatible Corruptions]
+  Given protocols $\mathcal{P}, \mathcal{Q}$, and a corruption model
+  $C$ for $\mathcal{Q}$, we can define a notion of a \emph{compatible}
+  corruption model $C'$ for $\mathcal{P} \otimes \mathcal{Q}$ or $\mathcal{P} \circ \mathcal{Q}$,
+  provided these expressions are well defined.
+
+  A corruption model $C'$ for $\mathcal{P} \otimes \mathcal{Q}$.
+  is compatible with $C$ when every corruption of a player
+  in $\mathcal{Q}$ is $\geq$ that of the corresponding corruption in $C$.
+
+  We say that a corruption model $C'$ for $\mathcal{P} \circ \mathcal{Q}$ is compatible with
+a corruption model $C$ for $\mathcal{Q}$ if for every
+$\mathcal{Q}.P_j$ used by $\mathcal{P}.P_i$, the corruption
+level of $\mathcal{Q}.P_j$ in $\mathcal{C}'$ is $\geq$ the corruption level of $\mathcal{P}.P_i$
+in $\mathcal{C}$.
+
+  This extends to corruption \emph{classes} as well.
+  A corruption class $\mathcal{C}'$ is compatible with a class $\mathcal{C}$,
+  if for every $C \in \mathcal{C}$ there exists a compatible $C' \in \mathcal{C}'$.
+
+  $\square$
+\end{definition}
+
 \subsection{Equality and Simulation}
 
 \begin{definition}[Semantic Equality]
