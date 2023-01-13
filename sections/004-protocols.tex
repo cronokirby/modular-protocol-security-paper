@@ -380,6 +380,7 @@ for $\kappa \in \{\tx{H}, \tx{SH}, \tx{M}\}$.
 Given a protocol $\mathcal{P}$ with players $P_1, \ldots, P_n$, a \emph{corruption model} $C$
 is a function $C : [\mathcal{P}.n] \to \{\tx{H}, \tx{SH}, \tx{M}\}$.
 This provides a corruption $C_i$ associated with each player $P_i$.
+We can then define $\text{Corrupt}_C(P_i) := \text{Corrupt}_{C_i}(P_i)$.
 
 Corruption models have a natural partial order associated with them. 
 We have:
@@ -432,29 +433,6 @@ $$
 $\square$
 \end{definition}
 
-\begin{definition}[Semantic Equality]
-  We say that two protocols $\mathcal{P}$ and $\mathcal{Q}$
-  are equal under a class of corruptions $\mathcal{C}$,
-  written as $\mathcal{P} =_{\mathcal{C}} \mathcal{Q}$, when we have:
-  $$
-  \forall C \in \mathcal{C}.\quad \tx{Inst}_C(\mathcal{P}) = \tx{Inst}_C(\mathcal{Q})
-  $$
-  as systems.
-
-  $\square$
-
-\end{definition}
-
-\begin{lemma}[Literal $\implies$ Semantic]
-For any corruption class $\mathcal{C}$
-$$
-\mathcal{P} \equiv \mathcal{Q} \implies \mathcal{P} =_\mathcal{C} \mathcal{Q}.
-$$
-
-\txbf{Proof:} This follows directly from the definition of $\tx{Inst}_C(\ldots)$,
-which will yield an equal system if its components are equal. $\blacksquare$
-\end{lemma}
-
 \begin{definition}[Associated Corruption Classes]
 \label{def:assoccc}
 Given two protocols $\mathcal{P}, \mathcal{Q}$ where $\otimes$ is well
@@ -490,6 +468,30 @@ so this is well defined.
 $\square$
 \end{definition}
 
+\subsection{Equality and Simulation}
+
+\begin{definition}[Semantic Equality]
+  We say that two protocols $\mathcal{P}$ and $\mathcal{Q}$
+  are equal under a class of corruptions $\mathcal{C}$,
+  written as $\mathcal{P} =_{\mathcal{C}} \mathcal{Q}$, when we have:
+  $$
+  \forall C \in \mathcal{C}.\quad \tx{Inst}_C(\mathcal{P}) = \tx{Inst}_C(\mathcal{Q})
+  $$
+  as systems.
+
+  $\square$
+
+\end{definition}
+
+\begin{lemma}[Literal $\implies$ Semantic]
+For any corruption class $\mathcal{C}$
+$$
+\mathcal{P} \equiv \mathcal{Q} \implies \mathcal{P} =_\mathcal{C} \mathcal{Q}.
+$$
+
+\txbf{Proof:} This follows directly from the definition of $\tx{Inst}_C(\ldots)$,
+which will yield an equal system if its components are equal. $\blacksquare$
+\end{lemma}
 \begin{lemma}[Tensoring respects semantic equality]
 For any corruption class $\mathcal{C}$, if $\mathcal{Q} =_\mathcal{C} \mathcal{Q}'$,
 then $\mathcal{P} \otimes \mathcal{Q} =_\mathcal{C'} \mathcal{P} \otimes \mathcal{Q}'$,
