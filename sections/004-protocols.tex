@@ -332,15 +332,21 @@ We also define a transformation $\tx{Logged}$, which instruments
 $P$ to log the use of channels and external functions.
 More formally, $\tx{Logged}(P)$ is a system which works the same
 as $P$, but with an additional public variable $\tx{log}$,
-initialized with ${\tx{log} \gets \tx{FifoQueue.New()}}$.
-Additionally, $\tx{Logged}(P)$ modifies $P$ by pushing events to this
-log at different points in time.
+which contains several sub logs:
+\begin{enumerate}
+  \item $\tx{log}.{A_i}$ for each sending channel $A_i$,
+  \item $\tx{log}.{B_i}$ for each receiving channel $B_i$,
+  \item $\tx{log}.F$ for each input function $F$.
+\end{enumerate}
+Each of these sub logs is initialized with ${\tx{log}.\bullet \gets \tx{FifoQueue.New()}}$.
+Additionally, $\tx{Logged}(P)$ modifies $P$ by pushing events to these
+logs at different points in time.
 These events are:
 \begin{itemize}
-\item $(\texttt{call}, F, (x_1, \ldots, x_n))$ when a function call $F(x_1, \ldots, x_n)$ happens.
-\item $(\texttt{ret}, F, y)$ when the function $F$ returns a value $y$.
-\item $(\texttt{send}, A, m)$ when a value $m$ is sent on channel $A$.
-\item $(\texttt{recv}, B, m)$ when a value $m$ is received on channel $B$.
+\item $(\texttt{call}, F, (x_1, \ldots, x_n))$ to $\tx{log}.F$ when a function call $F(x_1, \ldots, x_n)$ happens.
+\item $(\texttt{ret}, F, y)$ to $\tx{log}.F$ when the function $F$ returns a value $y$.
+\item $(\texttt{send}, A, m)$ to $\tx{log}.A$ when a value $m$ is sent on channel $A$.
+\item $(\texttt{recv}, B, m)$ to $\tx{log}.B$ when a value $m$ is received on channel $B$.
 \end{itemize}
 
 Putting things together, we have:
