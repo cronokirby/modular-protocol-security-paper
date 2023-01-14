@@ -645,6 +645,7 @@ $\blacksquare$
   systems $S_1, \ldots, S_{\mathcal{Q}.n}$ and a set $L_{\mathcal{Q}}$ such that:
   $$
   \tx{Inst}_{C'}(\mathcal{P} \lhd \mathcal{Q}) =
+  1(O)\circ
   \begin{pmatrix}
     {\displaystyle \bigast}_{i \in [\mathcal{P}.n]} \tx{Routed}(\tx{Corrupt}_{C'}(\mathcal{P}.P_i))
     \cr
@@ -662,6 +663,7 @@ $\blacksquare$
   \circ
   \tx{Inst}_C(\mathcal{Q})
   $$
+  where $O := \tx{Out}(\tx{Inst}_{C'}(\mathcal{P} \lhd \mathcal{Q}))$.
 
 \txbf{Proof:} We start by unrolling $\tx{Inst}_{C'}(\mathcal{P} \lhd \mathcal{Q})$,
 to get:
@@ -716,6 +718,25 @@ using $1(L^M)$ for $L^M = \tx{In}(\tx{Corrupt}_M(Q_1)) \cup \cdots \cup \tx{In}(
 
 Next, we look at semi-honest corruption.
 
+First, we look at $\tx{Logged}$.
+Because the logs are divided into independent sub logs, we can write:
+$$
+\tx{Logged}(P \circ (Q_1 * \cdots * Q_m)) =
+1(O) \circ
+\begin{pmatrix}
+  \tx{Logged}(P)\cr
+  \otimes\cr
+  1(\{Q_1.\tx{log}, \ldots\})
+\end{pmatrix}
+\circ
+\begin{pmatrix}
+  \tx{Logged}(Q_1)\cr
+  *\cr
+  \cdots
+\end{pmatrix}
+$$
+where $O = \tx{Out}(\tx{Logged}(P \circ (Q_1 * \cdots)))$
+
 Second, note that
 $$
 \tx{NoRand}(P \circ (Q_1 * \cdots)) =
@@ -728,6 +749,75 @@ $$
   1(\{\tx{Flip}\})
 \end{pmatrix}
 $$
+
+Combining these two observations with the definition of $\tx{Corrupt}_{\tx{SH}}$,
+we get:
+$$
+\begin{aligned}
+  &\tx{Corrupt}_{\tx{SH}}(P \circ (Q_1 * \cdots)) =\cr
+  &1(O) \circ
+  \begin{pmatrix}
+    \tx{NoRand}(\tx{Logged}(P \circ (Q_1 * \cdots)))\cr
+    \otimes \cr
+    1(\{\tx{Next}\})
+  \end{pmatrix}
+  \circ
+  \begin{pmatrix}
+    \tx{SharedRand}\cr
+    \otimes\cr
+    1(\tx{In}(Q_1), \ldots)
+  \end{pmatrix} =\cr
+  &1(O) \circ
+  \begin{pmatrix}
+    \tx{NoRand}\left(
+\begin{pmatrix}
+  \tx{Logged}(P)\cr
+  \otimes\cr
+  1(\{Q_1.\tx{log}, \ldots\})
+\end{pmatrix}
+\circ
+\begin{pmatrix}
+  \tx{Logged}(Q_1)\cr
+  *\cr
+  \cdots
+\end{pmatrix}
+    \right)\cr
+    \otimes \cr
+    1(\{\tx{Next}\})
+  \end{pmatrix}
+  \circ
+  \begin{pmatrix}
+    \tx{SharedRand}\cr
+    \otimes\cr
+    1(\tx{In}(Q_1), \ldots)
+  \end{pmatrix} =\cr
+  &1(O) \circ
+  \begin{pmatrix}
+    \tx{NoRand}(\tx{Logged}(P))\cr
+    \otimes \cr
+    1(\{Q_1.\tx{log}, \ldots\})\cr
+    \otimes \cr
+    1(\{\tx{Next}\})
+  \end{pmatrix}
+  \circ
+  \begin{pmatrix}
+    \tx{NoRand}(\tx{Logged}(Q_1))\cr
+    * \cr
+    \cdots\cr
+    \otimes \cr
+    1(\{\tx{Flip}, \tx{Next}\})
+  \end{pmatrix}
+  \circ
+  \begin{pmatrix}
+    \tx{SharedRand}\cr
+    \otimes\cr
+    1(\tx{In}(Q_1), \ldots)
+  \end{pmatrix} =\cr
+\end{aligned}
+$$
+for $O = \tx{Out}(\tx{Corrupt}_{\tx{SH}}(P \circ (Q_1 * \cdots)))$
+(note that Lemma~\ref{thm:interchange_system} (interchange)
+was implicitly applied several times in this series of equations).
 
 \end{theorem}
 
