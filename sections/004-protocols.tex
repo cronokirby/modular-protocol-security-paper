@@ -401,7 +401,7 @@ Some common classes are:
 \end{itemize}
 
 \begin{definition}[Instantiation]
-  Given a protocol $\mathcal{P}$ with $\text{In}(\mathcal{P}) = \emptyset$ and a corruption model $C$, we can
+  Given a protocol $\mathcal{P}$ with $\text{In}(\mathcal{P}) = \emptyset, \text{IdealIn}(\mathcal{P}) = \emptyset$ and a corruption model $C$, we can
   define an \emph{instantiation} $\tx{Inst}_C(\mathcal{P})$, which
   is a system defining the semantics of the protocol.
 
@@ -567,7 +567,7 @@ $\blacksquare$
   $$
   \tx{Inst}_{C'}(\mathcal{P} \lhd \mathcal{Q}) =
   \begin{pmatrix}
-    {\displaystyle \bigast}_{i \in [\mathcal{P}.n]} \tx{Corrupt}_{C'}(\mathcal{P}.P_i)
+    {\displaystyle \bigast}_{i \in [\mathcal{P}.n]} \tx{Routed}(\tx{Corrupt}_{C'}(\mathcal{P}.P_i))
     \cr
     *\cr
     \mathcal{R}_{\mathcal{P}}\cr
@@ -583,6 +583,29 @@ $\blacksquare$
   \circ
   \tx{Inst}_C(\mathcal{Q})
   $$
+
+\txbf{Proof:} We start by unrolling $\tx{Inst}_{C'}(\mathcal{P} \lhd \mathcal{Q})$,
+to get:
+\[
+\tx{Inst}_C(\mathcal{P} \lhd \mathcal{Q}) =
+  \begin{pmatrix}
+    {\displaystyle \bigast}_{i \in [n]} \tx{Routed}\left(\tx{Corrupt}_{C'}\left(P_i \circ 
+        \left( \bigast_{\mathcal{Q}.P_j \tx{ used by } \mathcal{P}.P_i} \mathcal{Q}.P_j \right)
+    \right)\right)\cr
+    *\cr
+    \mathcal{R}\cr
+    \otimes\cr
+    1(\tx{Leakage})
+  \end{pmatrix}
+  \circ \begin{pmatrix}
+    \mathcal{P}.F\cr
+    \otimes \cr
+    \mathcal{Q}.F
+  \end{pmatrix}
+\]
+Our strategy will be to progressively build up an equivalent system
+to this one, starting with $\tx{Corrupt}_C$, then $\tx{Routed}$, etc.
+
 \end{theorem}
 
 \subsection{Equality and Simulation}
