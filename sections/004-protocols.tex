@@ -563,19 +563,22 @@ $\blacksquare$
   Given protocols $\mathcal{P}, \mathcal{Q}$, and a corruption
   model $C$ for $\mathcal{Q}$, then for any compatible corruption
   model $C'$ for $\mathcal{P} \lhd \mathcal{Q}$, there exists
-  systems $S_1, \ldots, S_{\mathcal{Q}.n}$ such that:
+  systems $S_1, \ldots, S_{\mathcal{Q}.n}$ and a set $L_{\mathcal{Q}}$ such that:
   $$
   \tx{Inst}_{C'}(\mathcal{P} \lhd \mathcal{Q}) =
   \begin{pmatrix}
-    {\displaystyle \bigast}_{i \in [\mathcal{P}.n]} \tx{Corrupt}_{C'}(\mathcal{P}.P_i)\cr
+    {\displaystyle \bigast}_{i \in [\mathcal{P}.n]} \tx{Corrupt}_{C'}(\mathcal{P}.P_i)
+    \cr
     *\cr
     \mathcal{R}_{\mathcal{P}}\cr
+    \otimes\cr
+    1(\tx{Leakage}, L_{\mathcal{Q}})
   \end{pmatrix}
   \circ
   \begin{pmatrix}
     \mathcal{P}.F\cr
     \otimes\cr
-    1(\tx{Out}(\tx{Inst}_C(\mathcal{Q})))
+    \bigotimes_{i \in [\mathcal{Q}.n]} S_i
   \end{pmatrix}
   \circ
   \tx{Inst}_C(\mathcal{Q})
