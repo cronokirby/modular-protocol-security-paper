@@ -122,15 +122,17 @@
 
 \DeclareFloatingEnvironment[fileext=game,placement={!h},name=Game,within=section]{gamefloat}
 \captionsetup[gamefloat]{labelfont=bf}
+\newcommand{\gamelabel}{}
 \newcommand{\gamecaption}{}
 \newenvironment{game}[2]
 {
+\renewcommand{\gamelabel}{#1}
 \renewcommand{\gamecaption}{#2}
 \begin{gamefloat} 
-\label{#1}
 }
 {
 \caption{\gamecaption}
+\label{\gamelabel}
 \end{gamefloat}
 }
 

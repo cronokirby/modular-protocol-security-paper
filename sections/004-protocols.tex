@@ -291,6 +291,8 @@ $$
 \tx{Corrupt}_H(P) := P
 $$
 
+This is clearly equality preserving, by tautology.
+
 $\square$
 \end{definition}
 
@@ -300,19 +302,70 @@ the semi-honest corruption $\tx{Corrupt}_{\tx{SH}}(P)$.
 
 This is a transformation of
 of $P$, providing access to its ``view''.
-More formally, $\tx{Corrupt}_{\tx{SH}}(P)$ is a system which works the same
+
+First, in order to allow access to the randomness used by $P$,
+we define a transformation $\tx{NoRand}(P)$ which replaces
+each internal bit flip with an external call $\tx{Flip}()$.
+We then define the following game:
+\begin{game}{game:sharedrand}{SharedRand}
+\package{SharedRand}{
+&b[1, \ldots] \gets \bot\cr
+&i, j \gets 0\cr
+\cr
+&\underline{\tx{Flip}()}\cr
+\pind{1} i \gets i + 1\cr
+\pind{1} \txbf{if } b[i] = \bot \tx{: } b[i] \xleftarrow{\$} \{0, 1\}\cr
+\pind{1} \txbf{return } b[i]
+\cr
+&\underline{\tx{Next}()}\cr
+\pind{1} j \gets j + 1\cr
+\pind{1} \txbf{if } b[j] = \bot \tx{: } b[j] \xleftarrow{\$} \{0, 1\}\cr
+\pind{1} \txbf{return } b[j]
+}
+\end{game}
+
+One interesting thing with this game is that it's not possible
+to observe any information about the number of calls made to $\tx{Flip}$
+just by calling $\tx{Next}$, since the latter does not depend on $i$.
+
+We also define a transformation $\tx{Logged}$, which instruments
+$P$ to log the use of channels and external functions.
+More formally, $\tx{Logged}(P)$ is a system which works the same
 as $P$, but with an additional public variable $\tx{log}$,
 initialized with ${\tx{log} \gets \tx{FifoQueue.New()}}$.
-Additionally, $\tx{Corrupt}_{\tx{SH}}(P)$ modifies $P$ by pushing events to this
+Additionally, $\tx{Logged}(P)$ modifies $P$ by pushing events to this
 log at different points in time.
 These events are:
 \begin{itemize}
-\item $(\texttt{rand}, x)$ when a random value $x$ is sampled.
 \item $(\texttt{call}, F, (x_1, \ldots, x_n))$ when a function call $F(x_1, \ldots, x_n)$ happens.
 \item $(\texttt{ret}, F, y)$ when the function $F$ returns a value $y$.
 \item $(\texttt{send}, A, m)$ when a value $m$ is sent on channel $A$.
 \item $(\texttt{recv}, B, m)$ when a value $m$ is received on channel $B$.
 \end{itemize}
+
+Putting things together, we have:
+$$
+\tx{Corrupt}_{\tx{SH}}(P) :=
+\begin{pmatrix}
+  \tx{Logged}(\tx{NoRand}(P))\cr
+  \otimes\cr
+  1(\{\tx{Next}\})
+\end{pmatrix}
+\circ
+\begin{pmatrix}
+\tx{SharedRand}\cr
+\otimes\cr
+1(\tx{In}(P))
+\end{pmatrix}
+$$
+
+This transformation is also equality respecting.
+First, note that if $P = P'$ as systems, then $\tx{Logged}(P) = \tx{Logged}(P')$,
+because $\tx{NoChan}(P) = \tx{NoChan}(P')$.
+One aspect in which they may differ is their use of randomness.
+Indeed, it's possible that the two systems are equal despite flipping bits
+in a different way. Fortunately, the calls to $\tx{Flip}$ do not
+affect the calls to $\tx{Next}$, so these differences are not observable.
 
 $\square$
 \end{definition}
@@ -341,6 +394,10 @@ we define the malicious corruption $\tx{Corrupt}_M(P)$ as the following game:
 In other words, malicious corruption provides access to the functions
 and channels used by $P$, but no more than that.
 
+This is also equality preserving, since $\tx{Corrupt}_M(P)$ depends
+only on the channels used by $P$ and the functions called by $P$,
+all of which are the same for any $P' = P$.
+
 $\square$
 \end{definition}
 
@@ -359,13 +416,29 @@ $\square$
 For the simulation of honest corruption, we can simply ignore
   the additional log variable, and set $S_{\tx{H}} := 1(\tx{Out}(P))$.
 
-For semi-honest corruption, $S_{\tx{SH}}$ is formed by transforming
+For semi-honest corruption, $S_{\tx{SH}}$ is formed by first transforming
 $\tx{Corrupt}_{\tx{SH}}(P)$, replacing:
 \begin{itemize}
   \item every function call with $\tx{Call}_{F_i}(\ldots)$,
   \item every sending of a message $m$ on $A$ with $\tx{Send}_A(m)$,
   \item every reception of a message on $B$ with $\tx{Recv}_B()$.
 \end{itemize}
+This results in a system $S'$, which we then compose to get:
+$$
+S_{\tx{SH}} :=
+\begin{pmatrix}
+  S'\cr
+  \otimes\cr
+  1(\{\tx{Next}\})
+\end{pmatrix}
+\circ
+\begin{pmatrix}
+\tx{SharedRand}\cr
+\otimes\cr
+1(\tx{In}(S'))
+\end{pmatrix}
+$$
+
 The result is clearly a perfect emulation of semi-honest corruption
 using malicious corruption.
 
