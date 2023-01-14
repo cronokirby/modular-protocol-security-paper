@@ -426,7 +426,15 @@ Some common classes are:
 
 With this in hand, we define:
 $$
-\tx{Inst}_C(\mathcal{P}) := \left(\mathcal{R} * \bigast_{i \in [n]} \tx{Routed}(\tx{Corrupt}_C(P_i))\right) \circ F
+\tx{Inst}_C(\mathcal{P}) :=
+  \begin{pmatrix}
+    {\displaystyle \bigast}_{i \in [n]} \tx{Routed}(\tx{Corrupt}_C(P_i))\cr
+    *\cr
+    \mathcal{R}\cr
+    \otimes\cr
+    1(\tx{Leakage})
+  \end{pmatrix}
+  \circ F
 $$
 
 
@@ -493,7 +501,7 @@ in $\mathcal{C}$.
 
 \begin{theorem}[Concurrent Breakdown]
   Given protocols $\mathcal{P}, \mathcal{Q}$, and a corruption model $C$
-  for $\mathcal{Q}'$, then for any corruption model $C'$ for $\mathcal{P} \otimes \mathcal{Q}$ compatible with $C$, we have:
+  for $\mathcal{Q}$, then for any corruption model $C'$ for $\mathcal{P} \otimes \mathcal{Q}$ compatible with $C$, we have:
   \[
     \tx{Inst}_{C'}(\mathcal{P} \otimes \mathcal{Q}) = \tx{Inst}_{C'}(\mathcal{P}) \otimes \tx{Inst}_C(\mathcal{Q})
   \]
@@ -504,7 +512,9 @@ $$
 *\cr
 \left(\bigast_{i \in [\mathcal{P}.n]} \tx{Routed}(\tx{Corrupt}_{C'}(\mathcal{P}.P_i))\right)\cr
 *\cr
-\left(\bigast_{i \in [\mathcal{Q}.n]} \tx{Routed}(\tx{Corrupt}_{C'}(\mathcal{Q}.P_i))\right)
+\left(\bigast_{i \in [\mathcal{Q}.n]} \tx{Routed}(\tx{Corrupt}_{C'}(\mathcal{Q}.P_i))\right)\cr
+\otimes\cr
+1(\mathcal{P}.\tx{Leakage}, \mathcal{Q}.\tx{Leakage})
 \end{pmatrix}
 \circ
 \begin{pmatrix}
@@ -525,9 +535,9 @@ We can apply a few observations here:
 This results in the following:
 $$
 \begin{pmatrix}
-\mathcal{R}_{\mathcal{P}} * \left(\bigast_{i \in [\mathcal{P}.n]} \tx{Routed}(\tx{Corrupt}_{C'}(\mathcal{P}.P_i))\right)\cr
+  \mathcal{R}_{\mathcal{P}} * \left(\bigast_{i \in [\mathcal{P}.n]} \tx{Routed}(\tx{Corrupt}_{C'}(\mathcal{P}.P_i))\right) \otimes 1(\mathcal{P}.\tx{Leakage})\cr
 \otimes\cr
-\mathcal{R}_{\mathcal{Q}} * \left(\bigast_{i \in [\mathcal{Q}.n]} \tx{Routed}(\tx{Corrupt}_{C}(\mathcal{Q}.P_i))\right)
+  \mathcal{R}_{\mathcal{Q}} * \left(\bigast_{i \in [\mathcal{Q}.n]} \tx{Routed}(\tx{Corrupt}_{C}(\mathcal{Q}.P_i))\right) \otimes 1(\mathcal{Q}.\tx{Leakage})
 \end{pmatrix}
 \circ
 \begin{pmatrix}
@@ -547,6 +557,29 @@ $$
 
 $\blacksquare$
 
+\end{theorem}
+
+\begin{theorem}[Horizontal Breakdown]
+  Given protocols $\mathcal{P}, \mathcal{Q}$, and a corruption
+  model $C$ for $\mathcal{Q}$, then for any compatible corruption
+  model $C'$ for $\mathcal{P} \lhd \mathcal{Q}$, there exists
+  systems $S_1, \ldots, S_{\mathcal{Q}.n}$ such that:
+  $$
+  \tx{Inst}_{C'}(\mathcal{P} \lhd \mathcal{Q}) =
+  \begin{pmatrix}
+    {\displaystyle \bigast}_{i \in [\mathcal{P}.n]} \tx{Corrupt}_{C'}(\mathcal{P}.P_i)\cr
+    *\cr
+    \mathcal{R}_{\mathcal{P}}\cr
+  \end{pmatrix}
+  \circ
+  \begin{pmatrix}
+    \mathcal{P}.F\cr
+    \otimes\cr
+    1(\tx{Out}(\tx{Inst}_C(\mathcal{Q})))
+  \end{pmatrix}
+  \circ
+  \tx{Inst}_C(\mathcal{Q})
+  $$
 \end{theorem}
 
 \subsection{Equality and Simulation}
