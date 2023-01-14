@@ -343,10 +343,10 @@ Additionally, $\tx{Logged}(P)$ modifies $P$ by pushing events to these
 logs at different points in time.
 These events are:
 \begin{itemize}
-\item $(\texttt{call}, F, (x_1, \ldots, x_n))$ to $\tx{log}.F$ when a function call $F(x_1, \ldots, x_n)$ happens.
-\item $(\texttt{ret}, F, y)$ to $\tx{log}.F$ when the function $F$ returns a value $y$.
-\item $(\texttt{send}, A, m)$ to $\tx{log}.A$ when a value $m$ is sent on channel $A$.
-\item $(\texttt{recv}, B, m)$ to $\tx{log}.B$ when a value $m$ is received on channel $B$.
+\item $(\texttt{call}, (x_1, \ldots, x_n))$ to $\tx{log}.F$ when a function call $F(x_1, \ldots, x_n)$ happens.
+\item $(\texttt{ret}, y)$ to $\tx{log}.F$ when the function $F$ returns a value $y$.
+\item $m$ to $\tx{log}.A$ when a value $m$ is sent on channel $A$.
+\item $m$ to $\tx{log}.B$ when a value $m$ is received on channel $B$.
 \end{itemize}
 
 Putting things together, we have:
