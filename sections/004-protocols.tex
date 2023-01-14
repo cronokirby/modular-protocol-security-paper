@@ -347,7 +347,7 @@ Putting things together, we have:
 $$
 \tx{Corrupt}_{\tx{SH}}(P) :=
 \begin{pmatrix}
-  \tx{Logged}(\tx{NoRand}(P))\cr
+  \tx{NoRand}(\tx{Logged}(P))\cr
   \otimes\cr
   1(\{\tx{Next}\})
 \end{pmatrix}
@@ -662,7 +662,7 @@ to get:
 \[
 \tx{Inst}_C(\mathcal{P} \lhd \mathcal{Q}) =
   \begin{pmatrix}
-    {\displaystyle \bigast}_{i \in [n]} \tx{Routed}\left(\tx{Corrupt}_{C'}\left(P_i \circ 
+    {\displaystyle \bigast}_{i \in [\mathcal{P}.n]} \tx{Routed}\left(\tx{Corrupt}_{C'}\left(\mathcal{P}.P_i \circ 
         \left( \bigast_{\mathcal{Q}.P_j \tx{ used by } \mathcal{P}.P_i} \mathcal{Q}.P_j \right)
     \right)\right)\cr
     *\cr
@@ -678,6 +678,50 @@ to get:
 \]
 Our strategy will be to progressively build up an equivalent system
 to this one, starting with $\tx{Corrupt}_C$, then $\tx{Routed}$, etc.
+
+First, some observations about $\tx{Corrupt}_\kappa(P \circ (Q_1 * \cdots))$.
+
+In the case of malicious corruption, we have:
+$$
+\tx{Corrupt}_M(P \circ (Q_1 * \cdots * Q_m)) =
+\begin{pmatrix}
+  \tx{Corrupt}_M(P)\cr
+  \otimes\cr
+  1(\tx{In}(\tx{Corrupt}_M(Q_1)), \ldots)\cr
+  \otimes\cr
+  1(\tx{In}(Q_1), \ldots)
+\end{pmatrix}
+\circ
+\begin{pmatrix}
+  \tx{Corrupt}_M(Q_1)\cr
+  *\cr
+  \cdots\cr
+  *\cr
+  \tx{Corrupt}_M(Q_m)\cr
+  \otimes\cr
+  1(\tx{In}(Q_1), \ldots, \tx{In}(Q_m))
+\end{pmatrix}
+$$
+by definition, since corruption $P \circ (Q_1 * \cdots)$ precisely allows
+sending messages on behalf of $P$ or any $Q_i$, as well as calling
+the input functions to the $Q_i$ systems.
+We can write this expression more concisely,
+using $1(L^M)$ for $L^M = \tx{In}(\tx{Corrupt}_M(Q_1)) \cup \cdots \cup \tx{In}(Q_1) \cup \cdots$.
+
+Next, we look at semi-honest corruption.
+
+Second, note that
+$$
+\tx{NoRand}(P \circ (Q_1 * \cdots)) =
+\tx{NoRand}(P) \circ
+\begin{pmatrix}
+  \tx{NoRand}(Q_1)\cr
+  *\cr
+  \cdots\cr
+  \otimes\cr
+  1(\{\tx{Flip}\})
+\end{pmatrix}
+$$
 
 \end{theorem}
 
