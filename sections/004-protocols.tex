@@ -474,6 +474,7 @@ $\square$
 \end{definition}
 
 \begin{lemma}[Properties of $\tx{Routed}$]
+  \label{thm:routed}
   For any systems $A, B$, we have:
 $$
 \begin{aligned}
@@ -632,12 +633,16 @@ $\blacksquare$
   \begin{pmatrix}
     \mathcal{P}.F\cr
     \otimes\cr
-    \bigotimes_{i \in [\mathcal{Q}.n]} S_i
+    1(\tx{Out}(\mathcal{R}_q))\cr
+    \otimes\cr
+    \bigotimes_{i \in [\mathcal{Q}.n]} S_i\cr
   \end{pmatrix}
   \circ
   \tx{Inst}_C(\mathcal{Q})
   $$
-  where $O := \tx{Out}(\tx{Inst}_{C'}(\mathcal{P} \lhd \mathcal{Q}))$.
+  where $O := \tx{Out}(\tx{Inst}_{C'}(\mathcal{P} \lhd \mathcal{Q}))$,
+  and $\mathcal{R}_{\mathcal{P}} \circ \mathcal{R}_{\mathcal{Q}} = \mathcal{R}$
+  are a decomposition of the router $\mathcal{R}$ for $\mathcal{P} \lhd \mathcal{Q}$.
 
 \txbf{Proof:} We start by unrolling $\tx{Inst}_{C'}(\mathcal{P} \lhd \mathcal{Q})$,
 to get:
@@ -802,8 +807,126 @@ with $O_i$ and $L_i$ depending on the corruption level of $\mathcal{P}.P_i$,
 and $S_j$ depending on the corruption levels of both $\mathcal{P}.P_i$
 and $\mathcal{Q}.P_j$.
 
-The transformation $\tx{Routed}$ respets $\circ$, $\otimes$, and $*$, i.e.
+By the properties of $\tx{Routed}$ (Lemma~\ref{thm:routed}), we have:
+$$
+\begin{aligned}
+&\tx{Routed}(\tx{Corrupt}_{C'}((\mathcal{P} \lhd \mathcal{Q}).P_i)) =\cr
+&1(O_i) \circ
+\begin{pmatrix}
+  \tx{Routed}(\tx{Corrupt}_{\tx{C'}}(P))\cr
+  \otimes\cr
+  1(L_i)
+\end{pmatrix}
+\circ
+\left(
+\bigast_{\mathcal{Q}.P_j \tx{ used by } \mathcal{P}.P_i}
+  S_j \circ \tx{Routed}(\tx{Corrupt}_C(\mathcal{Q}.P_j))
+\right)
+\end{aligned}
+$$
 
+Next, we need to add the router $\mathcal{R}$.
+We note that since $\mathcal{P}$ and $\mathcal{Q}$ have separate channels,
+we can write $\mathcal{R} = \mathcal{R}_{\mathcal{P}} \circ \mathcal{R}_{\mathcal{Q}}$,
+where the latter contains only the channels in $\mathcal{Q}$,
+and the former contains the channels in $\mathcal{P}$,
+and provides access to those in $\mathcal{Q}$ via its function dependencies.
+Combing this with the interchange lemma, we get:
+$$
+\begin{aligned}
+&\mathcal{R} * \bigast_{i \in [\mathcal{P}.n]}\tx{Routed}(\tx{Corrupt}_{C'}((\mathcal{P} \lhd \mathcal{Q}).P_i)) * \mathcal{R} =\cr
+&1(\tx{Out}(\mathcal{R}), O_1, \ldots, O_{\mathcal{P}.n}) \circ
+\begin{pmatrix}
+  \tx{Routed}(\tx{Corrupt}_{\tx{C'}}(P))\cr
+  *\cr
+  \mathcal{R}_{\mathcal{P}}\cr
+  \otimes\cr
+  1(L_1, \ldots, L_{\mathcal{P}.n})
+\end{pmatrix}
+\circ
+\begin{pmatrix}
+\bigast_{j \in [\mathcal{Q}.n]}
+  S_j \circ \tx{Routed}(\tx{Corrupt}_C(\mathcal{Q}.P_j))
+  \cr
+  *\cr
+  \mathcal{R}_{\mathcal{Q}}
+\end{pmatrix}
+\end{aligned}
+$$
+
+All that remains is to add the ideal functionalities, giving us,
+after application of the interchange lemma:
+$$
+\begin{aligned}
+  &\tx{Inst}_{C'}(\mathcal{P} \lhd \mathcal{Q}) =\cr
+&1(O) \circ
+\begin{pmatrix}
+  \tx{Routed}(\tx{Corrupt}_{\tx{C'}}(P))\cr
+  *\cr
+  \mathcal{R}_{\mathcal{P}}\cr
+  \otimes\cr
+  1(\tx{Leakage}, L_{\mathcal{Q}})
+\end{pmatrix}
+\circ
+\begin{pmatrix}
+\bigast_{j \in [\mathcal{Q}.n]}
+  S_j \circ \tx{Routed}(\tx{Corrupt}_C(\mathcal{Q}.P_j))
+  \cr
+  *\cr
+  \mathcal{R}_{\mathcal{Q}}\cr
+  \otimes\cr
+  1(\tx{Leakage})
+\end{pmatrix}
+\circ
+\begin{pmatrix}
+  \mathcal{P}.F\cr
+  \otimes\cr
+  \mathcal{Q}.F
+\end{pmatrix}
+\end{aligned}
+$$
+with $O := \tx{Out}(\tx{Inst}_{C'}(\mathcal{P} \lhd \mathcal{Q}))$,
+and $L_{\mathcal{Q}} := \bigcup_{i \in [\mathcal{P}.n]} L_i$.
+
+Now, because $\mathcal{Q}$ does not use any of the functions
+in $\mathcal{P}.F$, and because each simulator $S_j$
+does not use any channels, we can rewrite this as:
+$$
+1(O) \circ
+\begin{pmatrix}
+  \tx{Routed}(\tx{Corrupt}_{\tx{C'}}(P))\cr
+  *\cr
+  \mathcal{R}_{\mathcal{P}}\cr
+  \otimes\cr
+  1(\tx{Leakage}, L_{\mathcal{Q}})
+\end{pmatrix}
+\circ
+\begin{pmatrix}
+  \mathcal{P}.F\cr
+  \otimes\cr
+  1(\tx{Out}(\mathcal{R}_{\mathcal{Q}}))\cr
+  \otimes\cr
+  \bigotimes_{j \in [\mathcal{Q}.n]} S_j
+\end{pmatrix}
+\circ
+\begin{pmatrix}
+\bigast_{j \in [\mathcal{Q}.n]}
+  \tx{Routed}(\tx{Corrupt}_C(\mathcal{Q}.P_j))
+  \cr
+  *\cr
+  \mathcal{R}_{\mathcal{Q}}\cr
+  \otimes\cr
+  1(\mathcal{Q}.\tx{Leakage})
+\end{pmatrix}
+\circ
+  \mathcal{Q}.F
+$$
+
+We can then notice that the right hand side of this equation
+is simply $\tx{Inst}_C(\mathcal{Q})$,
+concluding our proof.
+
+$\blacksquare$
 
 \end{theorem}
 
