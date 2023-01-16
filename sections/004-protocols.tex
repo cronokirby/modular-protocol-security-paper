@@ -1022,6 +1022,21 @@ $\blacksquare$
   $\square$
 \end{definition}
 
+\begin{definition}[Simulatability]
+  Given closed protocols $\mathcal{P}, \mathcal{Q}$ with the same shape,
+  we say that $\mathcal{P}$ is \emph{simulatable} up to $\epsilon$ by $\mathcal{Q}$
+  under a class of corruptions $\mathcal{C}$,
+  written as $\mathcal{P} \overset{\epsilon}{\leadsto}_{\mathcal{C}} \mathcal{Q}$,
+  when:
+  $$
+  \forall C \in \mathcal{C}.\exists S.\quad \tx{Inst}_C(\mathcal{P}) \overset{\epsilon}{\approx} \tx{SimInst}_{S, C}(\mathcal{Q}')
+  $$
+  as systems, with $\mathcal{Q}' \equiv \mathcal{Q}$ as per 
+  Definition~\ref{def:shape}.
+
+  $\square$
+\end{definition}
+
 \begin{lemma}[Literal $\implies$ Semantic]
 For any corruption class $\mathcal{C}$
 $$
