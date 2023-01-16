@@ -642,6 +642,8 @@ $\blacksquare$
     \otimes\cr
     1(\tx{Out}(\mathcal{R}_q))\cr
     \otimes\cr
+    1(\mathcal{Q}.\tx{Leakage})\cr
+    \otimes\cr
     \bigotimes_{i \in [\mathcal{Q}.n]} S_i\cr
   \end{pmatrix}
   \circ
@@ -913,6 +915,8 @@ $$
   \otimes\cr
   1(\tx{Out}(\mathcal{R}_{\mathcal{Q}}))\cr
   \otimes\cr
+  1(\mathcal{Q}.\tx{Leakage})\cr
+  \otimes\cr
   \bigotimes_{j \in [\mathcal{Q}.n]} S_j
 \end{pmatrix}
 \circ
@@ -982,6 +986,40 @@ $\blacksquare$
 
   $\square$
 
+\end{definition}
+
+\begin{definition}[Simulated Instantiation]
+  A simulator $S$ for a closed protocol $\mathcal{P}$ under a corruption
+  model $C$ consists of a system $S_\tx{Leakage}$,
+  as well as systems $S_i$ for each
+  $\mathcal{P}.P_i$ with $C_i \neq \tx{H}$.
+  These must satisfy:
+  \begin{itemize}
+    \item $\tx{In}(S_{\tx{Leakage}}), \tx{Out}(S_{\tx{Leakage}}) = \tx{Leakage}$,
+    \item when $C_i = \tx{M}$, $\tx{In}(S_i) = \tx{In}(\mathcal{P}.P_i)$, $\tx{(In/Out)Chan}(S_i) = \tx{(In/Out)Chan}(P_i)$,
+    \item when $C_i = \tx{SH}$, $\tx{In}(S_i) = \tx{Out}(\tx{Corrupt}_{\tx{SH}}(\mathcal{P}.P_i))$, $\tx{Chan}(S_i) = \emptyset$,
+    \item $\tx{Out}(S_i) = \tx{Out}(\tx{Corrupt}_{C_i}(\mathcal{P}.P_i))$.
+  \end{itemize}
+
+  Given such a simulator, we can define the simulated instantiation
+  of $\mathcal{P}$ under $C$ with $S$ as:
+  $$
+  \tx{SimInst}_{S, C}(\mathcal{P}) := 
+  \begin{pmatrix}
+    {\displaystyle \bigast}_{i \in [n],\ C_i = \tx{M}} S_i\cr
+    *\cr
+    {\displaystyle \bigast}_{i \in [n],\ C_i = \tx{SH}} S_i \circ \tx{Corrupt}_{\tx{SH}}\cr
+    *\cr
+    {\displaystyle \bigast}_{i \in [n],\ C_i = \tx{H}} \tx{Routed}(P_i)\cr
+    *\cr
+    \mathcal{R}\cr
+    \otimes\cr
+    S_\tx{Leakage}
+  \end{pmatrix}
+  \circ F
+  $$
+
+  $\square$
 \end{definition}
 
 \begin{lemma}[Literal $\implies$ Semantic]
