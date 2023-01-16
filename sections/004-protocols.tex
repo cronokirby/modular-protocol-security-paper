@@ -1,7 +1,7 @@
 \section{Protocols and Composition}
 
-\begin{definition}[Open Protocols]
-An \emph{open protocol} $\mathcal{P}$ consists of:
+\begin{definition}[Protocols]
+An \emph{protocol} $\mathcal{P}$ consists of:
 \begin{itemize}
 \item Systems $P_1, \ldots, P_n$, called \emph{players}
 \item A package $F$, called the \emph{ideal functionality}
@@ -44,8 +44,15 @@ $$
 $\square$
 \end{definition}
 
+\begin{definition}[Closed Protocol]
+  We say that a protocol $\mathcal{P}$ is \emph{closed} if
+  $\tx{In}(\mathcal{P}) = \emptyset$ and $\tx{IdealIn}(\mathcal{P}) = \emptyset$.
+
+  $\square$
+\end{definition}
+
 \begin{definition}[Literal Equality]
-Given two open protocols $\mathcal{P}$ and $\mathcal{Q}$, we say that
+Given two protocols $\mathcal{P}$ and $\mathcal{Q}$, we say that
 they are \emph{literally equal}, written as $\mathcal{P} \equiv \mathcal{Q}$
 when:
 \begin{itemize}
@@ -61,9 +68,9 @@ $\square$
 \end{definition}
 
 \begin{definition}[Vertical Composition]
-Given an open protocol $\mathcal{P}$ and a package $G$, satisfying
+Given an protocol $\mathcal{P}$ and a package $G$, satisfying
 $\text{IdealIn}(\mathcal{P}) \subseteq \text{Out}(G)$,
-we can define the open protocol $\mathcal{P} \circ G$.
+we can define the protocol $\mathcal{P} \circ G$.
 
 $\mathcal{P} \circ G$ has the same players as $\mathcal{P}$,
 but its ideal functionality $F$ becomes $F \circ G$.
@@ -84,8 +91,8 @@ $\blacksquare$
 \end{claim}
 
 \begin{definition}[Horizontal Composition]
-Given two open protocols $\mathcal{P}, \mathcal{Q}$,
-we can define the open protocol $\mathcal{P} \lhd \mathcal{Q}$,
+Given two protocols $\mathcal{P}, \mathcal{Q}$,
+we can define the protocol $\mathcal{P} \lhd \mathcal{Q}$,
 provided a few requirements hold.
 
 First, we need: $\text{In}(\mathcal{P}) \subseteq \text{Out}(\mathcal{Q})$.
@@ -127,7 +134,7 @@ somewhere in this equation.
 The ideal functionality is $\mathcal{P}.F \otimes \mathcal{Q}.F$.
 
 We can also easily show that this definition is well defined, satisfying
-the required properties of an open protocol.
+the required properties of an protocol.
 Because of the definition of the players, we see that:
 $$
   \bigcup_{i \in [(\mathcal{P} \lhd \mathcal{Q}).n]} \tx{OutChan}((\mathcal{P} \lhd \mathcal{Q}).{P_i})
@@ -157,7 +164,7 @@ $\square$
 \begin{lemma}
 Horizontal composition is associative, i.e.
 ${\mathcal{P} \lhd (\mathcal{Q} \lhd \mathcal{R}) \equiv (\mathcal{P} \lhd \mathcal{Q}) \lhd \mathcal{R}}$
-for all open protocols $\mathcal{P}, \mathcal{Q}, \mathcal{R}$ where this expression is well defined.
+for all protocols $\mathcal{P}, \mathcal{Q}, \mathcal{R}$ where this expression is well defined.
 
 $\txbf{Proof:}$
 For the ideal functionalities, it's clear that by the associativity
@@ -223,7 +230,7 @@ $\blacksquare$
 \end{lemma}
 
 \begin{definition}[Concurrent Composition]
-Given two open open protocols $\mathcal{P}, \mathcal{Q}$,
+Given two protocols $\mathcal{P}, \mathcal{Q}$,
 we can define their concurrent composition---or tensor product---
 $\mathcal{P} \otimes \mathcal{Q}$, provided a few requirements hold.
 We require that:
@@ -264,7 +271,7 @@ $\square$
 Concurrent composition is associative and commutative.
 I.e. $\mathcal{P} \otimes (\mathcal{Q} \otimes \mathcal{R}) \equiv (\mathcal{P} \otimes \mathcal{Q}) \otimes \mathcal{R}$,
 and $\mathcal{P} \otimes \mathcal{Q} \equiv \mathcal{Q} \otimes \mathcal{P}$ for
-all open protocols $\mathcal{P}, \mathcal{Q}, \mathcal{R}$ where these expressions
+all protocols $\mathcal{P}, \mathcal{Q}, \mathcal{R}$ where these expressions
 are well defined.
 
 \txbf{Proof:}
@@ -433,7 +440,7 @@ Some common classes are:
 \end{itemize}
 
 \begin{definition}[Instantiation]
-  Given a protocol $\mathcal{P}$ with $\text{In}(\mathcal{P}) = \emptyset, \text{IdealIn}(\mathcal{P}) = \emptyset$ and a corruption model $C$, we can
+  Given a closed protocol $\mathcal{P}$ and a corruption model $C$, we can
   define an \emph{instantiation} $\tx{Inst}_C(\mathcal{P})$, which
   is a system defining the semantics of the protocol.
 
@@ -932,17 +939,36 @@ $\blacksquare$
 
 \subsection{Equality and Simulation}
 
+\begin{definition}[Shape]
+  \label{def:shape}
+  We say that two protocols $\mathcal{P}, \mathcal{Q}$ have the same \emph{shape}
+  if there exists a protocol $\mathcal{Q}' \equiv \mathcal{Q}$ such that:
+  \begin{itemize}
+    \item $\mathcal{P}.n = \mathcal{Q}'.n$,
+    \item $\forall i \in [n].\quad \tx{In}(\mathcal{P}.P_i) = \tx{In}(\mathcal{Q}'.Q_i)$,
+    \item $\forall i \in [n].\quad \tx{Out}(\mathcal{P}.P_i) = \tx{Out}(\mathcal{Q}'.Q_i)$,
+    \item $\tx{Leakage}(\mathcal{P}) = \tx{Leakage}(\mathcal{Q}')$,
+    \item $\tx{IdealIn}(\mathcal{P}) = \tx{IdealIn}(\mathcal{Q}')$.
+  \end{itemize}
+\end{definition}
+
 \begin{definition}[Semantic Equality]
-  We say that two protocols $\mathcal{P}$ and $\mathcal{Q}$
+  We say that two closed protocols $\mathcal{P}$ and $\mathcal{Q}$,
+  with the same shape,
   are equal under a class of corruptions $\mathcal{C}$,
   written as $\mathcal{P} =_{\mathcal{C}} \mathcal{Q}$, when we have:
   $$
-  \forall C \in \mathcal{C}.\quad \tx{Inst}_C(\mathcal{P}) = \tx{Inst}_C(\mathcal{Q})
+  \forall C \in \mathcal{C}.\quad \tx{Inst}_C(\mathcal{P}) = \tx{Inst}_C(\mathcal{Q'})
   $$
-  as systems.
+  as systems, with $\mathcal{Q}' \equiv \mathcal{Q}$ as per 
+  Definition~\ref{def:shape}.
 
   $\square$
 
+\end{definition}
+
+\begin{definition}[Indistinguishability]
+  We say that two protocols $\mathcal{P}$
 \end{definition}
 
 \begin{lemma}[Literal $\implies$ Semantic]
