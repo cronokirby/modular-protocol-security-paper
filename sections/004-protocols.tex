@@ -950,6 +950,8 @@ $\blacksquare$
     \item $\tx{Leakage}(\mathcal{P}) = \tx{Leakage}(\mathcal{Q}')$,
     \item $\tx{IdealIn}(\mathcal{P}) = \tx{IdealIn}(\mathcal{Q}')$.
   \end{itemize}
+
+  $\square$
 \end{definition}
 
 \begin{definition}[Semantic Equality]
@@ -968,7 +970,18 @@ $\blacksquare$
 \end{definition}
 
 \begin{definition}[Indistinguishability]
-  We say that two protocols $\mathcal{P}$
+  We say that two closed protocols $\mathcal{P}$ and $\mathcal{Q}$,
+  with the same shape,
+  are \emph{indistinguishable} up to $\epsilon$ under a class of corruptions $\mathcal{C}$,
+  written as $\mathcal{P} \overset{\epsilon}{\approx}_{\mathcal{C}} \mathcal{Q}$, when we have:
+  $$
+  \forall C \in \mathcal{C}.\quad \tx{Inst}_C(\mathcal{P}) \overset{\epsilon}{\approx} \tx{Inst}_C(\mathcal{Q'})
+  $$
+  as systems, with $\mathcal{Q}' \equiv \mathcal{Q}$ as per 
+  Definition~\ref{def:shape}.
+
+  $\square$
+
 \end{definition}
 
 \begin{lemma}[Literal $\implies$ Semantic]
