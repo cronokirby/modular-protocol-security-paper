@@ -1037,12 +1037,50 @@ $\blacksquare$
   $\square$
 \end{definition}
 
-\begin{lemma}[Literal $\implies$ Semantic]
-For any corruption class $\mathcal{C}$
-$$
-\mathcal{P} \equiv \mathcal{Q} \implies \mathcal{P} =_\mathcal{C} \mathcal{Q}.
-$$
+\begin{theorem}[Equality Hierarchy]
+For any corruption class $\mathcal{C}$, we have:
+\begin{enumerate}
+\item $\mathcal{P} \equiv \mathcal{Q} \implies \mathcal{P} =_\mathcal{C} \mathcal{Q}$.
+\item $\mathcal{P} =_{\mathcal{C}} \mathcal{Q} \implies \mathcal{P} \overset{0}{\approx}_\mathcal{C} \mathcal{Q}$.
+\item $\mathcal{P} \overset{\epsilon}{\approx}_{\mathcal{C}} \mathcal{Q} \implies \mathcal{P} \overset{\epsilon}{\leadsto}_\mathcal{C} \mathcal{Q}$.
+\end{enumerate}
 
-\txbf{Proof:} This follows directly from the definition of $\tx{Inst}_C(\ldots)$,
-which will yield an equal system if its components are equal. $\blacksquare$
-\end{lemma}
+\txbf{Proof:} \todo{todo}
+\end{theorem}
+
+\begin{theorem}[Vertical Composition Theorem]
+  For any protocol $\mathcal{P}$ and game $G$, such that $\mathcal{P} \circ G$
+  is well defined and closed, and for any corruption class $\mathcal{C}$, we have:
+  \begin{enumerate}
+    \item $G = G' \implies \mathcal{P} \circ G = \mathcal{P} \circ G'$
+    \item $G \overset{\epsilon}{\approx} G' \implies \mathcal{P} \circ G \overset{\epsilon}{\approx} \mathcal{P} \circ G'$
+  \end{enumerate}
+  
+\txbf{Proof:} \todo{todo}
+\end{theorem}
+
+\begin{theorem}[Concurrent Composition Theorem]
+  For any protocols $\mathcal{P}, \mathcal{Q}$, with $\mathcal{P} \otimes \mathcal{Q}$
+  well defined and closed, and for any corruption class $C$, we have:
+  \begin{enumerate}
+    \item $\mathcal{Q} \equiv \mathcal{Q}' \implies \mathcal{P} \otimes \mathcal{Q} \equiv \mathcal{P} \otimes \mathcal{Q}'$
+    \item $\mathcal{Q} = \mathcal{Q}' \implies \mathcal{P} \otimes \mathcal{Q} = \mathcal{P} \otimes \mathcal{Q}'$
+    \item $\mathcal{Q} \overset{\epsilon}{\approx} \mathcal{Q}' \implies \mathcal{P} \otimes \mathcal{Q} \overset{\epsilon}{\approx} \mathcal{P} \otimes \mathcal{Q}'$
+    \item $\mathcal{Q} \overset{\epsilon}{\leadsto} \mathcal{Q}' \implies \mathcal{P} \otimes \mathcal{Q} \overset{\epsilon}{\leadsto} \mathcal{P} \otimes \mathcal{Q}'$
+  \end{enumerate}
+
+  \txbf{Proof:} \todo{todo}
+\end{theorem}
+
+\begin{theorem}[Horizontal Composition Theorem]
+  For any protocols $\mathcal{P}, \mathcal{Q}$ with $\mathcal{P} \lhd \mathcal{Q}$
+  well defined and closed, and for any corruption class $C$, we have:
+  \begin{enumerate}
+    \item $\mathcal{Q} \equiv \mathcal{Q}' \implies \mathcal{P} \lhd \mathcal{Q} \equiv \mathcal{P} \lhd \mathcal{Q}'$
+    \item $\mathcal{Q} = \mathcal{Q}' \implies \mathcal{P} \lhd \mathcal{Q} = \mathcal{P} \lhd \mathcal{Q}'$
+    \item $\mathcal{Q} \overset{\epsilon}{\approx} \mathcal{Q}' \implies \mathcal{P} \lhd \mathcal{Q} \overset{\epsilon}{\approx} \mathcal{P} \lhd \mathcal{Q}'$
+    \item $\mathcal{Q} \overset{\epsilon}{\leadsto} \mathcal{Q}' \implies \mathcal{P} \lhd \mathcal{Q} \overset{\epsilon}{\leadsto} \mathcal{P} \lhd \mathcal{Q}'$
+  \end{enumerate}
+
+  \txbf{Proof:} \todo{todo}
+\end{theorem}
