@@ -316,6 +316,7 @@ which contains several sub logs:
   \item $\tx{log}.{A_i}$ for each sending channel $A_i$,
   \item $\tx{log}.{B_i}$ for each receiving channel $B_i$,
   \item $\tx{log}.F$ for each input function $F$.
+  \item $\tx{log}.G$ for each output function $G$.
 \end{enumerate}
 Each of these sub logs is initialized with ${\tx{log}.\bullet \gets \tx{FifoQueue.New()}}$.
 Additionally, $\tx{Corrupt}_{\tx{SH}}(P)$ modifies $P$ by pushing events to these
@@ -324,6 +325,7 @@ These events are:
 \begin{itemize}
 \item $(\texttt{call}, (x_1, \ldots, x_n))$ to $\tx{log}.F$ when a function call $F(x_1, \ldots, x_n)$ happens.
 \item $(\texttt{ret}, y)$ to $\tx{log}.F$ when the function $F$ returns a value $y$.
+\item $(\texttt{input}, (x_1, \ldots, x_n))$ to $\tx{log}.G$ when the function $G$ is called with $(x_i, \ldots)$ as input.
 \item $m$ to $\tx{log}.A$ when a value $m$ is sent on channel $A$.
 \item $m$ to $\tx{log}.B$ when a value $m$ is received on channel $B$.
 \end{itemize}
