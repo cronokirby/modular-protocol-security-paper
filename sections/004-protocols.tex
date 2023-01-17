@@ -593,6 +593,7 @@ $\blacksquare$
 \end{theorem}
 
 \begin{theorem}[Horizontal Breakdown]
+  \label{thm:horizontal_breakdown}
   Given protocols $\mathcal{P}, \mathcal{Q}$, and a corruption
   model $C$ for $\mathcal{Q}$, then for any compatible corruption
   model $C'$ for $\mathcal{P} \lhd \mathcal{Q}$, there exists
@@ -1180,5 +1181,37 @@ $\blacksquare$
     \item $\mathcal{Q} \overset{\epsilon}{\leadsto}_{\mathcal{C}} \mathcal{Q}' \implies \mathcal{P} \lhd \mathcal{Q} \overset{\epsilon}{\leadsto}_{\mathcal{C}'} \mathcal{P} \lhd \mathcal{Q}'$
   \end{enumerate}
 
-  \txbf{Proof:} \todo{todo}
+  \txbf{Proof:} As one might expect,
+  Theorem~\ref{thm:horizontal_breakdown}(horizontal breakdown)
+  will be critical to proving each of these statements.
+
+  One crude summary of the theorem is given compatible
+  corruption models $C, C'$, there's a system $\tx{Stuff}$ such that
+  $$
+  \tx{Inst}_{C'}(\mathcal{P} \lhd \mathcal{Q}) = \tx{Stuff} \circ \tx{Inst}_C(\mathcal{Q})
+  $$
+  This summary suffices to prove a couple statements already.
+
+  \txbf{1.} By assumption, for any $C' \in \mathcal{C}'$,
+  there exists a compatible $C \in \mathcal{C}$.
+  In this case, we have:
+  $$
+  \tx{Inst}_{C'}(\mathcal{P} \lhd \mathcal{Q}) = \tx{Sutff} \circ \tx{Inst}_C(\mathcal{Q})
+  $$
+  If we then apply $\mathcal{Q} =_{\mathcal{C}} \mathcal{Q}'$,
+  we get:
+  $$
+  \tx{Stuff} \circ \tx{Inst}_C(\mathcal{Q}) = \tx{Stuff} \circ \tx{Inst}_C(\mathcal{Q}')
+  $$
+  and then, applying breakdown in reverse, we end up with $\tx{Inst}_{C'}(\mathcal{P} \lhd \mathcal{Q}')$,
+  completing our proof.
+
+  \txbf{2.} We apply the same reasoning, with the difference that:
+  $$
+  \tx{Stuff} \circ \tx{Inst}_C(\mathcal{Q}) \overset{\epsilon}{\approx} \tx{Stuff} \circ \tx{Inst}_C(\mathcal{Q}')
+  $$
+  rather than being strictly equal.
+
+  \txbf{3.} At this point our crude summary of the breakdown theorem is not
+  sufficient anymore.
 \end{theorem}
