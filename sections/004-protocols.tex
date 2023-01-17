@@ -1129,20 +1129,22 @@ to get:
 $$
 \tx{Inst}_{C'}(\mathcal{P}) \otimes \tx{Inst}_C(\mathcal{Q})
 \overset{\epsilon}{\approx}
-\tx{Inst}_{C'}(\mathcal{P}) \otimes (S \circ \tx{Inst}_C(\mathcal{Q}'))
+\tx{Inst}_{C'}(\mathcal{P}) \otimes ((S \otimes 1(\ldots)) \circ \tx{Inst}_C(\mathcal{Q}'))
 $$
 Next, we apply interchange to get:
 $$
 \begin{matrix}
 1(\tx{Out}(\tx{Inst}_{C'}(\mathcal{P}))) \circ \tx{Inst}_{C'}(\mathcal{P})\cr
 \otimes\cr
-(S \circ \tx{Inst}_C(\mathcal{Q}'))
+((S \otimes 1(\ldots)) \circ \tx{Inst}_C(\mathcal{Q}'))
 \end{matrix}
 =
 \begin{pmatrix}
 1(\tx{Out}(\tx{Inst}_{C'}(\mathcal{P})))\cr
 \otimes\cr
 S\cr
+\otimes\cr
+1(\tx{Out}(\tx{Inst}_C(\mathcal{Q})) / \tx{Out}(S))
 \end{pmatrix}
 \circ
 \begin{pmatrix}
@@ -1155,6 +1157,10 @@ Applying concurrent breakdown in reverse, we get that the right hand
 side is $\tx{Inst}_{C'}(\mathcal{P} \otimes \mathcal{Q})$,
 and that the left hand side is the simulator showing
 that $\mathcal{P} \otimes \mathcal{Q} \overset{\epsilon}{\leadsto}_{\mathcal{C}'} \mathcal{P} \otimes \mathcal{Q}'$.
+The left hand side is a valid simulator because
+$\tx{Out}(\tx{Inst}_C(\mathcal{Q})) = \tx{Out}(\tx{Inst}_{C'}(\mathcal{Q}))$,
+and all of the honest parts of $\mathcal{P}$ are left untouched,
+since all of it is.
 
 $\blacksquare$
 \end{theorem}
