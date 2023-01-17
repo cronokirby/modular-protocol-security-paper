@@ -1167,10 +1167,16 @@ $\blacksquare$
 
 \begin{theorem}[Horizontal Composition Theorem]
   For any protocols $\mathcal{P}, \mathcal{Q}$ with $\mathcal{P} \lhd \mathcal{Q}$
-  well defined and closed, and for any corruption class $C$, we have:
+  well defined and closed, and for any compatible corruption classes $\mathcal{C}, \mathcal{C'}$, we have:
   \begin{enumerate}
     \item $\mathcal{Q} =_{\mathcal{C}} \mathcal{Q}' \implies \mathcal{P} \lhd \mathcal{Q} =_{\mathcal{C}'} \mathcal{P} \lhd \mathcal{Q}'$
     \item $\mathcal{Q} \overset{\epsilon}{\approx}_{\mathcal{C}} \mathcal{Q}' \implies \mathcal{P} \lhd \mathcal{Q} \overset{\epsilon}{\approx}_{\mathcal{C}'} \mathcal{P} \lhd \mathcal{Q}'$
+  \end{enumerate}
+
+  Furthermore, if $\mathcal{C}'$ is \emph{strictly} compatible with $\mathcal{C}$,
+  we have:
+  \begin{enumerate}
+    \setcounter{enumi}{2}
     \item $\mathcal{Q} \overset{\epsilon}{\leadsto}_{\mathcal{C}} \mathcal{Q}' \implies \mathcal{P} \lhd \mathcal{Q} \overset{\epsilon}{\leadsto}_{\mathcal{C}'} \mathcal{P} \lhd \mathcal{Q}'$
   \end{enumerate}
 
