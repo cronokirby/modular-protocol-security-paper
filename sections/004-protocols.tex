@@ -502,42 +502,8 @@ $\blacksquare$
 \end{lemma}
 
 
-\begin{definition}[Associated Corruption Classes]
-\label{def:assoccc}
-Given two protocols $\mathcal{P}, \mathcal{Q}$ where $\otimes$ is well
-defined, a corruption class $\mathcal{C}$ for $\mathcal{Q}$ has a natural
-corruption class $\mathcal{C}'$ for $\mathcal{P} \otimes \mathcal{Q}$.
-
-For each model $C \in \mathcal{C}$, the resulting $\mathcal{C}'$ will
-contain a model for each possible honest corruption of the players
-in $P$ with efficient agents $A_1, \ldots$.
-In other words, the corruptions in this class will be those of $\mathcal{C}$,
-with $\mathcal{P}$ always behaving honestly.
-
-
-We can also do the same for $\mathcal{P} \circ \mathcal{Q}$,
-but the corruption class $\mathcal{C}'$ is a bit trickier.
-We say that a corruption model $C$ for $\mathcal{P}$ is compatible with
-a corruption model $C'$ for $\mathcal{Q}$ if for every
-$\mathcal{Q}.P_j$ used by $\mathcal{P}.P_i$, the corruption
-level of $\mathcal{Q}.P_j$ in $\mathcal{C}'$ is $\geq$ the corruption level of $\mathcal{P}.P_i$
-in $\mathcal{C}$.
-A corruption model $C$ for $\mathcal{P}$ is compatible
-with a \emph{class} of corruptions $\mathcal{C}$, if
-there exists a compatible model $C'$ in $\mathcal{C}$.
-
-With this in hand, the corruption class $\mathcal{C}'$ for $\mathcal{P} \circ \mathcal{Q}$
-is the largest (closed) corruption class $\mathcal{C}'$ for $\mathcal{P}$ such
-that each $C \in \mathcal{C}'$ is compatible with $\mathcal{C}$.
-Because of the definition of $\circ$, a corruption model
-for $\mathcal{P}$ naturally yields a model for $\mathcal{P} \circ \mathcal{Q}$,
-so this is well defined.
-
-
-$\square$
-\end{definition}
-
 \begin{definition}[Compatible Corruptions]
+  \label{def:compatc}
   Given protocols $\mathcal{P}, \mathcal{Q}$, and a corruption model
   $C$ for $\mathcal{Q}$, we can define a notion of a \emph{compatible}
   corruption model $C'$ for $\mathcal{P} \otimes \mathcal{Q}$ or $\mathcal{P} \circ \mathcal{Q}$,
@@ -555,12 +521,13 @@ in $\mathcal{C}$.
 
   This extends to corruption \emph{classes} as well.
   A corruption class $\mathcal{C}'$ is compatible with a class $\mathcal{C}$,
-  if for every $C \in \mathcal{C}$ there exists a compatible $C' \in \mathcal{C}'$.
+  if every $C' \in \mathcal{C}'$ is compatible with some $C \in \mathcal{C}$.
 
   $\square$
 \end{definition}
 
 \begin{theorem}[Concurrent Breakdown]
+  \label{thm:concurrent_breakdown}
   Given protocols $\mathcal{P}, \mathcal{Q}$, and a corruption model $C$
   for $\mathcal{Q}$, then for any corruption model $C'$ for $\mathcal{P} \otimes \mathcal{Q}$ compatible with $C$, we have:
   \[
@@ -1103,26 +1070,73 @@ $\blacksquare$
 \end{theorem}
 
 \begin{theorem}[Concurrent Composition Theorem]
-  For any protocols $\mathcal{P}, \mathcal{Q}$, with $\mathcal{P} \otimes \mathcal{Q}$
-  well defined and closed, and for any corruption class $C$, we have:
+  Let $\mathcal{P}, \mathcal{Q}$ be protocols, with $\mathcal{P} \otimes \mathcal{Q}$
+  well defined and closed. For any compatible corruption classes $\mathcal{C}, \mathcal{C}'$
+  it holds that:
   \begin{enumerate}
-    \item $\mathcal{Q} \equiv \mathcal{Q}' \implies \mathcal{P} \otimes \mathcal{Q} \equiv \mathcal{P} \otimes \mathcal{Q}'$
-    \item $\mathcal{Q} = \mathcal{Q}' \implies \mathcal{P} \otimes \mathcal{Q} = \mathcal{P} \otimes \mathcal{Q}'$
-    \item $\mathcal{Q} \overset{\epsilon}{\approx} \mathcal{Q}' \implies \mathcal{P} \otimes \mathcal{Q} \overset{\epsilon}{\approx} \mathcal{P} \otimes \mathcal{Q}'$
-    \item $\mathcal{Q} \overset{\epsilon}{\leadsto} \mathcal{Q}' \implies \mathcal{P} \otimes \mathcal{Q} \overset{\epsilon}{\leadsto} \mathcal{P} \otimes \mathcal{Q}'$
+    \item $\mathcal{Q} =_{\mathcal{C}} \mathcal{Q}' \implies \mathcal{P} \otimes \mathcal{Q} =_{\mathcal{C}'} \mathcal{P} \otimes \mathcal{Q}'$
+    \item $\mathcal{Q} \overset{\epsilon}{\approx}_{\mathcal{C}} \mathcal{Q}' \implies \mathcal{P} \otimes \mathcal{Q} \overset{\epsilon}{\approx}_{\mathcal{C}'} \mathcal{P} \otimes \mathcal{Q}'$
+    \item $\mathcal{Q} \overset{\epsilon}{\leadsto}_{\mathcal{C}} \mathcal{Q}' \implies \mathcal{P} \otimes \mathcal{Q} \overset{\epsilon}{\leadsto}_{\mathcal{C}'} \mathcal{P} \otimes \mathcal{Q}'$
   \end{enumerate}
 
-  \txbf{Proof:} \todo{todo}
+  \txbf{Proof:} Theorem~\ref{thm:concurrent_breakdown} (concurrent breakdown)
+  will be essential to our proof.
+  This implies that $\forall C \in \mathcal{C}$, then for any compatible $C' \in \mathcal{C}'$
+  we have:
+  $$
+  \tx{Inst}_{C'}(\mathcal{P} \otimes \mathcal{Q}) = \tx{Inst}_{C'}(\mathcal{P}) \otimes \tx{Inst}_{C}(\mathcal{Q})
+  $$
+
+\txbf{1.}
+Since $\mathcal{Q} =_{\mathcal{C}} \mathcal{Q}'$, we have $\forall C \in \mathcal{C}.\ \tx{Inst}_C(\mathcal{Q}) = \tx{Inst}_C(\mathcal{Q}')$.
+Now, consider any $C' \in \mathcal{C}'$.
+By our assumption that $\mathcal{C}'$ is compatible with $\mathcal{C}$,
+there exists a $C \in \mathcal{C}$ that $C'$ is compatible with.
+Using concurrent breakdown, we then have:
+$$
+\tx{Inst}_{C'}(\mathcal{P} \otimes \mathcal{Q}) =
+\tx{Inst}_{C'}(\mathcal{P}) \otimes \tx{Inst}_C(\mathcal{Q})
+$$
+Then, since $\mathcal{Q} =_{\mathcal{C}} \mathcal{Q}'$, we have:
+$$
+\tx{Inst}_{C'}(\mathcal{P}) \otimes \tx{Inst}_C(\mathcal{Q}) =
+\tx{Inst}_{C'}(\mathcal{P}) \otimes \tx{Inst}_C(\mathcal{Q}') =
+\tx{Inst}_{C'}(\mathcal{P} \otimes \mathcal{Q}')
+$$
+concluding our proof.
+
+\txbf{2.}
+The proof here is similar to part 1.
+For any $C' \in \mathcal{C}'$, there exists a compatible $C \in \mathcal{C}$,
+and then we get:
+$$
+\tx{Inst}_{C'}(\mathcal{P} \otimes \mathcal{Q}) =
+\tx{Inst}_{C'}(\mathcal{P}) \otimes \tx{Inst}_C(\mathcal{Q})
+$$
+Since $\mathcal{Q} \overset{\epsilon}{\approx}_{\mathcal{C}} \mathcal{Q}'$,
+we have:
+$$
+\tx{Inst}_{C'}(\mathcal{P}) \otimes \tx{Inst}_C(\mathcal{Q})
+\overset{\epsilon}{\approx} 
+\tx{Inst}_{C'}(\mathcal{P}) \otimes \tx{Inst}_C(\mathcal{Q}')
+$$
+since $\otimes$ for systems respects this operation.
+We can then conclude with
+$$
+\tx{Inst}_{C'}(\mathcal{P}) \otimes \tx{Inst}_C(\mathcal{Q}') =
+\tx{Inst}_{C'}(\mathcal{P} \otimes \mathcal{Q}')
+$$
+
+\txbf{3.}
 \end{theorem}
 
 \begin{theorem}[Horizontal Composition Theorem]
   For any protocols $\mathcal{P}, \mathcal{Q}$ with $\mathcal{P} \lhd \mathcal{Q}$
   well defined and closed, and for any corruption class $C$, we have:
   \begin{enumerate}
-    \item $\mathcal{Q} \equiv \mathcal{Q}' \implies \mathcal{P} \lhd \mathcal{Q} \equiv \mathcal{P} \lhd \mathcal{Q}'$
-    \item $\mathcal{Q} = \mathcal{Q}' \implies \mathcal{P} \lhd \mathcal{Q} = \mathcal{P} \lhd \mathcal{Q}'$
-    \item $\mathcal{Q} \overset{\epsilon}{\approx} \mathcal{Q}' \implies \mathcal{P} \lhd \mathcal{Q} \overset{\epsilon}{\approx} \mathcal{P} \lhd \mathcal{Q}'$
-    \item $\mathcal{Q} \overset{\epsilon}{\leadsto} \mathcal{Q}' \implies \mathcal{P} \lhd \mathcal{Q} \overset{\epsilon}{\leadsto} \mathcal{P} \lhd \mathcal{Q}'$
+    \item $\mathcal{Q} =_{\mathcal{C}} \mathcal{Q}' \implies \mathcal{P} \lhd \mathcal{Q} =_{\mathcal{C}'} \mathcal{P} \lhd \mathcal{Q}'$
+    \item $\mathcal{Q} \overset{\epsilon}{\approx}_{\mathcal{C}} \mathcal{Q}' \implies \mathcal{P} \lhd \mathcal{Q} \overset{\epsilon}{\approx}_{\mathcal{C}'} \mathcal{P} \lhd \mathcal{Q}'$
+    \item $\mathcal{Q} \overset{\epsilon}{\leadsto}_{\mathcal{C}} \mathcal{Q}' \implies \mathcal{P} \lhd \mathcal{Q} \overset{\epsilon}{\leadsto}_{\mathcal{C}'} \mathcal{P} \lhd \mathcal{Q}'$
   \end{enumerate}
 
   \txbf{Proof:} \todo{todo}
