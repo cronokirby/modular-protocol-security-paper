@@ -1088,11 +1088,18 @@ $\blacksquare$
   For any protocol $\mathcal{P}$ and game $G$, such that $\mathcal{P} \circ G$
   is well defined and closed, and for any corruption class $\mathcal{C}$, we have:
   \begin{enumerate}
-    \item $G = G' \implies \mathcal{P} \circ G = \mathcal{P} \circ G'$
-    \item $G \overset{\epsilon}{\approx} G' \implies \mathcal{P} \circ G \overset{\epsilon}{\approx} \mathcal{P} \circ G'$
+    \item $G = G' \implies \mathcal{P} \circ G =_{\mathcal{C}} \mathcal{P} \circ G'$
+    \item $G \overset{\epsilon}{\approx} G' \implies \mathcal{P} \circ G \overset{\epsilon}{\approx}_{\mathcal{C}} \mathcal{P} \circ G'$
   \end{enumerate}
   
-\txbf{Proof:} \todo{todo}
+\txbf{Proof:} We start by noting that $\tx{Inst}_C(\mathcal{P} \circ G) = A \circ F \circ G$,
+for some system $A$.
+Part 1 follows immediately from this, since $\circ$ is equality respecting.
+
+Part 2 follows by applying Lemma~\ref{thm:systemreduction},
+which entails that for any system $S$, we have $S \circ G \overset{\epsilon}{\approx} S \circ G'$.
+
+$\blacksquare$
 \end{theorem}
 
 \begin{theorem}[Concurrent Composition Theorem]
