@@ -1006,9 +1006,9 @@ $\blacksquare$
   $$
   \tx{SimInst}_{S, C}(\mathcal{P}) := 
   \begin{pmatrix}
-    {\displaystyle \bigast}_{i \in [n],\ C_i = \tx{M}} S_i\cr
+    {\displaystyle \bigast}_{i \in [n],\ C_i = \tx{M}} \tx{Routed}(S_i)\cr
     *\cr
-    {\displaystyle \bigast}_{i \in [n],\ C_i = \tx{SH}} S_i \circ \tx{Corrupt}_{\tx{SH}}\cr
+    {\displaystyle \bigast}_{i \in [n],\ C_i = \tx{SH}} \tx{Routed}(S_i \circ \tx{Corrupt}_{\tx{SH}}(P_i))\cr
     *\cr
     {\displaystyle \bigast}_{i \in [n],\ C_i = \tx{H}} \tx{Routed}(P_i)\cr
     *\cr
@@ -1045,7 +1045,43 @@ For any corruption class $\mathcal{C}$, we have:
 \item $\mathcal{P} \overset{\epsilon}{\approx}_{\mathcal{C}} \mathcal{Q} \implies \mathcal{P} \overset{\epsilon}{\leadsto}_\mathcal{C} \mathcal{Q}$.
 \end{enumerate}
 
-\txbf{Proof:} \todo{todo}
+\txbf{Proof:}
+
+\txbf{1.} 
+For any $C \in \mathcal{C}$, $\tx{Corrupt}_{C}$ and $\tx{Routed}$ are equality respecting,
+so we have:
+$$
+\forall i \in [n].\quad \tx{Routed}(\tx{Corrupt}_C(\mathcal{P}.P_i)) = 
+\tx{Routed}(\tx{Corrupt}_C(\mathcal{Q}.P_i))
+$$
+
+Furthermore, the equality of players between $\mathcal{P}$ and $\mathcal{Q}$
+makes $\mathcal{P}.\mathcal{R} = \mathcal{Q}.\mathcal{R}$.
+
+And then, the fact that $\mathcal{P}.F = \mathcal{Q}.F$ forces $\tx{Leakage}$
+to be the same as well.
+
+Finally, since $\circ, *, \otimes$ are equality respecting, we
+can clearly see that $\tx{Inst}_C(\mathcal{P}) = \tx{Inst}_C(\mathcal{Q})$,
+since all the sub-components are equal.
+
+\txbf{2.} For any systems $A, B$, we have $A = B \implies A \overset{0}{\approx} B$.
+Applying this to $\tx{Inst}_C(\mathcal{P})$ and $\tx{Inst}_C(\mathcal{Q})$
+gives us our result.
+
+\txbf{3.} It suffices to define a simulator $S$ such that
+$\tx{SimInst}_{S, C}(\mathcal{Q}) = \tx{Inst}_C(\mathcal{Q})$,
+which will then show our result.
+
+We define this simulator as:
+\begin{itemize}
+  \item $S_{\tx{Leakage}} = 1(\tx{Leakage})$.
+  \item $S_i = \tx{Corrupt}_{\tx{M}}(P_i)$, when $C_i = \tx{M}$.
+  \item $S_i = 1(\tx{Out}(\tx{Corrupt}_{\tx{SH}}(P_i)))$, when $C_i = \tx{SH}$.
+\end{itemize}
+which clearly does the same thing as instantiation.
+
+$\blacksquare$
 \end{theorem}
 
 \begin{theorem}[Vertical Composition Theorem]
