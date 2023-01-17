@@ -965,15 +965,11 @@ $\blacksquare$
 
 \begin{definition}[Simulated Instantiation]
   A simulator $S$ for a closed protocol $\mathcal{P}$ under a corruption
-  model $C$ consists of a system $S_\tx{Leakage}$,
-  as well as systems $S_i$ for each
-  $\mathcal{P}.P_i$ with $C_i \neq \tx{H}$.
-  These must satisfy:
+  model $C$ is a system satisfying:
   \begin{itemize}
-    \item $\tx{In}(S_{\tx{Leakage}}), \tx{Out}(S_{\tx{Leakage}}) = \tx{Leakage}$,
-    \item when $C_i = \tx{M}$, $\tx{In}(S_i) = \tx{In}(\mathcal{P}.P_i)$, $\tx{(In/Out)Chan}(S_i) = \tx{(In/Out)Chan}(P_i)$,
-    \item when $C_i = \tx{SH}$, $\tx{In}(S_i) = \tx{Out}(\tx{Corrupt}_{\tx{SH}}(\mathcal{P}.P_i))$, $\tx{Chan}(S_i) = \emptyset$,
-    \item $\tx{Out}(S_i) = \tx{Out}(\tx{Corrupt}_{C_i}(\mathcal{P}.P_i))$.
+    \item $\tx{InChan}(S), \tx{OutChan}(S) = \emptyset$,
+    \item $\tx{In}(S) = \tx{Leakage} \cup \left(\bigcup_{C_i = \tx{M}} \tx{Out}(\tx{Corrupt}_{\tx{M}}(P_i))\right) \cup \left(\bigcup_{C_i = \tx{SH}} P_i.\tx{log}\right)$,
+    \item $\tx{Out}(S) = \tx{In}(S)$,
   \end{itemize}
 
   Given such a simulator, we can define the simulated instantiation
@@ -981,17 +977,11 @@ $\blacksquare$
   $$
   \tx{SimInst}_{S, C}(\mathcal{P}) := 
   \begin{pmatrix}
-    {\displaystyle \bigast}_{i \in [n],\ C_i = \tx{M}} \tx{Routed}(S_i)\cr
-    *\cr
-    {\displaystyle \bigast}_{i \in [n],\ C_i = \tx{SH}} \tx{Routed}(S_i \circ \tx{Corrupt}_{\tx{SH}}(P_i))\cr
-    *\cr
-    {\displaystyle \bigast}_{i \in [n],\ C_i = \tx{H}} \tx{Routed}(P_i)\cr
-    *\cr
-    \mathcal{R}\cr
+    S\cr
     \otimes\cr
-    S_\tx{Leakage}
+    1(\tx{Out}(\tx{Inst}_C(\mathcal{P})) / \tx{Out}(S))
   \end{pmatrix}
-  \circ F
+  \circ \tx{Inst}_C(\mathcal{P})
   $$
 
   $\square$
@@ -1047,14 +1037,7 @@ gives us our result.
 \txbf{3.} It suffices to define a simulator $S$ such that
 $\tx{SimInst}_{S, C}(\mathcal{Q}) = \tx{Inst}_C(\mathcal{Q})$,
 which will then show our result.
-
-We define this simulator as:
-\begin{itemize}
-  \item $S_{\tx{Leakage}} = 1(\tx{Leakage})$.
-  \item $S_i = \tx{Corrupt}_{\tx{M}}(P_i)$, when $C_i = \tx{M}$.
-  \item $S_i = 1(\tx{Out}(\tx{Corrupt}_{\tx{SH}}(P_i)))$, when $C_i = \tx{SH}$.
-\end{itemize}
-which clearly does the same thing as instantiation.
+We can simply take $S = 1(\ldots)$ for the right set.
 
 $\blacksquare$
 \end{theorem}
@@ -1135,7 +1118,45 @@ $$
 \tx{Inst}_{C'}(\mathcal{P} \otimes \mathcal{Q}')
 $$
 
-\txbf{3.}
+\txbf{3.} Once more, for any $C' \in \mathcal{C}'$, there exists a compatible
+$C \in \mathcal{C}$ giving us:
+$$
+\tx{Inst}_{C'}(\mathcal{P} \otimes \mathcal{Q}) =
+\tx{Inst}_{C'}(\mathcal{P}) \otimes \tx{Inst}_C(\mathcal{Q})
+$$
+We then apply our assumption that $\mathcal{Q} \overset{\epsilon}{\leadsto}_{\mathcal{C}} \mathcal{Q}'$
+to get:
+$$
+\tx{Inst}_{C'}(\mathcal{P}) \otimes \tx{Inst}_C(\mathcal{Q})
+\overset{\epsilon}{\approx}
+\tx{Inst}_{C'}(\mathcal{P}) \otimes (S \circ \tx{Inst}_C(\mathcal{Q}'))
+$$
+Next, we apply interchange to get:
+$$
+\begin{matrix}
+1(\tx{Out}(\tx{Inst}_{C'}(\mathcal{P}))) \circ \tx{Inst}_{C'}(\mathcal{P})\cr
+\otimes\cr
+(S \circ \tx{Inst}_C(\mathcal{Q}'))
+\end{matrix}
+=
+\begin{pmatrix}
+1(\tx{Out}(\tx{Inst}_{C'}(\mathcal{P})))\cr
+\otimes\cr
+S\cr
+\end{pmatrix}
+\circ
+\begin{pmatrix}
+  \tx{Inst}_{C'}(\mathcal{P})\cr
+  \otimes\cr
+  \tx{Inst}_{C}(\mathcal{Q}')
+\end{pmatrix}
+$$
+Applying concurrent breakdown in reverse, we get that the right hand
+side is $\tx{Inst}_{C'}(\mathcal{P} \otimes \mathcal{Q})$,
+and that the left hand side is the simulator showing
+that $\mathcal{P} \otimes \mathcal{Q} \overset{\epsilon}{\leadsto}_{\mathcal{C}'} \mathcal{P} \otimes \mathcal{Q}'$.
+
+$\blacksquare$
 \end{theorem}
 
 \begin{theorem}[Horizontal Composition Theorem]
