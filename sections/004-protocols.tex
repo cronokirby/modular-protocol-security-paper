@@ -521,9 +521,12 @@ $\mathcal{Q}.P_j$ used by $\mathcal{P}.P_i$, the corruption
 level of $\mathcal{Q}.P_j$ in $\mathcal{C}'$ is $\geq$ the corruption level of $\mathcal{P}.P_i$
 in $\mathcal{C}$.
 
+  Furthermore, we say that $C'$ is \emph{strictly} compatible
+  with $C$ if the above property holds with $=$, and not just $\geq$.
+
   This extends to corruption \emph{classes} as well.
-  A corruption class $\mathcal{C}'$ is compatible with a class $\mathcal{C}$,
-  if every $C' \in \mathcal{C}'$ is compatible with some $C \in \mathcal{C}$.
+  A corruption class $\mathcal{C}'$ is (strictly) compatible with a class $\mathcal{C}$,
+  if every $C' \in \mathcal{C}'$ is (strictly) compatible with some $C \in \mathcal{C}$.
 
   $\square$
 \end{definition}
@@ -621,6 +624,9 @@ $\blacksquare$
   where $O := \tx{Out}(\tx{Inst}_{C'}(\mathcal{P} \lhd \mathcal{Q}))$,
   and $\mathcal{R}_{\mathcal{P}} \circ \mathcal{R}_{\mathcal{Q}} = \mathcal{R}$
   are a decomposition of the router $\mathcal{R}$ for $\mathcal{P} \lhd \mathcal{Q}$.
+
+  Furthermore, if the models are \emph{strictly} compatible,
+  then $S_j = 1(\tx{Out}(\tx{Routed}(\tx{Corrupt}_C(\mathcal{Q}.P_i))))$.
 
 \txbf{Proof:} We start by unrolling $\tx{Inst}_{C'}(\mathcal{P} \lhd \mathcal{Q})$,
 to get:
