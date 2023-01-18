@@ -1214,4 +1214,165 @@ $\blacksquare$
 
   \txbf{3.} At this point our crude summary of the breakdown theorem is not
   sufficient anymore.
+  We start with the same reasoning.
+  For any $C' \in \mathcal{C}'$, there exists a \emph{strictly}
+  compatible $C \in \mathcal{C}$, and we have:
+  $$
+  \tx{Inst}_{C'}(\mathcal{P} \lhd \mathcal{Q}) = \tx{Stuff} \circ \tx{Inst}_C(\mathcal{Q})
+  $$
+  then, we apply our assumption that $\mathcal{Q} \overset{\epsilon}{\leadsto}_{\mathcal{C}} \mathcal{Q}'$,
+  giving us:
+  $$
+  \tx{Stuff} \circ \tx{Inst}_C(\mathcal{Q}) \overset{\epsilon}{\approx} \tx{Stuff} \circ (S \otimes 1(\ldots)) \circ \tx{Inst}_C(\mathcal{Q})
+  $$
+  Our strategy will be to rearrange the right hand side to get
+  $$
+  {(S' \otimes 1(\ldots)) \circ \tx{Inst}_{C'}(\mathcal{P} \lhd \mathcal{Q}')}
+  $$
+  We start by unrolling $\tx{Stuff}$, using strict compatability, to get:
+  $$
+  1(O)\circ
+  \begin{pmatrix}
+    {\displaystyle \bigast}_{i \in [\mathcal{P}.n]} \tx{Routed}(\tx{Corrupt}_{C'}(\mathcal{P}.P_i))
+    \cr
+    *\cr
+    \mathcal{R}_{\mathcal{P}}\cr
+    \otimes\cr
+    1(\tx{Leakage}, L_{\mathcal{Q}'})
+  \end{pmatrix}
+  \circ
+  \begin{pmatrix}
+    \mathcal{P}.F\cr
+    \otimes\cr
+    1(\tx{Out}(\mathcal{R}_q))\cr
+    \otimes\cr
+    1(\mathcal{Q}'.\tx{Leakage})\cr
+    \otimes\cr
+    \bigotimes_{i \in [\mathcal{Q}'.n]} 1_i\cr
+  \end{pmatrix}
+  \circ
+  \begin{pmatrix}
+    S\cr
+    \otimes\cr
+    1(O_{\bar{S}})
+  \end{pmatrix}
+  \circ
+  \tx{Inst}_C(\mathcal{Q}')
+  $$
+  with $O_{\bar{S}} := \tx{Out}(\tx{Inst}_C(\mathcal{Q}')) / \tx{Out}(S)$,
+  and with each $1_i := 1(\tx{Out}(\tx{Inst}_C(\mathcal{Q}'.P_i)))$.
+  we can apply interchange a few times to get:
+  $$
+  \footnotesize
+  1(O) \circ
+  \begin{pmatrix}
+    \begin{pmatrix}
+    {\displaystyle \bigast_{C'_i \neq \tx{H}}}
+    \begin{pmatrix}
+      \tx{Routed}(\tx{Corrupt}_{C'}(\mathcal{P}.P_i))\cr
+      \otimes\cr
+      1(L_i)
+    \end{pmatrix}\cr
+    \otimes\cr
+    1(\tx{Leakage})
+    \end{pmatrix}
+    \circ
+    \begin{pmatrix}
+      S\cr
+      \otimes\cr
+      1(O_S)
+    \end{pmatrix}
+    \circ
+    \begin{pmatrix}
+    {\displaystyle \bigast_{C_i \neq \tx{H}}}
+    \tx{Routed}(\tx{Corrupt}_C(\mathcal{Q}'.P_i))
+    \cr
+    \otimes\cr
+    1(\tx{Leakage})
+    \end{pmatrix}
+    \cr
+    *\cr
+    {\displaystyle \bigast_{C'_i = \tx{H}}}
+    \tx{Routed}(\tx{Corrupt}_{C'}((\mathcal{P} \lhd \mathcal{Q}').P_i))\cr
+    *\cr
+    \mathcal{R}_{\mathcal{P}} \circ \mathcal{R}_{\mathcal{Q}'}\cr
+  \end{pmatrix}
+  \circ
+  \begin{pmatrix}
+    \mathcal{P}.F\cr
+    \otimes\cr
+    \mathcal{Q}'.F
+  \end{pmatrix}
+  $$
+  with $O_S := \tx{Leakage} \cup \left(\bigcup_{C_i = \tx{SH}} \tx{Out}(\tx{Corrupt}_{SH}(\mathcal{Q}'.P_i)) / \{\mathcal{Q}'.P_i.\tx{log}\}\right)$,
+  and $L_i$ as per the horizontal breakdown theorem.
+  The only functions that $S$ masks are the malicious corruption
+  functions, and the logs from semi-honest corruption.
+  Semi-honest corruption does not use any outputs of $S$,
+  instead relying on the $\mathcal{Q}'.P_i$, accessible via $1(O_S)$.
+  In fact, the only way $S$ is used by $\mathcal{P}.P_i$ is via
+  the maliciously corrupt players, which can call functions exported
+  by the $\mathcal{Q}'.P_i$ via $S$.
+  However, because $1(O)$ does \emph{not} provide access to
+  $\tx{Call}_F$ for each of these maliciously corrupt $\mathcal{P}.P_i$,
+  we can effectively replace them with equivalent systems that don't
+  have these functions, and thus do not depend on $S$.
+  In conclusion, we can then write:
+  $$
+  \footnotesize
+  1(O) \circ
+  \begin{pmatrix}
+    \begin{pmatrix}
+      S\cr
+      \otimes\cr
+      1(\ldots)
+    \end{pmatrix}
+    \circ
+    \begin{pmatrix}
+    {\displaystyle \bigast_{C'_i \neq \tx{H}}}
+    \begin{pmatrix}
+      \tx{Routed}(\tx{Corrupt}'_{C'}(\mathcal{P}.P_i))\cr
+      \otimes\cr
+      1(L_i)
+    \end{pmatrix}\cr
+    \otimes\cr
+    1(\tx{Leakage})
+    \end{pmatrix}
+    \circ
+    \begin{pmatrix}
+    {\displaystyle \bigast_{C_i \neq \tx{H}}}
+    \tx{Routed}(\tx{Corrupt}_C(\mathcal{Q}'.P_i))
+    \cr
+    \otimes\cr
+    1(\tx{Leakage})
+    \end{pmatrix}
+    \cr
+    *\cr
+    {\displaystyle \bigast_{C'_i = \tx{H}}}
+    \tx{Routed}(\tx{Corrupt}_{C'}((\mathcal{P} \lhd \mathcal{Q}').P_i))\cr
+    *\cr
+    \mathcal{R}_{\mathcal{P}} \circ \mathcal{R}_{\mathcal{Q}'}\cr
+  \end{pmatrix}
+  \circ
+  \begin{pmatrix}
+    \mathcal{P}.F\cr
+    \otimes\cr
+    \mathcal{Q}'.F
+  \end{pmatrix}
+  $$
+  which becomes:
+  $$
+  \begin{pmatrix}
+    S\cr
+    \otimes\cr
+    1(\tx{Out}(\tx{Inst}_{C'}(\mathcal{P} \lhd \mathcal{Q}')) / \tx{Out}(S))
+  \end{pmatrix}
+  \circ
+  \tx{Inst}_{C'}(\mathcal{P} \lhd \mathcal{Q}')
+  $$
+
+  From this chain of equalities we conclude that
+  $\mathcal{P} \lhd \mathcal{Q}' \overset{\epsilon}{\leadsto} \mathcal{P} \lhd \mathcal{Q}'$
+
+  $\blacksquare$
 \end{theorem}
