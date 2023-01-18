@@ -1,7 +1,7 @@
 \section{Protocols and Composition}
 
 \begin{definition}[Protocols]
-An \emph{protocol} $\mathcal{P}$ consists of:
+A \emph{protocol} $\mathcal{P}$ consists of:
 \begin{itemize}
 \item Systems $P_1, \ldots, P_n$, called \emph{players}
 \item A package $F$, called the \emph{ideal functionality}
@@ -16,9 +16,10 @@ $$
 \bigcup_{i \in [n]} \text{OutChan}(P_i) = \bigcup_{i \in [n]} \text{InChan}(P_i)
 $$
 
-Second, we require that the functions the systems depend on are disjoint:
+Second, we require that the functions the systems depend on are disjoint,
+outside of the ideal functionality:
 $$
-\forall i, j \in [n].\quad \text{In}(P_i) \cap \text{In}(P_j) = \emptyset
+\forall i, j \in [n].\quad \text{In}(P_i) \cap \text{In}(P_j) \subseteq \tx{Out}(F)
 $$
 
 Third, we require that the functions the systems export on are disjoint:
