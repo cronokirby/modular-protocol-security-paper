@@ -602,7 +602,7 @@ $\blacksquare$
   \tx{Inst}_{C'}(\mathcal{P} \lhd \mathcal{Q}) =
   1(O)\circ
   \begin{pmatrix}
-    {\displaystyle \bigast}_{i \in [\mathcal{P}.n]} \tx{Routed}(\tx{Corrupt}_{C'}(\mathcal{P}.P_i))
+    {\displaystyle \bigast}_{i \in [\mathcal{P}.n]} \tx{Routed}(\tx{Corrupt}'_{C'}(\mathcal{P}.P_i))
     \cr
     *\cr
     \mathcal{R}_{\mathcal{P}}\cr
@@ -623,8 +623,10 @@ $\blacksquare$
   \tx{Inst}_C(\mathcal{Q})
   $$
   where $O := \tx{Out}(\tx{Inst}_{C'}(\mathcal{P} \lhd \mathcal{Q}))$,
-  and $\mathcal{R}_{\mathcal{P}} \circ \mathcal{R}_{\mathcal{Q}} = \mathcal{R}$
-  are a decomposition of the router $\mathcal{R}$ for $\mathcal{P} \lhd \mathcal{Q}$.
+  $\mathcal{R}_{\mathcal{P}} \circ \mathcal{R}_{\mathcal{Q}} = \mathcal{R}$
+  are a decomposition of the router $\mathcal{R}$ for $\mathcal{P} \lhd \mathcal{Q}$,
+  and $\tx{Corrupt}'_{C'}(\ldots)$ is the same as $\tx{Corrupt}_{C'}$,
+  except that malicious corruption contains no $\tx{Call}_{F_i}$ functions.
 
   Furthermore, if the models are \emph{strictly} compatible,
   then $S_j = 1(\tx{Out}(\tx{Routed}(\tx{Corrupt}_C(\mathcal{Q}.P_i))))$.
@@ -658,7 +660,7 @@ $$
 \tx{Corrupt}_M(P \circ (Q_1 * \cdots * Q_m)) =
 1(O) \circ
 \begin{pmatrix}
-  \tx{Corrupt}_M(P)\cr
+  \tx{Corrupt}'_M(P)\cr
   \otimes\cr
   1(\tx{Out}(\tx{Corrupt}_M(Q_1)), \ldots)\cr
 \end{pmatrix}
@@ -675,6 +677,9 @@ for $O = \tx{Out}(\tx{Corrupt}_M(P \circ (Q_1 * \cdots)))$.
 This holds by definition, since corruption $P \circ (Q_1 * \cdots)$ precisely allows
 sending messages on behalf of $P$ or any $Q_i$, as well as calling
 the input functions to the $Q_i$ systems.
+Since we can't call the functions that $P$ uses,
+we use $\tx{Corrupt}'_{M}$, which modifies malicious corruption to only
+contain $\tx{Send}_{A_i}$ and $\tx{Recv}_{B_i}$.
 We can write this expression more concisely,
 using $1(L^M)$ for $L^M = \tx{Out}(\tx{Corrupt}_M(Q_1)) \cup \cdots$.
 
@@ -718,7 +723,7 @@ $$
 \tx{Corrupt}_{C'}((\mathcal{P} \lhd \mathcal{Q}).P_i) =
 1(O_i) \circ
 \begin{pmatrix}
-  \tx{Corrupt}_{C'}(\mathcal{P}.P_i)\cr
+  \tx{Corrupt}'_{C'}(\mathcal{P}.P_i)\cr
   \otimes\cr
   1(L_i)\cr
 \end{pmatrix}
@@ -775,7 +780,7 @@ with $S_j$ depending on the level of corruption for $\mathcal{Q}.P_j$ in $C$:
 
 We can unify these three cases, writing:
 $$
-\tx{Corrupt}_{C'}((\mathcal{P} \lhd \mathcal{Q}).P_i) =
+\tx{Corrupt}'_{C'}((\mathcal{P} \lhd \mathcal{Q}).P_i) =
 1(O_i) \circ
 \begin{pmatrix}
   \tx{Corrupt}_{\tx{C'}}(P)\cr
@@ -795,7 +800,7 @@ and $\mathcal{Q}.P_j$.
 By the properties of $\tx{Routed}$ (Lemma~\ref{thm:routed}), we have:
 $$
 \begin{aligned}
-&\tx{Routed}(\tx{Corrupt}_{C'}((\mathcal{P} \lhd \mathcal{Q}).P_i)) =\cr
+&\tx{Routed}(\tx{Corrupt}'_{C'}((\mathcal{P} \lhd \mathcal{Q}).P_i)) =\cr
 &1(O_i) \circ
 \begin{pmatrix}
   \tx{Routed}(\tx{Corrupt}_{\tx{C'}}(P))\cr
@@ -819,7 +824,7 @@ and provides access to those in $\mathcal{Q}$ via its function dependencies.
 Combing this with the interchange lemma, we get:
 $$
 \begin{aligned}
-&\mathcal{R} * \bigast_{i \in [\mathcal{P}.n]}\tx{Routed}(\tx{Corrupt}_{C'}((\mathcal{P} \lhd \mathcal{Q}).P_i)) * \mathcal{R} =\cr
+&\mathcal{R} * \bigast_{i \in [\mathcal{P}.n]}\tx{Routed}(\tx{Corrupt}'_{C'}((\mathcal{P} \lhd \mathcal{Q}).P_i)) * \mathcal{R} =\cr
 &1(\tx{Out}(\mathcal{R}), O_1, \ldots, O_{\mathcal{P}.n}) \circ
 \begin{pmatrix}
   \tx{Routed}(\tx{Corrupt}_{\tx{C'}}(P))\cr
@@ -846,7 +851,7 @@ $$
   &\tx{Inst}_{C'}(\mathcal{P} \lhd \mathcal{Q}) =\cr
 &1(O) \circ
 \begin{pmatrix}
-  \tx{Routed}(\tx{Corrupt}_{\tx{C'}}(P))\cr
+  \tx{Routed}(\tx{Corrupt}'_{\tx{C'}}(P))\cr
   *\cr
   \mathcal{R}_{\mathcal{P}}\cr
   \otimes\cr
@@ -879,7 +884,7 @@ does not use any channels, we can rewrite this as:
 $$
 1(O) \circ
 \begin{pmatrix}
-  \tx{Routed}(\tx{Corrupt}_{\tx{C'}}(P))\cr
+  \tx{Routed}(\tx{Corrupt}'_{\tx{C'}}(P))\cr
   *\cr
   \mathcal{R}_{\mathcal{P}}\cr
   \otimes\cr
@@ -1233,7 +1238,7 @@ $\blacksquare$
   $$
   1(O)\circ
   \begin{pmatrix}
-    {\displaystyle \bigast}_{i \in [\mathcal{P}.n]} \tx{Routed}(\tx{Corrupt}_{C'}(\mathcal{P}.P_i))
+    {\displaystyle \bigast}_{i \in [\mathcal{P}.n]} \tx{Routed}(\tx{Corrupt}'_{C'}(\mathcal{P}.P_i))
     \cr
     *\cr
     \mathcal{R}_{\mathcal{P}}\cr
@@ -1269,7 +1274,7 @@ $\blacksquare$
     \begin{pmatrix}
     {\displaystyle \bigast_{C'_i \neq \tx{H}}}
     \begin{pmatrix}
-      \tx{Routed}(\tx{Corrupt}_{C'}(\mathcal{P}.P_i))\cr
+      \tx{Routed}(\tx{Corrupt}'_{C'}(\mathcal{P}.P_i))\cr
       \otimes\cr
       1(L_i)
     \end{pmatrix}\cr
@@ -1310,14 +1315,11 @@ $\blacksquare$
   functions, and the logs from semi-honest corruption.
   Semi-honest corruption does not use any outputs of $S$,
   instead relying on the $\mathcal{Q}'.P_i$, accessible via $1(O_S)$.
-  In fact, the only way $S$ is used by $\mathcal{P}.P_i$ is via
-  the maliciously corrupt players, which can call functions exported
-  by the $\mathcal{Q}'.P_i$ via $S$.
-  However, because $1(O)$ does \emph{not} provide access to
-  $\tx{Call}_F$ for each of these maliciously corrupt $\mathcal{P}.P_i$,
-  we can effectively replace them with equivalent systems that don't
-  have these functions, and thus do not depend on $S$.
-  In conclusion, we can then write:
+  In the case of malicious corruption, since $\tx{Corrupt}'_{C'}(\mathcal{P}.P_i)$
+  omits the $\tx{Call}_{F_i}$ functions, the system also has no dependencies
+  on the output of $S$.
+  Since none of these corrupted players depend on $S$,
+  we can slide it forward, using interchange, to get:
   $$
   \footnotesize
   1(O) \circ
