@@ -5,6 +5,7 @@ A \emph{protocol} $\mathcal{P}$ consists of:
 \begin{itemize}
 \item Systems $P_1, \ldots, P_n$, called \emph{players}
 \item A package $F$, called the \emph{ideal functionality}
+\item A set $\tx{Leakage} \subseteq \tx{Out}(F)$, called the leakage
 \end{itemize}
 
 Furthermore, we also impose requirements on the channels and functions
@@ -38,7 +39,6 @@ Finally, we define
 $$
 \begin{aligned}
 &\text{IdealIn}(\mathcal{P}) := \text{In}(F)\cr
-&\text{Leakage}(\mathcal{P}) := \text{Out}(F) / \left(\bigcup_{i \in [n]} \tx{In}(P_i)\right)
 \end{aligned}
 $$
 
@@ -62,7 +62,8 @@ when:
 $
 {\forall i \in [n].\enspace \mathcal{P}.P_i = \mathcal{Q}.P_{\pi(i)}}
 $
-\item $\mathcal{P}.F = \mathcal{P}.G$
+\item $\mathcal{P}.F = \mathcal{Q}.F$
+\item $\mathcal{P}.\tx{Leakage} = \mathcal{Q}.\tx{Leakage}$
 \end{itemize}
 
 $\square$
@@ -73,7 +74,7 @@ Given an protocol $\mathcal{P}$ and a package $G$, satisfying
 $\text{IdealIn}(\mathcal{P}) \subseteq \text{Out}(G)$,
 we can define the protocol $\mathcal{P} \circ G$.
 
-$\mathcal{P} \circ G$ has the same players as $\mathcal{P}$,
+$\mathcal{P} \circ G$ has the same players and leakage as $\mathcal{P}$,
 but its ideal functionality $F$ becomes $F \circ G$.
 
 $\square$
@@ -132,7 +133,8 @@ $$
 And, because of our assumption, each player in $\mathcal{Q}$ appears
 somewhere in this equation.
 
-The ideal functionality is $\mathcal{P}.F \otimes \mathcal{Q}.F$.
+The ideal functionality is $\mathcal{P}.F \otimes \mathcal{Q}.F$,
+and the leakage is $\mathcal{P}.\tx{Leakage} \cup \mathcal{Q}.\tx{Leakage}$.
 
 We can also easily show that this definition is well defined, satisfying
 the required properties of an protocol.
@@ -247,6 +249,7 @@ in $\mathcal{P}$ and $\mathcal{Q}$.
 The ideal functionality is $\mathcal{P}.F \otimes \mathcal{Q}.F$, 
 unless $\mathcal{P}.F = \mathcal{Q}.F$, in which case the ideal functionality
 is simply $\mathcal{P}.F$.
+In either case, the leakage is $\mathcal{P}.\tx{Leakage} \cup \mathcal{Q}.\tx{Leakage}$.
 This use of $\otimes$ is well defined by assumption.
 
 The resulting protocol is also clearly well defined.
