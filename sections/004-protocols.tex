@@ -446,7 +446,7 @@ Some common classes are:
 \end{itemize}
 
 \begin{definition}[Instantiation]
-  Given a closed protocol $\mathcal{P}$ and a corruption model $C$, we can
+  Given a protocol $\mathcal{P}$ with $\tx{In}(\mathcal{P}) = \emptyset$, and a corruption model $C$, we can
   define an \emph{instantiation} $\tx{Inst}_C(\mathcal{P})$, which
   is a system defining the semantics of the protocol.
 
@@ -1289,7 +1289,7 @@ $\blacksquare$
     \begin{pmatrix}
       S\cr
       \otimes\cr
-      1(O_S)
+      1(O_{\bar{S}})
     \end{pmatrix}
     \circ
     \begin{pmatrix}
@@ -1313,9 +1313,8 @@ $\blacksquare$
     \mathcal{Q}'.F
   \end{pmatrix}
   $$
-  with $O_S := \tx{Leakage} \cup \left(\bigcup_{C_i = \tx{SH}} \tx{Out}(\tx{Corrupt}_{SH}(\mathcal{Q}'.P_i)) / \{\mathcal{Q}'.P_i.\tx{log}\}\right)$,
   and $L_i$ as per the horizontal breakdown theorem.
-  The only functions that $S$ masks are the malicious corruption
+  The only functions that $S$ masks are the leakage, the malicious corruption
   functions, and the logs from semi-honest corruption.
   Semi-honest corruption does not use any outputs of $S$,
   instead relying on the $\mathcal{Q}'.P_i$, accessible via $1(O_S)$.
@@ -1382,3 +1381,63 @@ $\blacksquare$
 
   $\blacksquare$
 \end{theorem}
+
+\subsection{Global Functionalities}
+
+\begin{definition}[Relatively Closed Protocols]
+  A protocol $\mathcal{P}$ is \emph{closed relative to} a game $G$
+  if:
+  \begin{itemize}
+    \item $\tx{In}(\mathcal{P}) = \emptyset$
+    \item $\tx{IdealIn}(\mathcal{P}) \subseteq \tx{Out}(G)$
+  \end{itemize} 
+
+  $\square$
+\end{definition}
+\begin{definition}[Relative Instantiation]
+  Given a closed protocol $\mathcal{P}$ relative to $G$, we can define,
+  for any corruption model $C$,
+  the relative instantiation:
+  $$
+  \tx{Inst}_{C}^G(\mathcal{P}) :=
+  \begin{pmatrix}
+    \tx{Inst}_C(\mathcal{P})\cr
+    \otimes\cr
+    1(\tx{Out}(G))
+  \end{pmatrix}
+  \circ G
+  $$
+
+  We can also extend this to the case of simulated instantiation,
+  defining, for any simulator $S$:
+  $$
+  \tx{Inst}_{S, C}^G(\mathcal{P}) :=
+  \begin{pmatrix}
+    \tx{Inst}_{S, C}(\mathcal{P})\cr
+    \otimes\cr
+    1(\tx{Out}(G))
+  \end{pmatrix}
+  \circ G
+  $$
+
+  $\square$
+\end{definition}
+
+\begin{definition}[Relative Notions of Equality]
+\end{definition}
+
+\begin{theorem}[Relative Equality Hierarchy]
+\end{theorem}
+
+\begin{theorem}[Global Vertical Composition Theorem]
+\end{theorem}
+
+\begin{theorem}[Global Concurrent Composition Theorem]
+\end{theorem}
+
+\begin{theorem}[Global Horizontal Composition Theorem]
+\end{theorem}
+
+\subsection{Hopping Ideal Functionalities}
+
+\subsection{Some Syntactical Conventions}
