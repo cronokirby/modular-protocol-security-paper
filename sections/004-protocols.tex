@@ -1493,6 +1493,93 @@ $\blacksquare$
     \item $\mathcal{Q} \overset{\epsilon}{\approx}^G_{\mathcal{C}} \mathcal{Q}' \implies \mathcal{P} \otimes \mathcal{Q} \overset{\epsilon}{\approx}^G_{\mathcal{C}'} \mathcal{P} \otimes \mathcal{Q}'$
     \item $\mathcal{Q} \overset{\epsilon}{\leadsto}^G_{\mathcal{C}} \mathcal{Q}' \implies \mathcal{P} \otimes \mathcal{Q} \overset{\epsilon}{\leadsto}^G_{\mathcal{C}'} \mathcal{P} \otimes \mathcal{Q}'$
   \end{enumerate}
+
+  \txbf{Proof:} We start by using Theorem~\ref{thm:concurrent_breakdown}, giving us:
+  $$
+  \tx{Inst}^G_{C'}(\mathcal{P} \otimes \mathcal{Q})
+  =
+  \begin{pmatrix}
+    \tx{Inst}_{C'}(\mathcal{P})\cr
+    \otimes\cr
+    \tx{Inst}_C(\mathcal{Q})\cr
+    \otimes\cr
+    1(\tx{Out}(G))
+  \end{pmatrix}
+  \circ G
+  =
+  \begin{pmatrix}
+    \tx{Inst}_{C'}(\mathcal{P})\cr
+    \otimes\cr
+    1(\tx{Out}(\tx{Inst}_C(\mathcal{Q})))\cr
+    \otimes\cr
+    1(\tx{Out}(G))
+  \end{pmatrix}
+  \circ
+  \tx{Inst}^G_C(\mathcal{Q})
+  $$
+  We can then immediately derive parts 1 and 2.
+
+  For part 3, we apply the hypothesis to the last part of the above relation, to get:
+  $$
+  \tx{Inst}^G_{\mathcal{C'}} \overset{\epsilon}{\approx}
+  \begin{pmatrix}
+    \tx{Inst}_{C'}(\mathcal{P})\cr
+    \otimes\cr
+    1(\tx{Out}(\tx{Inst}_C(\mathcal{Q})))\cr
+    \otimes\cr
+    1(\tx{Out}(G))
+  \end{pmatrix}
+  \circ
+  \tx{SimInst}^G_{S, C}(\mathcal{Q})
+  $$
+  Then, we unroll $\tx{SimInst}^G_{S, C}(\mathcal{Q})$, to get:
+  $$
+  \begin{pmatrix}
+    \tx{Inst}_{C'}(\mathcal{P})\cr
+    \otimes\cr
+    1(\tx{Out}(\tx{Inst}_C(\mathcal{Q})))\cr
+    \otimes\cr
+    1(\tx{Out}(G))
+  \end{pmatrix}
+  \circ
+  \begin{pmatrix}
+    \begin{pmatrix}
+      S\cr
+      \otimes\cr
+      1(\ldots)\cr
+    \end{pmatrix}
+    \circ \tx{Inst}_C(\mathcal{Q})\cr
+    \otimes\cr
+    1(\tx{Out}(G))
+  \end{pmatrix}
+  \circ G
+  $$
+  Then, we apply interchange to get:
+  $$
+  \begin{pmatrix}
+    \begin{pmatrix}
+      1(\ldots)\cr
+      \otimes\cr
+      S\cr
+      \otimes\cr
+      1(\ldots)\cr
+    \end{pmatrix}
+    \circ
+    \begin{pmatrix}
+    \tx{Inst}_{C'}(\mathcal{P})\cr
+    \otimes\cr
+    \tx{Inst}_C(\mathcal{Q})\cr
+    \end{pmatrix}\cr
+    \otimes\cr
+    1(\tx{Out}(G))
+  \end{pmatrix}
+  \circ G
+  $$
+  But this is just $\tx{SimInst}^G_{S', C'}(\mathcal{P} \otimes \mathcal{Q})$,
+  for some simulator $S'$,
+  applying concurrent breakdown in reverse.
+
+  $\blacksquare$
 \end{theorem}
 
 \begin{theorem}[Global Horizontal Composition Theorem]
