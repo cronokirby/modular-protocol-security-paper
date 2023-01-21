@@ -1054,6 +1054,7 @@ $\blacksquare$
 \end{theorem}
 
 \begin{theorem}[Vertical Composition Theorem]
+  \label{thm:vertical_composition_theorem}
   For any protocol $\mathcal{P}$ and game $G$, such that $\mathcal{P} \circ G$
   is well defined and closed, and for any corruption class $\mathcal{C}$, we have:
   \begin{enumerate}
@@ -1463,6 +1464,24 @@ $\blacksquare$
     \item $F = F' \implies \mathcal{P} \circ F =^G_{\mathcal{C}} \mathcal{P} \circ F'$
     \item $F \overset{\epsilon}{\approx} F' \implies \mathcal{P} \circ F \overset{\epsilon}{\approx}^G_{\mathcal{C}} \mathcal{P} \circ F'$
   \end{enumerate}
+
+  \txbf{Proof:} The proof of Theorem~\ref{thm:vertical_composition_theorem} will be the basis
+  for what we do here.
+  Using it, we can write:
+  $$
+  \tx{Inst}^G_C(\mathcal{P} \circ F) =
+  \begin{pmatrix}
+    A \circ F\cr
+    \otimes\cr
+    1(\tx{Out}(G))
+  \end{pmatrix}
+  \circ G
+  $$
+  for some system $A$.
+  At this point, the theorem immediately holds, since $\circ$ and $\otimes$ (for systems)
+  respect both $=$ and $\approx$.
+
+  $\blacksquare$
 \end{theorem}
 
 \begin{theorem}[Global Concurrent Composition Theorem]
