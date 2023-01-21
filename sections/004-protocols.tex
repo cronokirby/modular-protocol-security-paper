@@ -1437,15 +1437,47 @@ $\blacksquare$
 \end{definition}
 
 \begin{theorem}[Relative Equality Hierarchy]
+  For any corruption class $\mathcal{C}$ and game $G$, we have:
+\begin{enumerate}
+\item $\mathcal{P} =^G_{\mathcal{C}} \mathcal{Q} \implies \mathcal{P} \overset{0}{\approx}^G_\mathcal{C} \mathcal{Q}$.
+\item $\mathcal{P} \overset{\epsilon}{\approx}^G_{\mathcal{C}} \mathcal{Q} \implies \mathcal{P} \overset{\epsilon}{\leadsto}^G_\mathcal{C} \mathcal{Q}$.
+\end{enumerate}
 \end{theorem}
 
 \begin{theorem}[Global Vertical Composition Theorem]
+  For any protocol $\mathcal{P}$ and game $F$, such that $\mathcal{P} \circ F$
+  is well defined and closed relative to $G$, and for any corruption class $\mathcal{C}$, we have:
+  \begin{enumerate}
+    \item $F = F' \implies \mathcal{P} \circ F =^G_{\mathcal{C}} \mathcal{P} \circ F'$
+    \item $F \overset{\epsilon}{\approx} F' \implies \mathcal{P} \circ F \overset{\epsilon}{\approx}^G_{\mathcal{C}} \mathcal{P} \circ F'$
+  \end{enumerate}
 \end{theorem}
 
 \begin{theorem}[Global Concurrent Composition Theorem]
+  Let $\mathcal{P}, \mathcal{Q}$ be closed protocols relative to $G$, with $\mathcal{P} \otimes \mathcal{Q}$
+  well defined. For any compatible corruption classes $\mathcal{C}, \mathcal{C}'$
+  it holds that:
+  \begin{enumerate}
+    \item $\mathcal{Q} =^G_{\mathcal{C}} \mathcal{Q}' \implies \mathcal{P} \otimes \mathcal{Q} =^G_{\mathcal{C}'} \mathcal{P} \otimes \mathcal{Q}'$
+    \item $\mathcal{Q} \overset{\epsilon}{\approx}^G_{\mathcal{C}} \mathcal{Q}' \implies \mathcal{P} \otimes \mathcal{Q} \overset{\epsilon}{\approx}^G_{\mathcal{C}'} \mathcal{P} \otimes \mathcal{Q}'$
+    \item $\mathcal{Q} \overset{\epsilon}{\leadsto}^G_{\mathcal{C}} \mathcal{Q}' \implies \mathcal{P} \otimes \mathcal{Q} \overset{\epsilon}{\leadsto}^G_{\mathcal{C}'} \mathcal{P} \otimes \mathcal{Q}'$
+  \end{enumerate}
 \end{theorem}
 
 \begin{theorem}[Global Horizontal Composition Theorem]
+  For any protocols $\mathcal{P}, \mathcal{Q}$ closed relative to $G$, with $\mathcal{P} \lhd \mathcal{Q}$
+  well defined, and for any compatible corruption classes $\mathcal{C}, \mathcal{C'}$, we have:
+  \begin{enumerate}
+    \item $\mathcal{Q} =^G_{\mathcal{C}} \mathcal{Q}' \implies \mathcal{P} \lhd \mathcal{Q} =^G_{\mathcal{C}'} \mathcal{P} \lhd \mathcal{Q}'$
+    \item $\mathcal{Q} \overset{\epsilon}{\approx}^G_{\mathcal{C}} \mathcal{Q}' \implies \mathcal{P} \lhd \mathcal{Q} \overset{\epsilon}{\approx}^G_{\mathcal{C}'} \mathcal{P} \lhd \mathcal{Q}'$
+  \end{enumerate}
+
+  Furthermore, if $\mathcal{C}'$ is \emph{strictly} compatible with $\mathcal{C}$,
+  we have:
+  \begin{enumerate}
+    \setcounter{enumi}{2}
+    \item $\mathcal{Q} \overset{\epsilon}{\leadsto}^G_{\mathcal{C}} \mathcal{Q}' \implies \mathcal{P} \lhd \mathcal{Q} \overset{\epsilon}{\leadsto}^G_{\mathcal{C}'} \mathcal{P} \lhd \mathcal{Q}'$
+  \end{enumerate}
 \end{theorem}
 
 \subsection{Hopping Ideal Functionalities}
