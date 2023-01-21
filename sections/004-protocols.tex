@@ -1701,4 +1701,28 @@ $\blacksquare$
 
 \subsection{Hopping Ideal Functionalities}
 
+\begin{lemma}[Deidealization Lemma]
+  Given a closed protocol $\mathcal{P}$ with an ideal functionality $F \otimes G$,
+  there exists protocols $\mathcal{P}'$ and $\mathcal{G}$
+  such that:
+  $$
+  \mathcal{P} = \mathcal{P}' \lhd \mathcal{G}
+  $$
+  and $\mathcal{P}'$ has ideal functionality $F$.
+
+  \txbf{Proof:}
+
+\end{lemma}
+
+\begin{lemma}[Embedding Lemma]
+  Given a protocol $\mathcal{P}$ closed relative to a game $G$,
+  there exists a protocol $\tx{Embed}_G(\mathcal{P})$ such that for any
+  corruption model $C$, we have:
+  $$
+  \tx{Inst}^G_C(\mathcal{P}) = \tx{Inst}_C(\tx{Embed}_G(\mathcal{P}))
+  $$
+
+  \txbf{Proof:}
+\end{lemma}
+
 \subsection{Some Syntactical Conventions}
