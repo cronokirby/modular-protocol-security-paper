@@ -1013,6 +1013,7 @@ $\blacksquare$
 \end{definition}
 
 \begin{theorem}[Equality Hierarchy]
+  \label{thm:equality_hierarchy}
 For any corruption class $\mathcal{C}$, we have:
 \begin{enumerate}
 \item $\mathcal{P} \equiv \mathcal{Q} \implies \mathcal{P} =_\mathcal{C} \mathcal{Q}$.
@@ -1442,6 +1443,17 @@ $\blacksquare$
 \item $\mathcal{P} =^G_{\mathcal{C}} \mathcal{Q} \implies \mathcal{P} \overset{0}{\approx}^G_\mathcal{C} \mathcal{Q}$.
 \item $\mathcal{P} \overset{\epsilon}{\approx}^G_{\mathcal{C}} \mathcal{Q} \implies \mathcal{P} \overset{\epsilon}{\leadsto}^G_\mathcal{C} \mathcal{Q}$.
 \end{enumerate}
+\txbf{Proof:}
+
+\txbf{1.} This follows from the fact that $A = B \implies A \overset{0}{\approx} B$
+for any systems $A, B$.
+
+\txbf{2.} In the proof of Theorem~\ref{thm:equality_hierarchy},
+we used the existence of a simulator $S$ such that $\tx{SimInst}_{S, C}(\mathcal{P}) = \tx{Inst}_C(\mathcal{P})$.
+This simulator will also satisfy $\tx{SimInst}^G_{S, C}(\mathcal{P}) = \tx{Inst}^G_C(\mathcal{P})$,
+and can thus be used directly to prove this relation.
+
+$\blacksquare$
 \end{theorem}
 
 \begin{theorem}[Global Vertical Composition Theorem]
