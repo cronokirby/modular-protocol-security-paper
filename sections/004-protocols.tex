@@ -1424,14 +1424,29 @@ $\blacksquare$
 \end{definition}
 
 \begin{definition}[Relative Notions of Equality]
+  Given closed protocols $\mathcal{P}, \mathcal{Q}$ relative to $G$,
+  with the same shape, and a corruption class $\mathcal{C}$
+  for these protocols, we define:
+  \begin{itemize}
+    \item $\mathcal{P} =^G_{\mathcal{C}} \mathcal{Q} \iff \forall C \in \mathcal{C}.\ \tx{Inst}^G_C(\mathcal{P}) = \tx{Inst}^G_C(\mathcal{Q})$
+    \item $\mathcal{P} \overset{\epsilon}{\approx}^G_{\mathcal{C}} \mathcal{Q}\iff \forall C \in \mathcal{C}.\ \tx{Inst}^G_C(\mathcal{P}) \overset{\epsilon}{\approx} \tx{Inst}^G_C(\mathcal{Q})$
+    \item $\mathcal{P} \overset{\epsilon}{\leadsto}^G_{\mathcal{C}} \mathcal{Q}\iff \forall C \in \mathcal{C}.\ \exists S.\ \tx{Inst}^G_C(\mathcal{P}) \overset{\epsilon}{\approx} \tx{SimInst}^G_{S,C}(\mathcal{Q})$
+  \end{itemize}
+
+  $\square$
 \end{definition}
 
 \begin{theorem}[Relative Equality Hierarchy]
 \end{theorem}
 
-\begin{theorem}[Global Composition Theorem]
+\begin{theorem}[Global Vertical Composition Theorem]
+\end{theorem}
 
+\begin{theorem}[Global Concurrent Composition Theorem]
+\end{theorem}
 
+\begin{theorem}[Global Horizontal Composition Theorem]
+\end{theorem}
 
 \subsection{Hopping Ideal Functionalities}
 
