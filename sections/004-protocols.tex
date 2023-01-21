@@ -624,7 +624,11 @@ $\blacksquare$
     \bigotimes_{i \in [\mathcal{Q}.n]} S_i\cr
   \end{pmatrix}
   \circ
-  \tx{Inst}_C(\mathcal{Q})
+  \begin{pmatrix}
+  \tx{Inst}_C(\mathcal{Q})\cr
+  \otimes\cr
+  1(\tx{In}(\mathcal{P}.F))
+  \end{pmatrix}
   $$
   where $O := \tx{Out}(\tx{Inst}_{C'}(\mathcal{P} \lhd \mathcal{Q}))$,
   $\mathcal{R}_{\mathcal{P}} \circ \mathcal{R}_{\mathcal{Q}} = \mathcal{R}$
@@ -886,6 +890,7 @@ Now, because $\mathcal{Q}$ does not use any of the functions
 in $\mathcal{P}.F$, and because each simulator $S_j$
 does not use any channels, we can rewrite this as:
 $$
+\small
 1(O) \circ
 \begin{pmatrix}
   \tx{Routed}(\tx{Corrupt}'_{\tx{C'}}(P))\cr
@@ -906,6 +911,7 @@ $$
 \end{pmatrix}
 \circ
 \begin{pmatrix}
+\begin{pmatrix}
 \bigast_{j \in [\mathcal{Q}.n]}
   \tx{Routed}(\tx{Corrupt}_C(\mathcal{Q}.P_j))
   \cr
@@ -916,6 +922,10 @@ $$
 \end{pmatrix}
 \circ
   \mathcal{Q}.F
+  \cr
+  \otimes\cr
+  1(\tx{In}(\mathcal{P}.F))
+\end{pmatrix}
 $$
 
 We can then notice that the right hand side of this equation
@@ -1178,6 +1188,7 @@ $\blacksquare$
 \end{theorem}
 
 \begin{theorem}[Horizontal Composition Theorem]
+  \label{thm:horizontal_composition_theorem}
   For any protocols $\mathcal{P}, \mathcal{Q}$ with $\mathcal{P} \lhd \mathcal{Q}$
   well defined and closed, and for any compatible corruption classes $\mathcal{C}, \mathcal{C'}$, we have:
   \begin{enumerate}
@@ -1196,7 +1207,8 @@ $\blacksquare$
   Theorem~\ref{thm:horizontal_breakdown}(horizontal breakdown)
   will be critical to proving each of these statements.
 
-  One crude summary of the theorem is given compatible
+  One crude summary of the theorem, in the case
+  that the protocols are closed, is that given compatible
   corruption models $C, C'$, there's a system $\tx{Stuff}$ such that
   $$
   \tx{Inst}_{C'}(\mathcal{P} \lhd \mathcal{Q}) = \tx{Stuff} \circ \tx{Inst}_C(\mathcal{Q})
@@ -1521,7 +1533,7 @@ $\blacksquare$
 
   For part 3, we apply the hypothesis to the last part of the above relation, to get:
   $$
-  \tx{Inst}^G_{\mathcal{C'}} \overset{\epsilon}{\approx}
+  \tx{Inst}^G_{C'} \overset{\epsilon}{\approx}
   \begin{pmatrix}
     \tx{Inst}_{C'}(\mathcal{P})\cr
     \otimes\cr
@@ -1596,6 +1608,95 @@ $\blacksquare$
     \setcounter{enumi}{2}
     \item $\mathcal{Q} \overset{\epsilon}{\leadsto}^G_{\mathcal{C}} \mathcal{Q}' \implies \mathcal{P} \lhd \mathcal{Q} \overset{\epsilon}{\leadsto}^G_{\mathcal{C}'} \mathcal{P} \lhd \mathcal{Q}'$
   \end{enumerate}
+
+  \txbf{Proof:} This proof is similar to that of Theorem~\ref{thm:horizontal_composition_theorem}.
+  By compatability, for any $C' \in \mathcal{C}'$, we have a compatible $C \in \mathcal{C}$.
+
+  A crude summary of the horizontal breakdown theorem is that:
+  $$
+  \tx{Inst}_{C'}(\mathcal{P} \lhd \mathcal{Q})
+  = \tx{Stuff} \circ \begin{pmatrix}
+    \tx{Inst}_C(\mathcal{Q})\cr
+    \otimes\cr
+    1(\tx{In}(\mathcal{P}.F))
+  \end{pmatrix}
+  $$
+  Using the fact that being closed relative to $G$ means $\tx{In}(\mathcal{P}.F) \subseteq \tx{Out}(G)$,
+  we get:
+  $$
+  \tx{Inst}^G_{C'}(\mathcal{P} \lhd \mathcal{Q}) =
+  \begin{pmatrix}
+    \tx{Stuff}\cr
+    \otimes\cr
+    1(\tx{Out}(G))
+  \end{pmatrix}
+  \circ \tx{Inst}^G_C(\mathcal{Q})
+  $$
+  Part 1 and 2 both follow immediately from this decomposition.
+
+  For part 3, we dig a bit deeper into the proof of Theorem~\ref{thm:horizontal_composition_theorem}.
+  In that proof, it was actually shown that:
+  $$
+  \tx{Stuff} \circ \tx{SimInst}_{S, C}(\mathcal{Q}') = \tx{SimInst}_{S', C'}(\mathcal{P} \lhd \mathcal{Q}')
+  $$
+  for some appropriate simulator $S'$.
+
+  We can start to apply this, first by using our hypothesis:
+  $$
+  \tx{Inst}^G_{C'}(\mathcal{P} \lhd \mathcal{Q}) =
+  \begin{pmatrix}
+    \tx{Stuff}\cr
+    \otimes\cr
+    1(\tx{Out}(G))
+  \end{pmatrix}
+  \circ \tx{Inst}^G_C(\mathcal{Q})
+  \overset{\epsilon}{\approx}
+  \begin{pmatrix}
+    \tx{Stuff}\cr
+    \otimes\cr
+    1(\tx{Out}(G))
+  \end{pmatrix}
+  \circ \tx{SimInst}^G_C(\mathcal{Q}')
+  $$
+  Next, we unroll the right side, to get:
+  $$
+  \begin{pmatrix}
+    \tx{Stuff}\cr
+    \otimes\cr
+    1(\tx{Out}(G))
+  \end{pmatrix}
+  \circ
+  \begin{pmatrix}
+    \tx{SimInst}_{S, C}(\mathcal{Q}')\cr
+    \otimes\cr
+    1(\tx{Out}(G))
+  \end{pmatrix}
+  \circ
+  G
+  $$
+  Then, apply interchange, to get:
+  $$
+  \begin{pmatrix}
+    \tx{Stuff} \circ \tx{SimInst}_{S, C}(\mathcal{Q}')\cr
+    \otimes\cr
+    1(\tx{Out}(G))
+  \end{pmatrix}
+  \circ
+  G
+  $$
+  And finally, apply the fact we dug up above, to get:
+  $$
+  \begin{pmatrix}
+    \tx{SimInst}_{S', C'}(\mathcal{P} \lhd \mathcal{Q})\cr
+    \otimes\cr
+    1(\tx{Out}(G))
+  \end{pmatrix}
+  \circ
+  G
+  $$
+  which is none other than $\tx{SimInst}^G_{S', C'}(\mathcal{P} \lhd \mathcal{Q})$.
+
+  $\blacksquare$
 \end{theorem}
 
 \subsection{Hopping Ideal Functionalities}
