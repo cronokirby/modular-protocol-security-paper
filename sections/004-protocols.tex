@@ -1762,12 +1762,24 @@ $\blacksquare$
   there exists protocols $\mathcal{P}'$ and $\mathcal{G}$
   such that:
   $$
-  \mathcal{P} = \mathcal{P}' \lhd \mathcal{G}
+  \mathcal{P} \equiv \mathcal{P}' \lhd \mathcal{G}
   $$
   and $\mathcal{P}'$ has ideal functionality $F$.
 
-  \txbf{Proof:}
 
+  \txbf{Proof:} The players of $\mathcal{P}'$ are those of $\mathcal{P}$,
+  except that each $P_i$'s call to a function $g \in \tx{Out}(G)$ is replaced with
+  a renamed function $g_i$.
+  $\mathcal{G}$ will have one player for each player in $\mathcal{P}'$.
+  Each player $\mathcal{G}.P_i$ exports a function $g_i$ for each input
+  $g_i$ of $\mathcal{P}'.P_i$, which immediately calls $g \in \tx{Out}(G)$,
+  and returns the result.
+  From this definition, it's clear that $\mathcal{P}$ is literally equal
+  to $\mathcal{P}' \lhd \mathcal{G}$, as when the players in the latter
+  are formed, the calls to the intermediate $g_i$ disappear,
+  with each player calling $g \in \tx{Out}(G)$ directly
+
+  $\blacksquare$
 \end{lemma}
 
 \begin{lemma}[Embedding Lemma]
