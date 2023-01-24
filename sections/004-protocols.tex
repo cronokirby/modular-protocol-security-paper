@@ -678,7 +678,12 @@ to get:
 \tx{Inst}_C(\mathcal{P} \lhd \mathcal{Q}) =
   \begin{pmatrix}
     {\displaystyle \bigast}_{i \in [\mathcal{P}.n]} \tx{Routed}\left(\tx{Corrupt}_{C'}\left(\mathcal{P}.P_i \circ 
-        \left( \bigast_{\mathcal{Q}.P_j \tx{ used by } \mathcal{P}.P_i} \mathcal{Q}.P_j \right)
+        
+    \begin{pmatrix}
+    \bigast_{\mathcal{Q}.P_j \tx{ used by } \mathcal{P}.P_i} \mathcal{Q}.P_j\cr
+    \otimes\cr
+    1(\tx{IdealIn}_i)
+    \end{pmatrix}
     \right)\right)\cr
     *\cr
     \mathcal{R}\cr
@@ -694,11 +699,12 @@ to get:
 Our strategy will be to progressively build up an equivalent system
 to this one, starting with $\tx{Corrupt}_C$, then $\tx{Routed}$, etc.
 
-First, some observations about $\tx{Corrupt}_\kappa(P \circ (Q_1 * \cdots))$.
+First, some observations about $\tx{Corrupt}_\kappa(P \circ (1(I) \otimes Q_1 * \cdots * Q_m))$,
+where ${I \cap \tx{In}(Q_1, \ldots) = \emptyset}$.
 
 In the case of malicious corruption, we have:
 $$
-\tx{Corrupt}_M(P \circ (Q_1 * \cdots * Q_m)) =
+\tx{Corrupt}_M(P \circ (1(I) \otimes Q_1 * \cdots)) =
 1(O) \circ
 \begin{pmatrix}
   \tx{Corrupt}'_M(P)\cr
@@ -707,11 +713,11 @@ $$
 \end{pmatrix}
 \circ
 \begin{pmatrix}
+  1(I)\cr
+  \otimes\cr
   \tx{Corrupt}_M(Q_1)\cr
   *\cr
   \cdots\cr
-  *\cr
-  \tx{Corrupt}_M(Q_m)\cr
 \end{pmatrix}
 $$
 for $O = \tx{Out}(\tx{Corrupt}_M(P \circ (Q_1 * \cdots)))$.
@@ -720,14 +726,17 @@ sending messages on behalf of $P$ or any $Q_i$, as well as calling
 the input functions to the $Q_i$ systems.
 Since we can't call the functions that $P$ uses,
 we use $\tx{Corrupt}'_{M}$, which modifies malicious corruption to only
-contain $\tx{Send}_{A_i}$ and $\tx{Recv}_{B_i}$.
+contain $\tx{Send}_{A_i}$, $\tx{Recv}_{B_i}$,
+and $\tx{Call}_{F_i}$ for $F_i \in I$.
+In particular the $\tx{Call}_{\bullet}$ functions are omitted for the functions
+provided by $Q_1, \ldots, Q_m$.
 We can write this expression more concisely,
 using $1(L^M)$ for $L^M = \tx{Out}(\tx{Corrupt}_M(Q_1)) \cup \cdots$.
 
 Next, we look at semi-honest corruption.
 Because the logs are divided into independent sub logs, we can write:
 $$
-\tx{Corrupt}_{\tx{SH}}(P \circ (Q_1 * \cdots * Q_m)) =
+\tx{Corrupt}_{\tx{SH}}(P \circ (1(I) \otimes Q_1 * \cdots)) =
 1(O) \circ
 \begin{pmatrix}
   \tx{Corrupt}_{\tx{SH}}(P)\cr
@@ -736,6 +745,8 @@ $$
 \end{pmatrix}
 \circ
 \begin{pmatrix}
+  1(I)\cr
+  \otimes\cr
   \tx{Corrupt}_{\tx{SH}}(Q_1)\cr
   *\cr
   \cdots
@@ -745,7 +756,7 @@ where $O = \tx{Out}(\tx{Corrupt}_{\tx{SH}}(P \circ (Q_1 * \cdots)))$
 
 And for honest corruption, we have
 $$
-\tx{Corrupt}_{\tx{H}}(P \circ (Q_1 * \cdots)) = P \circ (Q_1 * \cdots)
+\tx{Corrupt}_{\tx{H}}(P \circ (1(I) \otimes Q_1 * \cdots)) = P \circ (1(I) \otimes Q_1 * \cdots)
 $$
 
 Now, the compatibility condition of $C'$ relative to $C$
@@ -769,10 +780,12 @@ $$
   1(L_i)\cr
 \end{pmatrix}
 \circ
-\left(
-\bigast_{\mathcal{Q}.P_j \tx{ used by } \mathcal{P}.P_i}
-  \tx{Corrupt}_C(\mathcal{Q}.P_j)
-\right)
+\begin{pmatrix}
+\displaystyle \bigast_{\mathcal{Q}.P_j \tx{ used by } \mathcal{P}.P_i}
+  \tx{Corrupt}_C(\mathcal{Q}.P_j)\cr
+\otimes\cr
+1(\tx{IdealIn}_i)
+\end{pmatrix}
 $$
 with $O_i = \tx{Out}(\tx{Corrupt}_{C'}(\mathcal{P} \lhd \mathcal{Q}).P_i)$, $L_i= \bigcup_{\mathcal{Q}.P_j \tx{ used by } \mathcal{P}.P_i} \tx{Out}(\tx{Corrupt}_M(\mathcal{Q}.P_j))$.
 No simulation is needed, since the compatibility of $C'$ with $C$
@@ -789,10 +802,12 @@ $$
   1(L_i)
 \end{pmatrix}
 \circ
-\left(
-\bigast_{\mathcal{Q}.P_j \tx{ used by } \mathcal{P}.P_i}
-  S_j \circ \tx{Corrupt}_C(\mathcal{Q}.P_j)
-\right)
+\begin{pmatrix}
+\displaystyle \bigast_{\mathcal{Q}.P_j \tx{ used by } \mathcal{P}.P_i}
+  S_j \circ \tx{Corrupt}_C(\mathcal{Q}.P_j)\cr
+  \otimes\cr
+1(\tx{IdealIn}_i)
+\end{pmatrix}
 $$
 with $O_i = \tx{Out}(\tx{Corrupt}_{C'}(\mathcal{P} \lhd \mathcal{Q}).P_i)$,
 $L_i = \{\mathcal{Q}.P_j.\tx{log} \mid \mathcal{Q}.P_j \tx{ used by } \mathcal{P}.P_i \}$,
@@ -807,10 +822,12 @@ $$
 \tx{Corrupt}_{C'}((\mathcal{P} \lhd \mathcal{Q}).P_i) =
   \tx{Corrupt}_{\tx{C'}}(P)
 \circ
-\left(
-\bigast_{\mathcal{Q}.P_j \tx{ used by } \mathcal{P}.P_i}
-  S_j \circ \tx{Corrupt}_C(\mathcal{Q}.P_j)
-\right)
+\begin{pmatrix}
+\displaystyle \bigast_{\mathcal{Q}.P_j \tx{ used by } \mathcal{P}.P_i}
+  S_j \circ \tx{Corrupt}_C(\mathcal{Q}.P_j)\cr
+\otimes\cr
+1(\tx{IdealIn}_i)
+\end{pmatrix}
 $$
 with $S_j$ depending on the level of corruption for $\mathcal{Q}.P_j$ in $C$:
 \begin{itemize}
@@ -829,10 +846,12 @@ $$
   1(L_i)
 \end{pmatrix}
 \circ
-\left(
+\begin{pmatrix}
 \bigast_{\mathcal{Q}.P_j \tx{ used by } \mathcal{P}.P_i}
-  S_j \circ \tx{Corrupt}_C(\mathcal{Q}.P_j)
-\right)
+  S_j \circ \tx{Corrupt}_C(\mathcal{Q}.P_j)\cr
+  \otimes\cr
+1(\tx{IdealIn}_i)
+\end{pmatrix}
 $$
 with $O_i$ and $L_i$ depending on the corruption level of $\mathcal{P}.P_i$,
 and $S_j$ depending on the corruption levels of both $\mathcal{P}.P_i$
@@ -844,15 +863,17 @@ $$
 &\tx{Routed}(\tx{Corrupt}'_{C'}((\mathcal{P} \lhd \mathcal{Q}).P_i)) =\cr
 &1(O_i) \circ
 \begin{pmatrix}
-  \tx{Routed}(\tx{Corrupt}_{\tx{C'}}(P))\cr
+  \tx{Routed}(\tx{Corrupt}'_{\tx{C'}}(P))\cr
   \otimes\cr
   1(L_i)
 \end{pmatrix}
 \circ
-\left(
-\bigast_{\mathcal{Q}.P_j \tx{ used by } \mathcal{P}.P_i}
-  S_j \circ \tx{Routed}(\tx{Corrupt}_C(\mathcal{Q}.P_j))
-\right)
+\begin{pmatrix}
+\displaystyle\bigast_{\mathcal{Q}.P_j \tx{ used by } \mathcal{P}.P_i}
+  S_j \circ \tx{Routed}(\tx{Corrupt}_C(\mathcal{Q}.P_j))\cr
+  \otimes\cr
+1(\tx{IdealIn}_i)
+\end{pmatrix}
 \end{aligned}
 $$
 
@@ -880,7 +901,9 @@ $$
   S_j \circ \tx{Routed}(\tx{Corrupt}_C(\mathcal{Q}.P_j))
   \cr
   *\cr
-  \mathcal{R}_{\mathcal{Q}}
+  \mathcal{R}_{\mathcal{Q}}\cr
+  \otimes\cr
+  1(\tx{Out}(F))
 \end{pmatrix}
 \end{aligned}
 $$
@@ -906,7 +929,7 @@ $$
   *\cr
   \mathcal{R}_{\mathcal{Q}}\cr
   \otimes\cr
-  1(\tx{Leakage})
+  1(\tx{Leakage}, \tx{Out}(F))
 \end{pmatrix}
 \circ
 \begin{pmatrix}
