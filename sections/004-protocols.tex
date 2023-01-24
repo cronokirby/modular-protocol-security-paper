@@ -1359,7 +1359,7 @@ $\blacksquare$
     \begin{pmatrix}
       S\cr
       \otimes\cr
-      1(O_{\bar{S}})
+      1(O_S)
     \end{pmatrix}
     \circ
     \begin{pmatrix}
@@ -1367,7 +1367,7 @@ $\blacksquare$
     \tx{Routed}(\tx{Corrupt}_C(\mathcal{Q}'.P_i))
     \cr
     \otimes\cr
-    1(\tx{Leakage})
+    1(\tx{Out}(\mathcal{P}.F), \tx{Out}(\mathcal{Q}.F))
     \end{pmatrix}
     \cr
     *\cr
@@ -1383,7 +1383,7 @@ $\blacksquare$
     \mathcal{Q}'.F
   \end{pmatrix}
   $$
-  and $L_i$ as per the horizontal breakdown theorem.
+  with $O_S := O_{\bar{S}} \cup \tx{Out}(\mathcal{P}.F)$ and $L_i$ as per the horizontal breakdown theorem.
   The only functions that $S$ masks are the leakage, the malicious corruption
   functions, and the logs from semi-honest corruption.
   Semi-honest corruption does not use any outputs of $S$,
@@ -1419,7 +1419,7 @@ $\blacksquare$
     \tx{Routed}(\tx{Corrupt}_C(\mathcal{Q}'.P_i))
     \cr
     \otimes\cr
-    1(\tx{Leakage})
+    1(\tx{Out}(\mathcal{P}.F), \tx{Out}(\mathcal{P}.F))
     \end{pmatrix}
     \cr
     *\cr
