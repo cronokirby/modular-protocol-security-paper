@@ -1791,6 +1791,20 @@ $\blacksquare$
   $$
 
   \txbf{Proof:}
+  This one is quite simple. $\tx{Embed}_G(\mathcal{P})$ has the same players
+  as $\mathcal{P}$, with the ideal functionality becoming:
+  $$
+  \begin{pmatrix}
+    \mathcal{P}.F\cr
+    \otimes\cr
+    1(\tx{Out}(G))
+  \end{pmatrix}
+  \circ G
+  $$
+  and the leakage being $\mathcal{P}.\tx{Leakage} \cup \tx{Out}(G)$.
+  The two instantiations will then clearly be equal under any corruption model.
+
+  $\blacksquare$
 \end{lemma}
 
 \subsection{Some Syntactical Conventions}
