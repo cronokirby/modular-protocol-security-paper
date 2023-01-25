@@ -1,11 +1,12 @@
-\section{Games That Talk}
+\section{Systems}
 
-\subsection{Async Functions}
+\subsection{Asynchronous Packages}
 
 While the intuition of yield statements is simple, defining
 them precisely is a bit more tricky.
 
 \begin{definition}[Yield Statements]
+\label{def:yield}
 We define the semantics of $\textbf{yield}$ by compiling functions with
 such statements to functions without them.
 
@@ -109,7 +110,7 @@ or \emph{returned}, syntactically the caller often ignores this,
 simply doing $x \gets F(\ldots)$, meaning that they simply use
 return value $x$, discarding the tag.
 
-\begin{syntax}
+\begin{syntax}[Empty Yields]
 In many cases, no value is yielded, or returned back, which we can write as:
 $$
 \textbf{yield}
@@ -123,12 +124,12 @@ i.e. just yielding a dummy value and ignoring the result.
 $\square$
 \end{syntax}
 
-In such situations, often we don't particularly care about the intermediate
-yields of a function, and want to wait for the final result,
-potentially yielding to our own caller.
+Unless otherwise specified, we only consider empty yields from now on.
+
 We define these semantics via the $\textbf{await}$ statement.
 
 \begin{syntax}[Await Statements]
+\label{syn:await}
 We define the semantics of $v \gets \await F(\ldots)$ in a straightforward way:
 $$
 \begin{aligned}
@@ -149,6 +150,7 @@ Sometimes we want to await several values at once, returning the first
 one which completes. To that end, we define the $\textbf{select}$ statement.
 
 \begin{syntax}[Select Statements]
+\label{syn:select}
 Select statements generalize await statements in that they allow waiting
 for multiple events concurrently.
 
@@ -185,6 +187,48 @@ This is so that if one of the function is immediately ready, we never yield.
 
 $\square$
 \end{syntax}
+
+\begin{definition}[Asynchronous Packages]
+  An \emph{asynchronous} package $P$ is a package which uses the additional
+  syntax from Definition~\ref{def:yield} and Syntax~\ref{syn:await},~\ref{syn:select}.
+
+  We denote by $\tx{NoAsync}(P)$ the package derived from $P$ by compiling
+  all of these syntactical elements away with the semantics defined above.
+
+  $\square$
+\end{definition}
+
+$\tx{In/Out}$ are well defined \todo{elaborate}.
+Naturally, the definitions of $\circ$ and $\otimes$ for packages also
+generalize directly to asynchronous packages.
+
+\begin{definition}[Delayer]
+  A \emph{delayer} $D$ for an asynchronous package $P$ is an asynchronous
+  package with $\tx{In}(D) = \tx{Out}(P)$, and $\tx{Out}(D) = \tx{Out}(P)$.
+
+  Each function in $D$ is allowed to await the corresponding function in $P$,
+  potentially adding empty yields before and after the call.
+
+  More formally, $D$ has some state $\sigma$, and for each $F_i \in \tx{Out}(P)$,
+  has a function $F_i$ of the form:
+  $$
+  \begin{aligned}
+  \pind{0} \pfn{$F_i$}{x_1, \ldots}\cr
+  \pind{1} \sigma \gets \tx{modify}(\sigma, \texttt{before}, F_i, x_1, \ldots)\cr
+  \pind{1} \txbf{for } \bullet \in [\sigma.n]:\cr
+  \pind{2} \pyield{} \cr
+  \pind{1} y \gets \txbf{await } F_i(x_1, \ldots)\cr
+  \pind{1} \sigma \gets \tx{modify}(\sigma, \texttt{after}, F_i, y)\cr
+  \pind{1} \txbf{for } \bullet \in [\sigma.n]:\cr
+  \pind{2} \pyield{} \cr
+  \pind{1} \txbf{return } y
+  \end{aligned}
+  $$
+  The state can be modified based on the inputs and outputs of the function
+  being called, and indicates how many extra yields to insert.
+
+  $\square$
+\end{definition}
 
 \subsection{Channels and System Composition}
 
