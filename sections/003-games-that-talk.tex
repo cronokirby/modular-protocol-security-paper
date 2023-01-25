@@ -192,11 +192,13 @@ $\square$
   An \emph{asynchronous} package $P$ is a package which uses the additional
   syntax from Definition~\ref{def:yield} and Syntax~\ref{syn:await},~\ref{syn:select}.
 
-  We denote by $\tx{NoAsync}(P)$ the package derived from $P$ by compiling
-  all of these syntactical elements away with the semantics defined above.
-
   $\square$
 \end{definition}
+
+Note that our syntax sugar definitions means that whenever one of the constructs
+such as yield and what not are used, they are immediately replaced with their underlying
+semantics. Thus, an asynchronous package \emph{literally} is a package which 
+does not use any of those syntactical constructs.
 
 $\tx{In/Out}$ are well defined \todo{elaborate}.
 Naturally, the definitions of $\circ$ and $\otimes$ for packages also
@@ -226,6 +228,23 @@ generalize directly to asynchronous packages.
   $$
   The state can be modified based on the inputs and outputs of the function
   being called, and indicates how many extra yields to insert.
+
+  $\square$
+\end{definition}
+
+The notion of \emph{adversary} and advantage for packages also directly applies to asynchronous
+packages, we use this to define equality.
+
+\begin{definition}[Asynchronous Package Equality]
+  Given two asynchronous packages $A, B$ with $\tx{In}(A) = \tx{In}(B)$,
+  and $\tx{Out}(A) = \tx{Out}(B)$, we say that:
+  \begin{itemize}
+    \item $A$ is equal to $B$, written $A = B$, if for for any unbounded adversary $\mathcal{A}$,
+    there exists a delayer $D$ for $B$ such that $\varepsilon(\mathcal{A} \circ ?(A, D \circ B)) = 0$,
+    \item $A$ is indistinguishable from $B$ up to $\epsilon$, written $A \overset{\epsilon}{=} B$,
+    if for any bounded adversary $\mathcal{A}$,
+    there exists a delayer $D$ for $B$ such that $\varepsilon(\mathcal{A} \circ ?(A, D \circ B)) \leq \epsilon$.
+  \end{itemize}
 
   $\square$
 \end{definition}
