@@ -240,14 +240,50 @@ packages, we use this to define equality.
   and $\tx{Out}(A) = \tx{Out}(B)$, we say that:
   \begin{itemize}
     \item $A$ is equal to $B$, written $A = B$, if for for any unbounded adversary $\mathcal{A}$,
-    there exists a delayer $D$ for $B$ such that $\varepsilon(\mathcal{A} \circ ?(A, D \circ B)) = 0$,
+    there exists a delayer $D_{\mathcal{A}}$ for $B$ such that $\varepsilon(\mathcal{A} \circ ?(A, D_{\mathcal{A}} \circ B)) = 0$,
     \item $A$ is indistinguishable from $B$ up to $\epsilon$, written $A \overset{\epsilon}{=} B$,
     if for any bounded adversary $\mathcal{A}$,
-    there exists a delayer $D$ for $B$ such that $\varepsilon(\mathcal{A} \circ ?(A, D \circ B)) \leq \epsilon$.
+    there exists a delayer $D_{\mathcal{A}}$ for $B$ such that $\varepsilon(\mathcal{A} \circ ?(A, D_{\mathcal{A}} \circ B)) \leq \epsilon$.
   \end{itemize}
 
   $\square$
 \end{definition}
+
+\begin{lemma}[Equality is Transitive]
+  Given asynchronous systems $A, B, C$, we have:
+  \begin{enumerate}
+    \item $A = B, B = C \implies A = C$,
+    \item $A \overset{\epsilon_1}{=} B, B \overset{\epsilon_2}{=} C \implies A \overset{\epsilon_1 + \epsilon_2}{=} C$,
+  \end{enumerate}
+  provided that these expressions are well defined.
+
+  \txbf{Proof:} A key component of this proof is that delayers compose.
+  If $D_1, D_2$ are delayers for some package, then $D_1 \circ D_2$ will
+  be as well.
+  Now, consider an adversary $\mathcal{A}$ (either bounded or unbounded).
+  Let:
+  \begin{itemize}
+    \item $\epsilon_1 := \varepsilon(\mathcal{A} \circ ?(A, D^1_\mathcal{A} \circ B))$,
+    \item $\epsilon_2 := \varepsilon((\mathcal{A} \circ D^1_{\mathcal{A}})\circ ?(B, D^2_\mathcal{A} \circ C))$.
+  \end{itemize}
+  (These delayers exist if either of the assumptions from part 1 or part 2 are satisfied).
+  Then, by unrolling $\varepsilon$, and using a union bound \todo{reference},
+  we get:
+  $$
+  \varepsilon(\mathcal{A} \circ ?(A, (D^1_{\mathcal{A}} \circ D^2_{\mathcal{A}}) \circ C)) \leq \epsilon_1 + \epsilon_2
+  $$
+  This clearly implies both parts 1 and 2.
+  For part 1, $\epsilon_1, \epsilon_2 = 0$, so this holds,
+  and for part 2, the delayers are efficient.
+
+  $\blacksquare$
+\end{lemma}
+
+\begin{lemma}[Tensoring Respects Equality]
+\end{lemma}
+
+\begin{lemma}[Horizontal Composition Respects Equality]
+\end{lemma}
 
 \subsection{Channels and System Composition}
 
