@@ -285,32 +285,37 @@ but with the usage of channels replaced with actual semantics.
 
 This allows us to lift our standard equality relations on packages onto
 \emph{systems}.
+
 \begin{definition}
-Given some equality relation $\sim$ on packages, we can lift that relation
-to systems by definining:
-$$
-A \sim B \iff \text{SysPack}(A) \sim \text{SysPack}(B)
-$$
-$\square$
+  Given systems $A, B$, we say that they have the same \emph{shape} if
+  \begin{itemize}
+    \item $\tx{In}(A) = \tx{In}(B)$,
+    \item $\tx{Out}(A) = \tx{Out}(B)$,
+    \item $\tx{InChan}(A) = \tx{InChan}(B)$,
+    \item $\tx{OutChan}(A) = \tx{OutChan}(B)$.
+  \end{itemize}
+
+  $\square$
+\end{definition}
+
+\begin{definition}[Literal System Equality]
+  Given systems $A$, $B$ with the same shape, we say that they are \emph{literally} equal, written $A \equiv B$ if
+  $$
+  \tx{NoChan}(A) = \tx{NoChan}(B)
+  $$
+
+  $\square$
 \end{definition}
 
 \begin{definition}[System Tensoring]
 Given two systems, $A$ and $B$, with \(\text{Out}(A) \cap \text{Out}(B) = \emptyset\), we can define their tensor product $A * B$,
-which is any system satisfying:
-$$
-\tx{SysPack}(A * B) =
-\begin{pmatrix}
-&\tx{NoChan}(A)\cr
-&\otimes\cr
-&\tx{NoChan}(B)\cr
-\end{pmatrix}
-\circ
-\begin{pmatrix}
-&\text{Channels}(\tx{Chan}(A) \cup \tx{Chan}(B))\cr
-&\otimes\cr
-&1(\tx{In}(A) \cup \tx{In}(B))\cr
-\end{pmatrix}
-$$
+which is any system $A * B$ satisfying:
+\begin{itemize}
+  \item $\tx{NoChan}(A * B) = \tx{NoChan}(A) \otimes \tx{NoChan}(B)$,
+  \item $\tx{InChan}(A * B) = \tx{InChan}(A) \cup \tx{InChan}(B)$,
+  \item $\tx{OutChan}(A * B) = \tx{OutChan}(A) \cup \tx{OutChan}(B)$,
+  \item $\tx{In}(A * B) = \tx{In}(A) \cup \tx{In}(B)$.
+\end{itemize}
 
 $\square$
 \end{definition}
@@ -318,11 +323,18 @@ $\square$
 Note that combining the definition above with the definition of $\text{SysPack}$
 means that:
 $$
-\begin{aligned}
-&\text{NoChan}(A * B) = \text{NoChan}(A) \otimes \text{NoChan}(B)\cr
-&\text{(Out/In)Chan}(A * B) = \text{(Out/In)Chan}(A) \cup \text{(Out/In)Chan}(B)\cr
-&\text{In}(A * B) = \text{In}(A) \cup \text{In}(B)\cr
-\end{aligned}
+\tx{SysPack}(A * B) =
+\begin{pmatrix}
+\tx{NoChan}(A)\cr
+\otimes\cr
+\tx{NoChan}(B)\cr
+\end{pmatrix}
+\circ
+\begin{pmatrix}
+\text{Channels}(\tx{Chan}(A) \cup \tx{Chan}(B))\cr
+\otimes\cr
+1(\tx{In}(A) \cup \tx{In}(B))\cr
+\end{pmatrix}
 $$
 
 This implies the following lemma.
@@ -372,7 +384,9 @@ $\blacksquare$
 
 \begin{lemma}
 System tensoring is commutative, i.e. $A * B = B * A$
+
 \txbf{Proof:} This follows from the commutativity of $\otimes$ and $\cup$.
+
 $\blacksquare$
 \end{lemma}
 
