@@ -391,6 +391,9 @@ we define the malicious corruption $\tx{Corrupt}_M(P)$ as the following game:
 &\underline{\tx{Send}_{A_i}(m)\tx{:}}\cr
 \pind{1} \psend{m}{A_i}\cr
 \cr
+&\underline{\tx{Test}_{B_i}()\tx{:}}\cr
+\pind{1} \preturn{\txbf{test } B_i}\cr
+\cr
 &\underline{\tx{Recv}_{B_i}()\tx{:}}\cr
 \pind{1} \preturn{\precv{m}{B_i}}\cr
 }
@@ -426,23 +429,9 @@ $\tx{Corrupt}_{\tx{SH}}(P)$, replacing:
 \begin{itemize}
   \item every function call with $\tx{Call}_{F_i}(\ldots)$,
   \item every sending of a message $m$ on $A$ with $\tx{Send}_A(m)$,
+  \item every length test of $B$ with $\tx{Test}_B()$,
   \item every reception of a message on $B$ with $\tx{Recv}_B()$.
 \end{itemize}
-This results in a system $S'$, which we then compose to get:
-$$
-S_{\tx{SH}} :=
-\begin{pmatrix}
-  S'\cr
-  \otimes\cr
-  1(\{\tx{Next}\})
-\end{pmatrix}
-\circ
-\begin{pmatrix}
-\tx{SharedRand}\cr
-\otimes\cr
-1(\tx{In}(S'))
-\end{pmatrix}
-$$
 
 The result is clearly a perfect emulation of semi-honest corruption
 using malicious corruption.
@@ -667,7 +656,8 @@ $\blacksquare$
   $\mathcal{R}_{\mathcal{P}} \circ \mathcal{R}_{\mathcal{Q}} = \mathcal{R}$
   are a decomposition of the router $\mathcal{R}$ for $\mathcal{P} \lhd \mathcal{Q}$,
   and $\tx{Corrupt}'_{C'}(\ldots)$ is the same as $\tx{Corrupt}_{C'}$,
-  except that malicious corruption contains no $\tx{Call}_{F_i}$ functions.
+  except that malicious corruption contains no $\tx{Call}_{F_i}$ functions,
+  for $F_i \notin \tx{Out}(\mathcal{P}.F)$
 
   Furthermore, if the models are \emph{strictly} compatible,
   then $S_j = 1(\tx{Out}(\tx{Routed}(\tx{Corrupt}_C(\mathcal{Q}.P_i))))$.
@@ -726,7 +716,7 @@ sending messages on behalf of $P$ or any $Q_i$, as well as calling
 the input functions to the $Q_i$ systems.
 Since we can't call the functions that $P$ uses,
 we use $\tx{Corrupt}'_{M}$, which modifies malicious corruption to only
-contain $\tx{Send}_{A_i}$, $\tx{Recv}_{B_i}$,
+contain $\tx{Send}_{A_i}$, $\tx{Test}_{B_i}$, $\tx{Recv}_{B_i}$,
 and $\tx{Call}_{F_i}$ for $F_i \in I$.
 In particular the $\tx{Call}_{\bullet}$ functions are omitted for the functions
 provided by $Q_1, \ldots, Q_m$.

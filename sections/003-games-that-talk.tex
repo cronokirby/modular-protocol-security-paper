@@ -227,14 +227,19 @@ We can compile systems to not use channels.
 We denote by $\text{NoChan}(S)$ the package corresponding to
 a system $S$, with the use of channels replaced with function calls.
 
-Channels define two new syntactic constructions, for sending and receiving
-along a channel.
+Channels define three new syntactic constructions, for sending and receiving
+along a channel, along with testing how many messages are in a channel.
 We replace these with function calls as follows:
 
 
 Sending, with $m \Rightarrow P$ becomes:
 $$
 \text{Channels}.\tx{Send}_P(m)
+$$
+
+Testing, with $n \gets \txbf{test } P$ becomes
+$$
+n \gets \tx{Channels}.\tx{Test}_P()
 $$
 
 Receiving, with $m \Leftarrow P$ becomes:
@@ -256,6 +261,9 @@ $\square$
 \cr
 &\underline{\tx{Send}_{A_i}(m)\tx{:}}\cr
 \pind{1} q[A_i].\tx{Push}(m)\cr
+\cr
+&\underline{\tx{Test}_{A_i}()\tx{:}}\cr
+\pind{1} \txbf{return } q[A_i].\tx{Length}()\cr
 \cr
 &\underline{\tx{Recv}_{A_i}()\tx{:}}\cr
 \pind{1} \txbf{while } q[A_i].\tx{IsEmpty()}\cr
