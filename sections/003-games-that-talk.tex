@@ -562,6 +562,7 @@ $\square$
 \end{lemma}
 
 \begin{lemma}[Composition Compatability]
+  \label{lemma:system_composition}
   Given systems $A$, $B$, $B'$, we have:
   \begin{enumerate}
     \item $B = B' \implies A \circ B = A \circ B'$,
@@ -641,4 +642,68 @@ $\square$
   \end{enumerate}
   provided these expressions are well-defined.
 
+  \txbf{Proof:} Similar to Lemma~\ref{lemma:system_composition},
+  we start by proving:
+  $$
+  \tx{SysPack}(A \otimes B) = \tx{SysPack}(A) \otimes \tx{SysPack}(B)
+  $$
+  which then entails our theorem through similar properties for packages.
+
+  Our starting point is:
+  $$
+  \tx{SysPack}(A \otimes B) =
+  \begin{pmatrix}
+    \tx{NoChan}(A)\cr
+    \otimes\cr
+    \tx{NoChan}(B)
+  \end{pmatrix}
+  \circ
+  \begin{pmatrix}
+    \tx{Channels}(\tx{Chan}(A) \cup \tx{Chan}(B))\cr
+    \otimes\cr
+    1(\tx{In}(A), \tx{In}(B))
+  \end{pmatrix}
+  $$
+  We can write this as:
+  $$
+  \begin{pmatrix}
+    \tx{NoChan}(A)\cr
+    \otimes\cr
+    \tx{NoChan}(B)
+  \end{pmatrix}
+  \circ
+  \begin{pmatrix}
+    \tx{Channels}(\tx{Chan}(A))\cr
+    \otimes\cr
+    1(\tx{In}(A))\cr
+    \otimes\cr
+    \tx{Channels}(\tx{Chan}(B))\cr
+    \otimes\cr
+    1(\tx{In}(B))\cr
+  \end{pmatrix}
+  $$
+  Crucially, we can use the fact that $A$ and $B$ do not overlap,
+  in order to apply the interchange lemma, giving us:
+  $$
+  \begin{matrix}
+    \tx{NoChan}(A) \circ \begin{pmatrix}
+    \tx{Channels}(\tx{Chan}(A))\cr
+    \otimes\cr
+    1(\tx{In}(A))\cr
+    \end{pmatrix}\cr
+    \otimes\cr
+    \tx{NoChan}(B) \circ \begin{pmatrix}
+    \tx{Channels}(\tx{Chan}(B))\cr
+    \otimes\cr
+    1(\tx{In}(B))\cr
+    \end{pmatrix}
+  \end{matrix}
+  $$
+  Which is none other than:
+  $$
+  \tx{SysPack}(A) \otimes \tx{SysPack}(B)
+  $$
+  concluding our proof.
+
+  $\blacksquare$
 \end{lemma}
