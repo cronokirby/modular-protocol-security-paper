@@ -345,32 +345,32 @@ System tensoring is associative, i.e. $A * (B * C) = (A * B) * C$.
 $$
 \tx{SysPack}(A * (B * C)) =
 \begin{pmatrix}
-&\tx{NoChan}(A)\cr
-&\otimes\cr
-&\tx{NoChan}(B * C)\cr
+\tx{NoChan}(A)\cr
+\otimes\cr
+\tx{NoChan}(B * C)\cr
 \end{pmatrix}
 \circ
 \begin{pmatrix}
-&\text{Channels}(\tx{Chan}(A) \cup \tx{Chan}(B * C))\cr
-&\otimes\cr
-&1(\tx{In}(A) \cup \tx{In}(B * C))\cr
+\text{Channels}(\tx{Chan}(A) \cup \tx{Chan}(B * C))\cr
+\otimes\cr
+1(\tx{In}(A) \cup \tx{In}(B * C))\cr
 \end{pmatrix}
 $$
 We can then apply the corrollaries we've just derived to show that this
 is equal to:
 $$
 \begin{pmatrix}
-&\tx{NoChan}(A)\cr
-&\otimes\cr
-&\tx{NoChan}(B)\cr
-&\otimes\cr
-&\tx{NoChan}(C)\cr
+\tx{NoChan}(A)\cr
+\otimes\cr
+\tx{NoChan}(B)\cr
+\otimes\cr
+\tx{NoChan}(C)\cr
 \end{pmatrix}
 \circ
 \begin{pmatrix}
-  &\text{Channels}(\tx{Chan}(A) \cup \tx{Chan}(B) \cup \tx{Chan}(C))\cr
-&\otimes\cr
-  &1(\tx{In}(A) \cup \tx{In}(B) \cup \tx{In}(C))\cr
+  \text{Channels}(\tx{Chan}(A) \cup \tx{Chan}(B) \cup \tx{Chan}(C))\cr
+\otimes\cr
+  1(\tx{In}(A) \cup \tx{In}(B) \cup \tx{In}(C))\cr
 \end{pmatrix}
 $$
 (Using the associativity of $\otimes$ for \emph{packages} as well).
@@ -416,7 +416,10 @@ $\square$
 
 \begin{lemma}
 System composition is associative, i.e. $A \circ (B \circ C) = (A \circ B) \circ C$.
-\txbf{Proof:} This follows from the associativity of $\circ$ for \emph{packages}. $\blacksquare$
+
+\txbf{Proof:} This follows from the associativity of $\circ$ for \emph{packages}.
+
+$\blacksquare$
 \end{lemma}
 
 \begin{lemma}[Interchange Lemma]
