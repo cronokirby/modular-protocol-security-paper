@@ -222,6 +222,9 @@ Additionally we require that $\text{OutChan}(S) \cap \text{InChan}(S) = \emptyse
 $\square$
 \end{definition}
 
+We also define shorthands $\tx{Chan}(A, B, \ldots) = \tx{Chan}(A) \cup \tx{Chan}(B) \cup \ldots$.
+\todo{expand}.
+
 \begin{definition}
 We can compile systems to not use channels.
 We denote by $\text{NoChan}(S)$ the package corresponding to
@@ -341,43 +344,8 @@ This implies the following lemma.
 
 \begin{lemma}
 System tensoring is associative, i.e. $A * (B * C) \equiv (A * B) * C$.
-\txbf{Proof:} Starting from the definition of tensoring, we have:
-$$
-\tx{SysPack}(A * (B * C)) =
-\begin{pmatrix}
-\tx{NoChan}(A)\cr
-\otimes\cr
-\tx{NoChan}(B * C)\cr
-\end{pmatrix}
-\circ
-\begin{pmatrix}
-\text{Channels}(\tx{Chan}(A) \cup \tx{Chan}(B * C))\cr
-\otimes\cr
-1(\tx{In}(A) \cup \tx{In}(B * C))\cr
-\end{pmatrix}
-$$
-We can then apply the corrollaries we've just derived to show that this
-is equal to:
-$$
-\begin{pmatrix}
-\tx{NoChan}(A)\cr
-\otimes\cr
-\tx{NoChan}(B)\cr
-\otimes\cr
-\tx{NoChan}(C)\cr
-\end{pmatrix}
-\circ
-\begin{pmatrix}
-  \text{Channels}(\tx{Chan}(A) \cup \tx{Chan}(B) \cup \tx{Chan}(C))\cr
-\otimes\cr
-  1(\tx{In}(A) \cup \tx{In}(B) \cup \tx{In}(C))\cr
-\end{pmatrix}
-$$
-(Using the associativity of $\otimes$ for \emph{packages} as well).
-
-With the same reasoning, we can derive the same package from $(A * B) * C$,
-letting us conclude that $\text{SysPack}(A * (B * C)) = \text{SysPack}((A * B) * C)$,
-and thus that $A * (B * C) = (A * B) * C$.
+\txbf{Proof:} This follows directly from the associativity
+of $\otimes$ for packages and $\cup$.
 
 $\blacksquare$
 \end{lemma}
@@ -455,122 +423,95 @@ D\cr
 \end{matrix} 
 $$
 
-\txbf{Proof:}
-First, we need to develop a few general facts about $\tx{SysPack}(A \circ B)$, $\tx{Chan}(A \circ B)$
-and $\tx{NoChan}(A \circ B)$, like those we developed for $A * B$.
-
-As a consequence of how $A \circ B$ is defined, by unrolling $\text{SysPack}(A \circ B)$,
-we get:
+\txbf{Proof:} $\tx{InChan}$, $\tx{OutChan}$, and $\tx{In}$ are equal for
+both of these systems, by associativity of $\cup$.
+We now look at $\tx{NoChan}$.
+Starting with the right hand side, we get:
 $$
-  \tx{SysPack}(A \circ B) =
-  \tx{NC}(A) \circ
-  \begin{pmatrix}
-    \tx{Channels}(\tx{Chan}(A))\cr
-    \otimes\cr
-    1(\tx{In}(A))
-  \end{pmatrix}
-  \circ \tx{NC}(B) \circ
-  \begin{pmatrix}
-    \tx{Channels}(\tx{Chan}(B))\cr
-    \otimes\cr
-    1(\tx{In}(B))
-  \end{pmatrix}
-$$
-Applying the interchange lemma for packages a couple times, we then get:
-$$
-  \tx{NC}(A) \circ
-  \begin{pmatrix}
-    \tx{NC}(B)\cr
-    \otimes\cr
-    1(\tx{Channels}(\tx{Chan}(A)))
-  \end{pmatrix}
-  \circ
-  \begin{pmatrix}
-    \tx{Channels}(\tx{Chan}(A)) \otimes \tx{Channels}(\tx{Chan}(B))\cr
-    \otimes\cr
-    1(\tx{In}(B))
-  \end{pmatrix}
-$$
-
-And then, recalling
-that $\tx{Channels}(S) \otimes \tx{Channels}(R) = \tx{Channels}(S \cup R)$,
-we conclude that:
-$$
-\begin{aligned}
-  &\tx{NoChan}(A \circ B) =
-  \tx{NC}(A) \circ
-  \begin{pmatrix}
-    \tx{NC}(B)\cr
-    \otimes\cr
-    1(\tx{Channels}(\tx{Chan}(A)))
-  \end{pmatrix}
-  \cr
-  &\tx{(Out/In)Chan}(A \circ B) = \tx{(Out/In)Chan}(A) \cup \tx{(Out/In)Chan}(B)\cr
-\end{aligned}
-$$
-
-Next we apply these facts, along with those derived for $A * B$ to tackle the main lemma.
-
-Starting from $\tx{SysPack}((A * C) \circ (B * D))$, we can apply the above
-results to get:
-$$
-  \tx{NC}(A * C) \circ
-  \begin{pmatrix}
-    \tx{NC}(B * D)\cr
-    \otimes\cr
-    1(\tx{Channels}(\tx{Chan}(A * C)))
-  \end{pmatrix}
-  \circ
-  \begin{pmatrix}
-    \tx{Channels}(\tx{Chan}(A * C) \cup \tx{Chan}(B * D))\cr
-    \otimes\cr
-    1(\tx{In}(B * D))
-  \end{pmatrix}
-$$
-Then, applying what we know about $A * B$ in general, we get:
-$$
-  \begin{pmatrix}
-    \tx{NoChan}(A)\cr
-    \otimes\cr
-    \tx{NoChan}(C)
-  \end{pmatrix}
-  \circ
-  \begin{pmatrix}
-    \tx{NoChan}(B)\cr
-    \otimes\cr
-    1(\tx{Channels}(\tx{Chan}(A)))\cr
-    \otimes\cr
-    \tx{NoChan}(D)\cr
-    \otimes\cr
-    1(\tx{Channels}(\tx{Chan}(C))
-  \end{pmatrix}
-  \circ
-  \begin{pmatrix}
-    \tx{Channels}(\tx{Chan}(A, B, C, D))\cr
-    \otimes\cr
-    1(\tx{In}(B, D))
-  \end{pmatrix}
-$$
-Applying the interchange lemma for packages again, along with 
-what we know about $A \circ B$, we get:
-$$
+\tx{NoChan}
+\begin{pmatrix} 
+  (A \circ B)\cr
+*\cr
+  (C \circ D)\cr
+\end{pmatrix} 
+= 
 \begin{pmatrix}
   \tx{NoChan}(A \circ B)\cr
   \otimes\cr
   \tx{NoChan}(C \circ D)
 \end{pmatrix}
-  \circ
-  \begin{pmatrix}
-    \tx{Channels}(\tx{Chan}(A, B, C, D))\cr
-    \otimes\cr
-    1(\tx{In}(B, D))
-  \end{pmatrix}
+=
+\begin{pmatrix}
+    \tx{NoChan}(A) \circ
+    \begin{pmatrix}
+      \tx{NoChan}(B)\cr
+      \otimes\cr
+      1(\tx{Channels}(\tx{Chan}(A)))
+    \end{pmatrix}
+  \cr
+  \otimes\cr
+    \tx{NoChan}(C) \circ
+    \begin{pmatrix}
+      \tx{NoChan}(D)\cr
+      \otimes\cr
+      1(\tx{Channels}(\tx{Chan}(C)))
+    \end{pmatrix}
+\end{pmatrix}
 $$
-Noting that $\tx{Chan}(A, B, C, D) = \tx{Chan}(A \circ B, C \circ D)$,
-and that $\tx{In}(B, D) = \tx{In}(A \circ B, C \circ D)$, we realize that the
-expression above is equal to:
+Next, apply the interchange lemma for packages, to get:
 $$
-\tx{SysPack}((A \circ B) * (C \circ D))
+\begin{pmatrix}
+  \tx{NoChan}(A)\cr
+  \otimes\cr
+  \tx{NoChan}(C)
+\end{pmatrix}
+\circ
+\begin{pmatrix}
+  \tx{NoChan}(B)\cr
+  \otimes\cr
+  1(\tx{Channels}(\tx{Chan}(A)))\cr
+  \otimes\cr
+  \tx{NoChan}(D)\cr
+  \otimes\cr
+  1(\tx{Channels}(\tx{Chan}(C)))\cr
+\end{pmatrix}
+$$
+Then, observe that:
+$$
+\tx{Channels}(S_1 \cup S_2) = \tx{Channels}(S_1) \otimes \tx{Channels}(S_2)
+$$
+We can use this, along with the commutativity of $\otimes$ to get:
+$$
+\begin{pmatrix}
+  \tx{NoChan}(A)\cr
+  \otimes\cr
+  \tx{NoChan}(C)
+\end{pmatrix}
+\circ
+\begin{pmatrix}
+  \tx{NoChan}(B)\cr
+  \otimes\cr
+  \tx{NoChan}(D)\cr
+  \otimes\cr
+  1(\tx{Channels}(\tx{Chan}(A * C)))\cr
+\end{pmatrix}
+$$
+Which is just:
+$$
+\tx{NoChan}
+\left(
+\begin{pmatrix} 
+A\cr
+*\cr
+C\cr
+\end{pmatrix} 
+\circ
+\begin{pmatrix} 
+B\cr
+*\cr
+D\cr
+\end{pmatrix} 
+\right)
 $$
 
 $\blacksquare$
