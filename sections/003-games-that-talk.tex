@@ -340,7 +340,7 @@ $$
 This implies the following lemma.
 
 \begin{lemma}
-System tensoring is associative, i.e. $A * (B * C) = (A * B) * C$.
+System tensoring is associative, i.e. $A * (B * C) \equiv (A * B) * C$.
 \txbf{Proof:} Starting from the definition of tensoring, we have:
 $$
 \tx{SysPack}(A * (B * C)) =
@@ -383,7 +383,7 @@ $\blacksquare$
 \end{lemma}
 
 \begin{lemma}
-System tensoring is commutative, i.e. $A * B = B * A$
+System tensoring is commutative, i.e. $A * B \equiv B * A$
 
 \txbf{Proof:} This follows from the commutativity of $\otimes$ and $\cup$.
 
@@ -405,17 +405,24 @@ $A \circ B$ as any system, provided a few constraints hold:
 \item $\tx{In}(A) \subseteq \tx{Out}(B)$
 \end{itemize}
 
-With these in place, we define the composition as any system such that:
-$$
-\text{SysPack}(A \circ B) =
-\text{SysPack}(A) \circ \text{SysPack}(B)
-$$
+With these in place, we define the composition as any system $A \circ B$ such that:
+\begin{itemize}
+  \item $\tx{NoChan}(A \circ B) = \tx{NoChan}(A) \circ \begin{pmatrix}
+    \tx{NoChan}(B)\cr
+    \otimes\cr
+    1(\tx{Channels}(\tx{Chan}(A)))
+  \end{pmatrix}
+    $,
+  \item $\tx{InChan}(A \circ B) = \tx{InChan}(A) \cup \tx{InChan}(B)$,
+  \item $\tx{OutChan}(A \circ B) = \tx{OutChan}(A) \cup \tx{OutChan}(B)$,
+  \item $\tx{In}(A \circ B) = \tx{In}(B)$.
+\end{itemize}
 
 $\square$
 \end{definition}
 
 \begin{lemma}
-System composition is associative, i.e. $A \circ (B \circ C) = (A \circ B) \circ C$.
+System composition is associative, i.e. $A \circ (B \circ C) \equiv (A \circ B) \circ C$.
 
 \txbf{Proof:} This follows from the associativity of $\circ$ for \emph{packages}.
 
@@ -440,7 +447,7 @@ B\cr
 *\cr
 D\cr
 \end{pmatrix} 
-=
+\equiv
 \begin{matrix} 
   (A \circ B)\cr
 *\cr
