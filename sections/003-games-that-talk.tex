@@ -520,62 +520,63 @@ $\blacksquare$
 \begin{definition}[System Games]
 Analogously to games, we define a \emph{system game} as a system $S$
 with $\tx{In}(S) = \emptyset$.
-\end{definition}
-
-\begin{definition}[System Game Reductions]
-We can also define notions of reductions for system game (pairs).
-
-First, we define:
-$$
-\epsilon(\mathcal{A} \circ S_b) := \epsilon(\mathcal{A} \circ \tx{SysPack}(S_b))
-$$
-
-We then also use the syntax sugar of:
-$$
-S_b \leq f(G_b^1, G_b^2, \ldots)
-$$
-as shorthand for, $\forall \mathcal{A}.\ \exists \mathcal{B}_1, \ldots$:
-$$
-\epsilon(\mathcal{A} \circ S_b) \leq f(\epsilon(\mathcal{B}_1 \circ G_b^1), \epsilon(\mathcal{B}_2 \circ G_b^2), \ldots)
-$$
-
-We also sometimes omit explicitly writing $S_b$, instead writing just $S$,
-if it's clear that we're talking about a pair of systems.
 
 $\square$
 \end{definition}
 
-Similar properties hold for reductions:
+\begin{definition}[System Equality]
+  We say that two systems $A$, $B$ with the same shape are equal, written $A = B$,
+  if:
+  $$
+  \tx{SysPack}(A) = \tx{SysPack}(B)
+  $$
 
-\begin{lemma}
-\label{thm:systemreduction}
-$A \circ G_b \leq G_b$.
+  $\square$
+\end{definition}
 
-\textbf{Proof:} $\tx{SysPack}(A \circ G_b) = \tx{SysPack}(A) \circ \tx{SysPack}(G_b) \leq \tx{SysPack}(G_b)$. $\blacksquare$
+\begin{definition}[System Indistinguishability]
+  We say that two systems $A$, $B$ with the same shape are indistinguishable up to $\epsilon$,
+  written $A \overset{\epsilon}{\approx} B$,
+  if:
+  $$
+  \tx{SysPack}(A) \overset{\epsilon}{\approx} \tx{SysPack}(B)
+  $$
+
+  $\square$
+\end{definition}
+
+\begin{lemma}[Transitivity of System Equality]
+  Given systems $A, B, C$, we have:
+  \begin{enumerate}
+    \item $A \equiv B, B \equiv C \implies A \equiv C$,
+    \item $A = B, B = C \implies A = C$,
+    \item $A \overset{\epsilon_1}{\approx} B, B \overset{\epsilon_2}{\approx} C \implies A \overset{\epsilon_1 + \epsilon_2}{\approx} C$.
+  \end{enumerate}
+  provided these expressions are well-defined.
+
+  \txbf{Proof:} This follows immediately from the fact that equality and Indistinguishability
+  for \emph{packages} satisfy similar relations, and the notions for systems are
+  defined in terms of the package $\tx{SysPack}(\ldots)$.
+
+  $\blacksquare$
 \end{lemma}
 
-\begin{lemma}
-There exists system games $A$, $G_B$ such that $G_B$ is secure
-but $A * G_b$ is insecure.
+\begin{lemma}[Composition Compatability]
+  Given systems $A$, $B$, $B'$, we have:
+  \begin{enumerate}
+    \item $B = B' \implies A \circ B = A \circ B'$,
+    \item $B \overset{\epsilon}{\approx} B' \implies A \circ B \overset{\epsilon}{\approx} A \circ B'$.
+  \end{enumerate}
+  provided these expressions are well-defined.
 
-\textbf{Proof:}
-Consider:
-\package{$G_b$}{
-&\pfn{Cheat}{}\cr
-\pind{1}\psend{b}{P}\cr
-\pind{1}\precv{\hat{b}}{Q}\cr
-\pind{1}\preturn{\hat{b}}\cr
-}
-\package{$A$}{
-&\pfn{Run}{}\cr
-\pind{1}\precv{b}{P}\cr
-\pind{1}\psend{b}{Q}\cr
-}
-Clearly, $G_b$ is secure in isolation, since no other system is present
-to provide a value on $Q$, so $G_b$ will block forever in the cheating function.
+\end{lemma}
 
-However, when linked with $A$, this cheating function will return $b$,
-allowing an adversary to break the game with probability $1$.
+\begin{lemma}[Strict Tensoring Compatability]
+  Given systems $A$, $B$, $B'$, we have:
+  \begin{enumerate}
+    \item $B = B' \implies A \otimes B = A \otimes B'$,
+    \item $B \overset{\epsilon}{\approx} B' \implies A \otimes B \overset{\epsilon}{\approx} A \otimes B'$.
+  \end{enumerate}
+  provided these expressions are well-defined.
 
-$\blacksquare$
 \end{lemma}
