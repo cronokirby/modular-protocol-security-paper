@@ -569,6 +569,68 @@ $\square$
   \end{enumerate}
   provided these expressions are well-defined.
 
+  \txbf{Proof:} We prove that
+  $$
+  \tx{SysPack}(A \circ B) = \tx{SysPack}(A) \circ \tx{SysPack}(B)
+  $$
+  which then clearly implies this lemma by application of the similar properties
+  for packages.
+
+  We start with:
+  $$
+  \tx{SysPack}(A \circ B) = \tx{NoChan}(A) \circ
+  \begin{pmatrix}
+    \tx{NoChan}(B)\cr
+    \otimes\cr
+    1(\tx{Channels}(\tx{Chan}(A)))
+  \end{pmatrix}
+  \circ
+  \begin{pmatrix}
+    \tx{Channels}(\tx{Chan}(A) \cup \tx{Chan}(B))\cr
+    \otimes\cr
+    1(\tx{In}(B))
+  \end{pmatrix}
+  $$
+  We then use the fact that $\tx{Channels}(S \cup R) = \tx{Channels}(S) \otimes \tx{Channels}(R)$,
+  and the interchange lemma, to get:
+  $$
+  \tx{NoChan}(A) \circ
+  \begin{pmatrix}
+    \tx{NoChan}(B)\cr
+    \otimes\cr
+    \tx{Channels}(\tx{Chan}(A))
+  \end{pmatrix}
+  \circ
+  \begin{pmatrix}
+    \tx{Channels}(\tx{Chan}(B))\cr
+    \otimes\cr
+    1(\tx{In}(B))
+  \end{pmatrix}
+  $$
+  Apply interchange once more, to get:
+  $$
+  \tx{NoChan}(A) \circ
+  \begin{pmatrix}
+    1(\tx{In}(A))\cr
+    \otimes\cr
+    \tx{Channels}(\tx{Chan}(A))
+  \end{pmatrix}
+  \circ
+    \tx{NoChan}(B)
+  \circ
+  \begin{pmatrix}
+    \tx{Channels}(\tx{Chan}(B))\cr
+    \otimes\cr
+    1(\tx{In}(B))
+  \end{pmatrix}
+  $$
+  Which is none other than:
+  $$
+  \tx{SysPack}(A) \circ \tx{SysPack}(B)
+  $$
+  concluding our proof.
+
+  $\blacksquare$
 \end{lemma}
 
 \begin{lemma}[Strict Tensoring Compatability]
