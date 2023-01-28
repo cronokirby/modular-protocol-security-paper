@@ -1569,6 +1569,54 @@ and can thus be used directly to prove this relation.
 $\blacksquare$
 \end{theorem}
 
+\begin{theorem}[Transitivity of Relative Equality]
+  For any protocols $\mathcal{L}$, $\mathcal{P}$, $\mathcal{Q}$
+  closed relative to a game $G$, and for any corruption class, we have:
+  \begin{enumerate}
+    \item $\mathcal{L} =_{\mathcal{C}}^G \mathcal{P}, \mathcal{P} =_{\mathcal{C}}^G \mathcal{Q} \implies \mathcal{L} =_{\mathcal{C}}^G \mathcal{Q}$,
+    \item $\mathcal{L} \overset{\epsilon_1}{\approx}_{\mathcal{C}}^G \mathcal{P}, \mathcal{P} \overset{\epsilon_2}{\approx}_{\mathcal{C}}^G \mathcal{Q} \implies \mathcal{L} \overset{\epsilon_1 + \epsilon_2}{\approx}_{\mathcal{C}}^G \mathcal{Q}$,
+    \item $\mathcal{L} \overset{\epsilon_1}{\leadsto}_{\mathcal{C}}^G \mathcal{P}, \mathcal{P} \overset{\epsilon_2}{\leadsto}_{\mathcal{C}}^G \mathcal{Q} \implies \mathcal{L} \overset{\epsilon_1 + \epsilon_2}{\leadsto}_{\mathcal{C}}^G \mathcal{Q}$.
+  \end{enumerate}
+
+  \txbf{Proof:} Once again, the first two parts follow directly from Lemma~\ref{thm:system_trans},
+  by considering the systems $\tx{Inst}^G_C(\mathcal{L})$, $\tx{Inst}^G_C(\mathcal{P})$,
+  $\tx{Inst}^G_C(\mathcal{Q})$ for any $C \in \mathcal{C}$.
+
+  For part 3, given any $C \in \mathcal{C}$, there exists $S_1, S_2$ such that:
+  \begin{itemize}
+    \item $\tx{Inst}^G_C(\mathcal{L}) \overset{\epsilon_1}{\approx} \tx{SimInst}^G_{S_1, C}(\mathcal{P})$,
+    \item $\tx{Inst}^G_C(\mathcal{P}) \overset{\epsilon_2}{\approx} \tx{SimInst}^G_{S_2, C}(\mathcal{Q})$.
+  \end{itemize}
+  Next, observe that for any protocol $\mathcal{P}$, we can write:
+  $$
+  \tx{SimInst}^G_C =
+  \begin{pmatrix}
+    S\cr
+    \otimes\cr
+    1(O)
+  \end{pmatrix}
+  \circ
+  \tx{Inst}^G_C(\mathcal{P})
+  $$
+  where $O = \tx{Out}(\tx{Inst}_C(\mathcal{P})) / \tx{Out}(S) \cup \tx{Out}(G)$.
+
+  We then apply transitivity for systems and interchange get:
+  $$
+  \tx{Inst}^G_C(\mathcal{L}) \overset{\epsilon_1 + \epsilon_2}{\approx}
+  \begin{pmatrix}
+    S_1 \circ S_2\cr
+    \otimes\cr
+    1(O)
+  \end{pmatrix}
+  \circ
+  \tx{Inst}^G_C(\mathcal{Q})
+  $$
+  And the left side is simply $\tx{SimInst}^G_{(S_1 \circ S_2), C}(\mathcal{Q})$,
+  concluding our proof.
+
+  $\blacksquare$
+\end{theorem}
+
 \begin{theorem}[Global Vertical Composition Theorem]
   For any protocol $\mathcal{P}$ and game $F$, such that $\mathcal{P} \circ F$
   is well defined and closed relative to $G$, and for any corruption class $\mathcal{C}$, we have:
