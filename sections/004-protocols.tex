@@ -1110,6 +1110,7 @@ $\blacksquare$
 \end{theorem}
 
 \begin{theorem}[Transitivity of Equality]
+  \label{thm:prot_trans}
   For any closed protocols $\mathcal{L}, \mathcal{P}, \mathcal{Q}$ with the same shape,
   and any class of corruptions $\mathcal{C}$, we have:
   \begin{enumerate}
@@ -1159,6 +1160,61 @@ $\blacksquare$
   \tx{Inst}_C(\mathcal{Q})
   $$
   which concludes our proof, since $S_1 \circ S_2$ will be a valid simulator.
+
+  $\blacksquare$
+\end{theorem}
+
+\begin{theorem}[Malicious Completeness]
+  Let $\mathcal{P}$ and $\mathcal{Q}$ closed protocols with the same shape.
+  Given any class of corruptions $\mathcal{C}$, let $\mathcal{C}'$ be a related class, containing
+  models in $\mathcal{C}$ with some
+  malicious corruptions replaced with semi-honest corruptions.
+  We then have:
+  \begin{enumerate}
+    \item $\mathcal{P} =_{C} \mathcal{Q} \implies \mathcal{P} =_{C'} \mathcal{Q}$,
+    \item $\mathcal{P} \overset{\epsilon}{\approx}_{C} \mathcal{Q} \implies \mathcal{P} \overset{\epsilon}{\approx}_{C'} \mathcal{Q}$,
+    \item $\mathcal{P} \overset{\epsilon}{\leadsto}_{C} \mathcal{Q} \implies \mathcal{P} \overset{\epsilon}{\leadsto}_{C'} \mathcal{Q}$.
+  \end{enumerate}
+
+  \txbf{Proof:} Lemma~\label{thm:simulatingcorruption} (simulating corruptions) is the crux of our proof.
+  It implies that there existts a system $S_{\tx{SH}}$ such that
+  $$
+  \tx{Corrupt}_{\tx{SH}}(P) = S_{\tx{SH}} \circ \tx{Corrupt}_M(P)
+  $$
+
+  As a consequence, for any $C' \in \mathcal{C}'$ and the $C \in \mathcal{C}$ it's related to,
+  there exists a \emph{simulator} $S_{\tx{SH}}$ such that:
+  $$
+  \tx{Inst}_{C'}(\mathcal{P}) =
+  \begin{pmatrix}
+    S_{\tx{SH}}\cr
+    \otimes\cr
+    1(O)
+  \end{pmatrix}
+  \circ \tx{Inst}_{C}(\mathcal{P})
+  $$
+  which simulates all of the semi-honest corruptions in $C'$ from the malicious ones in $C$.
+
+  This immediately implies parts 1 and 2, by the fact that $\circ$ for systems
+  respects equality and indistinguishability.
+
+  For part 3, we can apply the same reasoning as in Theorem~\ref{thm:prot_trans},
+  where we showed that simulation is transitive.
+  By assumption we have
+  $$
+  \tx{Inst}_C(\mathcal{P}) \overset{\epsilon}{\approx} \tx{SimInst}_{S', C}(\mathcal{Q})
+  $$
+  for some simulator $S'$.
+  Unrolling and applying interchange makes the right side become:
+  $$
+  \begin{pmatrix}
+    S_{\tx{SH}} \circ S'\cr
+    \otimes\cr
+    1(O)
+  \end{pmatrix}
+  \circ \tx{Inst}_{C}(\mathcal{Q})
+  $$
+  with $S_{\tx{SH}} \circ S'$ being a valid simulator, thus concluding our proof.
 
   $\blacksquare$
 \end{theorem}
