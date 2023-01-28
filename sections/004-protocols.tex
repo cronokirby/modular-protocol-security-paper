@@ -1165,6 +1165,7 @@ $\blacksquare$
 \end{theorem}
 
 \begin{theorem}[Malicious Completeness]
+  \label{thm:mal_complete}
   Let $\mathcal{P}$ and $\mathcal{Q}$ closed protocols with the same shape.
   Given any class of corruptions $\mathcal{C}$, let $\mathcal{C}'$ be a related class, containing
   models in $\mathcal{C}$ with some
@@ -1173,7 +1174,6 @@ $\blacksquare$
   \begin{enumerate}
     \item $\mathcal{P} =_{C} \mathcal{Q} \implies \mathcal{P} =_{C'} \mathcal{Q}$,
     \item $\mathcal{P} \overset{\epsilon}{\approx}_{C} \mathcal{Q} \implies \mathcal{P} \overset{\epsilon}{\approx}_{C'} \mathcal{Q}$,
-    \item $\mathcal{P} \overset{\epsilon}{\leadsto}_{C} \mathcal{Q} \implies \mathcal{P} \overset{\epsilon}{\leadsto}_{C'} \mathcal{Q}$.
   \end{enumerate}
 
   \txbf{Proof:} Lemma~\label{thm:simulatingcorruption} (simulating corruptions) is the crux of our proof.
@@ -1197,24 +1197,6 @@ $\blacksquare$
 
   This immediately implies parts 1 and 2, by the fact that $\circ$ for systems
   respects equality and indistinguishability.
-
-  For part 3, we can apply the same reasoning as in Theorem~\ref{thm:prot_trans},
-  where we showed that simulation is transitive.
-  By assumption we have
-  $$
-  \tx{Inst}_C(\mathcal{P}) \overset{\epsilon}{\approx} \tx{SimInst}_{S', C}(\mathcal{Q})
-  $$
-  for some simulator $S'$.
-  Unrolling and applying interchange makes the right side become:
-  $$
-  \begin{pmatrix}
-    S_{\tx{SH}} \circ S'\cr
-    \otimes\cr
-    1(O)
-  \end{pmatrix}
-  \circ \tx{Inst}_{C}(\mathcal{Q})
-  $$
-  with $S_{\tx{SH}} \circ S'$ being a valid simulator, thus concluding our proof.
 
   $\blacksquare$
 \end{theorem}
@@ -1626,6 +1608,7 @@ $\blacksquare$
 \end{theorem}
 
 \begin{theorem}[Transitivity of Relative Equality]
+  \label{thm:trans_relative_equality}
   For any protocols $\mathcal{L}$, $\mathcal{P}$, $\mathcal{Q}$
   closed relative to a game $G$, and for any corruption class, we have:
   \begin{enumerate}
@@ -1669,6 +1652,49 @@ $\blacksquare$
   $$
   And the left side is simply $\tx{SimInst}^G_{(S_1 \circ S_2), C}(\mathcal{Q})$,
   concluding our proof.
+
+  $\blacksquare$
+\end{theorem}
+
+\begin{theorem}[Global Malicious Completeness]
+  Let $\mathcal{P}$ and $\mathcal{Q}$ closed protocols relative to $G$ with the same shape.
+  Given any class of corruptions $\mathcal{C}$, let $\mathcal{C}'$ be a related class, containing
+  models in $\mathcal{C}$ with some
+  malicious corruptions replaced with semi-honest corruptions.
+  We then have:
+  \begin{enumerate}
+    \item $\mathcal{P} =^G_{C} \mathcal{Q} \implies \mathcal{P} =^G_{C'} \mathcal{Q}$,
+    \item $\mathcal{P} \overset{\epsilon}{\approx}^G_{C} \mathcal{Q} \implies \mathcal{P} \overset{\epsilon}{\approx}^G_{C'} \mathcal{Q}$,
+  \end{enumerate}
+
+  \txbf{Proof:} We proceed similarly to Theorem~\ref{thm:mal_complete} (malicious completeness).
+  In that theorem, the key observation was that for any $C' \in \mathcal{C}'$
+  and the related $C \in \mathcal{C}$, it holds that:
+  $$
+  \tx{Inst}_{C'}(\mathcal{P}) = \tx{SimInst}_{S_{\tx{SH}}, C}(\mathcal{P})
+  $$
+  (this observation also doesn't depend on $\mathcal{P}$ being fully closed,
+  allowing us to use it here).
+
+  Now, this clearly implies that:
+  $$
+  \tx{Inst}_{C'}^G(\mathcal{P}) = \tx{SimInst}^G_{S_{\tx{SH}}, C}(\mathcal{P})
+  $$
+  And then, using our observation from Theorem~\ref{thm:trans_relative_equality},
+  we can write this as:
+  $$
+  \tx{Inst}_{C'}^G(\mathcal{P}) =
+  \begin{pmatrix}
+    S_{\tx{SH}}\cr
+    \otimes\cr
+    1(O)
+  \end{pmatrix}
+  \circ
+  \tx{Inst}^G_C(\mathcal{P})
+  $$
+  where $O = \tx{Out}(\tx{Inst}_C(\mathcal{P})) / \tx{Out}(S) \cup \tx{Out}(G)$.
+
+  This immediately implies parts 1 and 2.
 
   $\blacksquare$
 \end{theorem}
