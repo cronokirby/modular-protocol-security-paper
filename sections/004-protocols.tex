@@ -1109,6 +1109,60 @@ We can simply take $S = 1(\ldots)$ for the right set.
 $\blacksquare$
 \end{theorem}
 
+\begin{theorem}[Transitivity of Equality]
+  For any closed protocols $\mathcal{L}, \mathcal{P}, \mathcal{Q}$ with the same shape,
+  and any class of corruptions $\mathcal{C}$, we have:
+  \begin{enumerate}
+    \item $\mathcal{L} =_{\mathcal{C}} \mathcal{P}, \mathcal{P} =_{\mathcal{C}} \mathcal{Q} \implies \mathcal{L} =_{\mathcal{C}}\mathcal{Q}$,
+    \item $\mathcal{L} \overset{\epsilon_1}{\approx}_{\mathcal{C}} \mathcal{P}, \mathcal{P} \overset{\epsilon_2}{\approx}_{\mathcal{C}} \mathcal{Q} \implies \mathcal{L} \overset{\epsilon_1 + \epsilon_2}{\approx}_{\mathcal{C}} \mathcal{Q}$,
+    \item $\mathcal{L} \overset{\epsilon_1}{\leadsto}_{\mathcal{C}} \mathcal{P}, \mathcal{P} \overset{\epsilon_2}{\leadsto}_{\mathcal{C}} \mathcal{Q} \implies \mathcal{L} \overset{\epsilon_1 + \epsilon_2}{\leadsto}_{\mathcal{C}} \mathcal{Q}$.
+  \end{enumerate}
+
+  \txbf{Proof:} The first two parts follow directly from Lemma~\ref{thm:system_trans} (
+    transitivity for system equality
+  ).
+  Indeed, we just look at $\tx{Inst}_C(\mathcal{L})$, $\tx{Inst}_C(\mathcal{P})$, and $\tx{Inst}_C(\mathcal{Q})$
+  as systems, for any corruption model $C$.
+
+  For part 3, by assumption we have, for any $C \in \mathcal{C}$:
+  \begin{itemize}
+  \item $\tx{Inst}_C(\mathcal{L}) \overset{\epsilon_1}{\approx} \begin{pmatrix} S_1\cr \otimes\cr 1(O)\end{pmatrix} \tx{Inst}_C(\mathcal{P})$,
+  \item $\tx{Inst}_C(\mathcal{P}) \overset{\epsilon_1}{\approx} \begin{pmatrix} S_2\cr \otimes\cr 1(O)\end{pmatrix} \tx{Inst}_C(\mathcal{Q})$.
+  \end{itemize}
+  This means that:
+  $$
+  \tx{Inst}_C(\mathcal{L}) \overset{\epsilon_1 + \epsilon_2}{\approx}
+  \begin{pmatrix}
+    S_1 \cr
+    \otimes\cr
+    1(O)
+  \end{pmatrix}
+  \circ
+  \begin{pmatrix}
+    S_2 \cr
+    \otimes\cr
+    1(O)
+  \end{pmatrix}
+  \circ
+  \tx{Inst}_C(\mathcal{Q})
+  $$
+  applying the properties we have for systems.
+
+  Then, we can apply interchange to write this as:
+  $$
+  \begin{pmatrix}
+    S_1 \circ S_2 \cr
+    \otimes\cr
+    1(O)
+  \end{pmatrix}
+  \circ
+  \tx{Inst}_C(\mathcal{Q})
+  $$
+  which concludes our proof, since $S_1 \circ S_2$ will be a valid simulator.
+
+  $\blacksquare$
+\end{theorem}
+
 \begin{theorem}[Vertical Composition Theorem]
   \label{thm:vertical_composition_theorem}
   For any protocol $\mathcal{P}$ and game $G$, such that $\mathcal{P} \circ G$
