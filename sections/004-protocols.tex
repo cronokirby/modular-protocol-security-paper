@@ -4,7 +4,7 @@
 A \emph{protocol} $\mathcal{P}$ consists of:
 \begin{itemize}
 \item Systems $P_1, \ldots, P_n$, called \emph{players}
-\item A package $F$, called the \emph{ideal functionality}
+\item An asynchronous package $F$, called the \emph{ideal functionality}
 \item A set $\tx{Leakage} \subseteq \tx{Out}(F)$, called the leakage
 \end{itemize}
 
@@ -61,7 +61,7 @@ when:
 \item $\mathcal{P}.n = \mathcal{Q}.n$
 \item There exists a permuation $\pi : [n] \leftrightarrow [n]$ such that
 $
-{\forall i \in [n].\enspace \mathcal{P}.P_i = \mathcal{Q}.P_{\pi(i)}}
+{\forall i \in [n].\enspace \mathcal{P}.P_i \equiv \mathcal{Q}.P_{\pi(i)}}
 $
 \item $\mathcal{P}.F = \mathcal{Q}.F$
 \item $\mathcal{P}.\tx{Leakage} = \mathcal{Q}.\tx{Leakage}$
@@ -368,7 +368,7 @@ These events are:
 \end{itemize}
 
 This transformation is also equality respecting.
-First, note that if $P = P'$ as systems, then
+First, note that if $P \equiv P'$ as systems, then
 then $\tx{NoChan}(P) = \tx{NoChan}(P')$, and so their logs will be the same.
 
 $\square$
@@ -403,7 +403,7 @@ and channels used by $P$, but no more than that.
 
 This is also equality preserving, since $\tx{Corrupt}_M(P)$ depends
 only on the channels used by $P$ and the functions called by $P$,
-all of which are the same for any $P' = P$.
+all of which are the same for any $P' \equiv P$.
 
 $\square$
 \end{definition}
@@ -1093,9 +1093,9 @@ makes $\mathcal{P}.\mathcal{R} = \mathcal{Q}.\mathcal{R}$.
 And then, the fact that $\mathcal{P}.F = \mathcal{Q}.F$ forces $\tx{Leakage}$
 to be the same as well.
 
-Finally, since $\circ, *, \otimes$ are equality respecting, we
+Finally, since $\circ, *, \otimes$ are respect $\equiv$, we
 can clearly see that $\tx{Inst}_C(\mathcal{P}) = \tx{Inst}_C(\mathcal{Q})$,
-since all the sub-components are equal.
+since all the sub-components are literally equal.
 
 \txbf{2.} For any systems $A, B$, we have $A = B \implies A \overset{0}{\approx} B$.
 Applying this to $\tx{Inst}_C(\mathcal{P})$ and $\tx{Inst}_C(\mathcal{Q})$
