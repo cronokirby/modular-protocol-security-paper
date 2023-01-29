@@ -1948,6 +1948,7 @@ $\blacksquare$
   Each player $\mathcal{G}.P_i$ exports a function $g_i$ for each input
   $g_i$ of $\mathcal{P}'.P_i$, which immediately calls $g \in \tx{Out}(G)$,
   and returns the result.
+  The leakage of $\mathcal{G}$ will simply be $\mathcal{P}.\tx{Leakage} \cap \tx{Out}(G)$.
   From this definition, it's clear that $\mathcal{P}$ is literally equal
   to $\mathcal{P}' \lhd \mathcal{G}$, as when the players in the latter
   are formed, the calls to the intermediate $g_i$ disappear,
