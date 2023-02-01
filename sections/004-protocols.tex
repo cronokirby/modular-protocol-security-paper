@@ -1176,7 +1176,7 @@ $\blacksquare$
     \item $\mathcal{P} \overset{\epsilon}{\approx}_{\mathcal{C}} \mathcal{Q} \implies \mathcal{P} \overset{\epsilon}{\approx}_{\mathcal{C}'} \mathcal{Q}$,
   \end{enumerate}
   Furthermore, if for any $C \in \mathcal{C}$ and its related model $C' \in \mathcal{C}$,
-  there exists a simulator $S_{\tx{M}}$ such that $\tx{Inst}_C(\mathcal{Q}) = \tx{SimInst}_{S, C'}(\mathcal{Q})$,
+  there exists a simulator $S_{\tx{M}}$ such that $\tx{Inst}_C(\mathcal{Q}) = \tx{SimInst}_{S_{\tx{M}}, C'}(\mathcal{Q})$,
   then it additionally holds that:
   \begin{enumerate}
     \setcounter{enumi}{2}
@@ -1723,6 +1723,14 @@ $\blacksquare$
     \item $\mathcal{P} \overset{\epsilon}{\approx}^G_{C} \mathcal{Q} \implies \mathcal{P} \overset{\epsilon}{\approx}^G_{C'} \mathcal{Q}$,
   \end{enumerate}
 
+  Furthermore, if for any $C \in \mathcal{C}$ and its related model $C' \in \mathcal{C}$,
+  there exists a simulator $S_{\tx{M}}$ such that $\tx{Inst}^G_C(\mathcal{Q}) = \tx{SimInst}^G_{S_{\tx{M}}, C'}(\mathcal{Q})$,
+  then it additionally holds that:
+  \begin{enumerate}
+    \setcounter{enumi}{2}
+    \item $\mathcal{P} \overset{\epsilon}{\leadsto}^G_{\mathcal{C}} \mathcal{Q} \implies \mathcal{P} \overset{\epsilon}{\leadsto}^G_{\mathcal{C}'} \mathcal{Q}$
+  \end{enumerate}
+
   \txbf{Proof:} We proceed similarly to Theorem~\ref{thm:mal_complete} (malicious completeness).
   In that theorem, the key observation was that for any $C' \in \mathcal{C}'$
   and the related $C \in \mathcal{C}$, it holds that:
@@ -1751,6 +1759,62 @@ $\blacksquare$
   where $O = \tx{Out}(\tx{Inst}_C(\mathcal{P})) / \tx{Out}(S) \cup \tx{Out}(G)$.
 
   This immediately implies parts 1 and 2.
+
+  For part 3, apply the assumption in the implication to get:
+  $$
+  \begin{pmatrix}
+    S_{\tx{SH}}\cr
+    \otimes\cr
+    1(O)
+  \end{pmatrix}
+  \circ
+  \begin{pmatrix}
+    S\cr
+    \otimes\cr
+    1(O)
+  \end{pmatrix}
+  \circ
+  \tx{Inst}^G_C(\mathcal{Q})
+  $$
+  Then apply the assumption about being able to simulate malicious corruption to
+  get:
+  $$
+  \begin{pmatrix}
+    S_{\tx{SH}}\cr
+    \otimes\cr
+    1(O)
+  \end{pmatrix}
+  \circ
+  \begin{pmatrix}
+    S\cr
+    \otimes\cr
+    1(O)
+  \end{pmatrix}
+  \circ
+  \begin{pmatrix}
+    S_{\tx{M}}\cr
+    \otimes\cr
+    1(O)
+  \end{pmatrix}
+  \circ
+  \tx{Inst}^G_{C'}(\mathcal{Q})
+  $$
+  which can then be rearranged with interchange to get:
+  $$
+  \begin{pmatrix}
+    S_{\tx{SH}} \circ S \circ S_{\tx{M}}\cr
+    \otimes\cr
+    1(O)
+  \end{pmatrix}
+  \circ
+  \tx{Inst}^G_{C'}(\mathcal{Q})
+  $$
+  And then if we apply the same observation about $\tx{SimInst}^G$, we realize
+  that this is:
+  $$
+  \tx{SimInst}^G_{(S_{\tx{SH}} \circ S \circ S_{\tx{M}}), C'}(\mathcal{Q})
+  $$
+  concluding our proof.
 
   $\blacksquare$
 \end{theorem}
