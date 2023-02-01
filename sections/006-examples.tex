@@ -89,7 +89,7 @@ and the other will try and implement the same behavior,
 but using only the public channel, aided by an encryption scheme.
 
 Let's start with the simpler private channel protocol, which we'll
-call, for lack of imagination, $\mathcal{Q}$,
+call $\mathcal{Q}$,
 and defined via Protocol~\ref{prot:privchan}
 
 \begin{protocol}{prot:privchan}{Private Channel Protocol}
@@ -117,7 +117,7 @@ functions in the functionality, and leaks the parts of the functionality
 that the adversary should have access to, as expected.
 
 Next, we need to define a protocol providing an encrypted channel.
-Thanks to a brilliant stroke of creativity, we'll call this one $\mathcal{P}$.
+We'll call this one $\mathcal{P}$.
 The basic idea is that $\mathcal{P}$ will encrypt messages before sending
 them over the public channel.
 We'll be using public-key encryption, as defined in \todo{todo}.
@@ -128,6 +128,7 @@ each party to agree on the other's public key.
 This functionality is defined in Game~\ref{game:keys}.
 The basic idea is that a key pair is generated for each party,
 and that party can see their secret key, along with the public key for the other party.
+Furthermore, we allow the adversary to see both public keys.
 
 \begin{game}{game:keys}{Keys Functionality}
 \package{Keys}{
@@ -136,6 +137,9 @@ and that party can see their secret key, along with the public key for the other
 \cr
 &\pfn{$\tx{Keys}_i$}{}\cr
 \pind{1} \preturn{(\tx{sk}_i, \tx{pk}_{\noti})}\cr
+\cr
+&\pfn{PKs}{}\cr
+\pind{1} \preturn{(\tx{pk}_1, \tx{pk}_2)}\cr
 }
 \end{game}
 
@@ -144,7 +148,7 @@ With this in hand, we can define $\mathcal{P}$ itself, in Protocol~\ref{prot:enc
 \begin{protocol}{prot:encchan}{Encrypted Channel Protocol}
     $\mathcal{P}$ is characterized by:
     \begin{itemize}
-        \item $\tx{Leakage} := \{m_{1\to 2}, m_{2\to1}\}$,
+        \item $\tx{Leakage} := \{m_{1\to 2}, m_{2\to1}, \tx{PKs}\}$,
         \item $F := \tx{Keys} \otimes \tx{PrivChan}$,
         \item and two players defined via the following system (for $i \in \{1, 2\}$):
 \package{$P_i$}{
@@ -188,6 +192,226 @@ of Theorem~\ref{thm:mal_complete}.
 
 \txbf{Honest Case:} Let $\tx{H}$ be a corruption model where both parties are honest.
 We prove that $\mathcal{P} \overset{2 \cdot \tx{IND}}{\leadsto}_{\{\tx{H}\}} \mathcal{Q}$.
+
+The high level idea is that since ciphertexts should be indistinguishable from random
+encryptions, the information in the log we get as a simulator for $\mathcal{Q}$
+is enough to fake all the ciphertexts the environment expects to see in $\mathcal{P}$.
+
+We start by unrolling $\tx{Inst}_{\tx{H}}(\mathcal{P})$, obtaining:
+$$
+\tx{Inst}_{\tx{H}}(\mathcal{P}) =
+\inlinepackage{$\Gamma^0$}{
+    &\txbf{pub } c_{1\to2}, c_{2\to1} \gets \tx{FifoQueue}.\tx{new}()\cr
+    &(\tx{sk}_i, \tx{pk}_{\noti}) \gets \tx{Keys}_i()\cr
+    \cr
+    &\pfn{PKs}{}\cr
+    \pind{1} \preturn (\tx{pk}_1, \tx{pk}_2)\cr
+    &\begin{aligned}
+        &\pfn{$\tx{Send}_{i}$}{m}\cr
+        \pind{1} \set{c}{\tx{Enc}(\tx{pk}_{\noti}, m)}\cr
+        \pind{1} c_{i\to\noti}.\tx{push}(c)\cr
+    \end{aligned}
+    \begin{aligned}
+        &\pfn{$\tx{Recv}_{i}$}{}\cr
+        \pind{1} \set{c}{\await \tx{c}_{\noti \to i}.\tx{pop}()}\cr
+        \pind{1} \preturn{\tx{Dec}(\tx{sk}_i, c)}\cr
+    \end{aligned}
+}
+\circ \tx{Keys}
+$$
+Note that we can ignore all parts of the instantiation related to channels,
+including the router, because the parties don't use any channels.
+We also took the liberty of renaming $m_{i \to \noti}$ to $c_{i \to \noti}$,
+to emphasize the fact that these queues contain ciphertexts, instead of messages.
+
+Next, we pull a bit of a trick.
+It turns out that since both parties are honest, we don't need to actually
+decrypt the ciphertext.
+Instead, one party can simply send the plaintext via a separate channel
+to tthe other.
+Applying this gives us:
+$$
+\Gamma^0 \circ \tx{Keys} = 
+\inlinepackage{$\Gamma^1$}{
+    &\txbf{pub } c_{1\to2}, c_{2\to1} \gets \tx{FifoQueue}.\tx{new}()\cr
+    &\txbf{pub } m_{1\to2}, m_{2\to1} \gets \tx{FifoQueue}.\tx{new}()\cr
+    &(\bullet, \tx{pk}_{\noti}) \gets \tx{Keys}_i()\cr
+    \cr
+    &\pfn{PKs}{}\cr
+    \pind{1} \preturn (\tx{pk}_1, \tx{pk}_2)\cr
+    &\begin{aligned}
+        &\pfn{$\tx{Send}_{i}$}{m}\cr
+        \pind{1} \set{c}{\tx{Enc}(\tx{pk}_{\noti}, m)}\cr
+        \pind{1} c_{i\to\noti}.\tx{push}(c)\cr
+        \pind{1} m_{i\to\noti}.\tx{push}(m)\cr
+    \end{aligned}
+    \begin{aligned}
+        &\pfn{$\tx{Recv}_{i}$}{}\cr
+        \pind{1} \set{c}{\await \tx{c}_{\noti \to i}.\tx{pop}()}\cr
+        \pind{1} \set{m}{\await \tx{m}_{\noti \to i}.\tx{pop}()}\cr
+        \pind{1} \preturn{m}\cr
+    \end{aligned}
+}
+\circ \tx{Keys}
+$$
+This is equal because of the correctness property for encryption,
+which guarantees that $m = \tx{Dec}(\tx{Enc}(\tx{pk}, m))$.
+Furthermore, the timing properties are the same,
+since the size of both the $c_{i\to\noti}$ and $m_{i\to\noti}$ queues
+are always the same.
+
+At this point, we can offload the decryption to the $\tx{IND}$ game, giving us:
+$$
+\Gamma^1 \circ \tx{Keys} = 
+\inlinepackage{$\Gamma^2$}{
+    &\txbf{pub } c_{1\to2}, c_{2\to1} \gets \tx{FifoQueue}.\tx{new}()\cr
+    &\txbf{pub } m_{1\to2}, m_{2\to1} \gets \tx{FifoQueue}.\tx{new}()\cr
+    \cr
+    &\pfn{PKs}{}\cr
+    \pind{1} \preturn (\txbf{super}.\tx{pk}_1, \super.\tx{pk}_2)\cr
+    &\begin{aligned}
+        &\pfn{$\tx{Send}_{i}$}{m}\cr
+        \pind{1} \set{c}{\tx{Challenge}_{\noti}(m)}\cr
+        \pind{1} c_{i\to\noti}.\tx{push}(c)\cr
+        \pind{1} m_{i\to\noti}.\tx{push}(m)\cr
+    \end{aligned}
+    \begin{aligned}
+        &\pfn{$\tx{Recv}_{i}$}{}\cr
+        \pind{1} \set{c}{\await \tx{c}_{\noti \to i}.\tx{pop}()}\cr
+        \pind{1} \set{m}{\await \tx{m}_{\noti \to i}.\tx{pop}()}\cr
+        \pind{1} \preturn{m}\cr
+    \end{aligned}
+}
+\circ
+\begin{pmatrix}
+\tx{IND}_0\cr
+\otimes\cr
+\tx{IND}_0
+\end{pmatrix}
+$$
+We use two instances of $\tx{IND}$, and we disambiguate the functions in
+each instance by attaching $1$ or $2$ to each function.
+
+Next, we can hop to $\tx{IND}_1$, since:
+$$
+\Gamma^2 \circ
+\begin{pmatrix}
+\tx{IND}_0\cr
+\otimes\cr
+\tx{IND}_0
+\end{pmatrix}
+\overset{\epsilon}{\approx}
+\Gamma^2 \circ
+\begin{pmatrix}
+\tx{IND}_1\cr
+\otimes\cr
+\tx{IND}_1
+\end{pmatrix}
+$$
+with $\epsilon = 2\cdot \tx{IND}$.
+
+If we unroll this last game, we get:
+$$
+\Gamma^1 \circ
+\begin{pmatrix}
+\tx{IND}_1\cr
+\otimes\cr
+\tx{IND}_1
+\end{pmatrix}
+=
+\inlinepackage{$\Gamma^3$}{
+    &\txbf{pub } c_{1\to2}, c_{2\to1} \gets \tx{FifoQueue}.\tx{new}()\cr
+    &\txbf{pub } m_{1\to2}, m_{2\to1} \gets \tx{FifoQueue}.\tx{new}()\cr
+    &(\tx{sk}_i, \tx{pk}_i) \xleftarrow{\$} \tx{Gen}()\cr
+    \cr
+    &\pfn{PKs}{}\cr
+    \pind{1} \preturn (\tx{pk}_1, \tx{pk}_2)\cr
+    &\begin{aligned}
+        &\pfn{$\tx{Send}_{i}$}{m}\cr
+        \pind{1} \draw{r}{\txbf{M}(|m|)}\cr
+        \pind{1} c_{i\to\noti}.\tx{push}(\tx{Enc}(\tx{pk}_{\noti}, r))\cr
+        \pind{1} m_{i\to\noti}.\tx{push}(m)\cr
+    \end{aligned}
+    \begin{aligned}
+        &\pfn{$\tx{Recv}_{i}$}{}\cr
+        \pind{1} \set{c}{\await \tx{c}_{\noti \to i}.\tx{pop}()}\cr
+        \pind{1} \set{m}{\await \tx{m}_{\noti \to i}.\tx{pop}()}\cr
+        \pind{1} \preturn{m}\cr
+    \end{aligned}
+}
+$$
+
+Our next step will be to ``defer'' the creation of the fake ciphertexts,
+generating them on demand when the ciphertext queue is viewed by
+the adversary.
+To do this, we maintain a log which saves the length of messages
+being sent, and also lets us know when to remove ciphertexts from the log.
+This gives us:
+$$
+\Gamma^4 =
+\inlinepackage{$\Gamma^5$}{
+    &\txbf{pub } l_{1\to2}, l_{2\to1} \gets \tx{FifoQueue}.\tx{new}()\cr
+    &\txbf{pub } c_{1\to2}, c_{2\to1} \gets \tx{FifoQueue}.\tx{new}()\cr
+    &\txbf{pub } m_{1\to2}, m_{2\to1} \gets \tx{FifoQueue}.\tx{new}()\cr
+    &(\tx{sk}_i, \tx{pk}_i) \xleftarrow{\$} \tx{Gen}()\cr
+    \cr
+    &\begin{aligned}
+        &\pfn{PKs}{}\cr
+        \pind{1} \preturn (\tx{pk}_1, \tx{pk}_2)\cr
+        \cr\cr\cr\cr\cr\cr
+        &\pfn{$\tx{Send}_{i}$}{m}\cr
+        \pind{1} l_{i\to\noti}.\tx{push}((\txt{push}, |m|))\cr
+        \pind{1} m_{i\to\noti}.\tx{push}(m)\cr
+    \end{aligned}
+    \begin{aligned}
+        &\pfn{$c_{i\to\noti}$}{}\cr
+        \pind{1} \pwhile{\tx{cmd} \gets \tx{l}_{i\to\noti}.\tx{pop}() \neq \bot}\cr
+        \pind{2} \pif{\tx{cmd} = \txt{pop}}\cr
+        \pind{3} c_{i\to\noti}.\tx{pop}()\cr
+        \pind{2} \pif{\tx{cmd} = (\txt{push}, |m|)}\cr
+        \pind{3} \draw{r}{\txbf{M}(|m|)}\cr
+        \pind{3} c_{i\to\noti}.\tx{push}(\tx{Enc}(\tx{pk}_{\noti}, r))\cr
+        \cr
+        &\pfn{$\tx{Recv}_{i}$}{}\cr
+        \pind{1} \set{m}{\await \tx{m}_{\noti \to i}.\tx{pop}()}\cr
+        \pind{1} l_{i\to\noti}.\tx{push}((\txt{pop}, |m|))\cr
+        \pind{1} \preturn{m}\cr
+    \end{aligned}
+}
+$$
+
+But, at this point the behavior of $\tx{Send}_i$ and $\tx{Recv}_i$ is identical
+to that in $\mathcal{Q}$, allowing us to write:
+$$
+\Gamma^5 = 
+\begin{matrix}
+\inlinepackage{$S$}{
+    &\txbf{pub } c_{1\to2}, c_{2\to1} \gets \tx{FifoQueue}.\tx{new}()\cr
+    &(\tx{sk}_i, \tx{pk}_i) \xleftarrow{\$} \tx{Gen}()\cr
+    \cr
+    &\begin{aligned}
+        &\pfn{PKs}{}\cr
+        \pind{1} \preturn (\tx{pk}_1, \tx{pk}_2)\cr
+        \cr\cr\cr\cr\cr\cr
+    \end{aligned}
+    \begin{aligned}
+        &\pfn{$c_{i\to\noti}$}{}\cr
+        \pind{1} \pwhile{\tx{cmd} \gets \tx{l}_{i\to\noti}.\tx{pop}() \neq \bot}\cr
+        \pind{2} \pif{\tx{cmd} = \txt{pop}}\cr
+        \pind{3} c_{i\to\noti}.\tx{pop}()\cr
+        \pind{2} \pif{\tx{cmd} = (\txt{push}, |m|)}\cr
+        \pind{3} \draw{r}{\txbf{M}(|m|)}\cr
+        \pind{3} c_{i\to\noti}.\tx{push}(\tx{Enc}(\tx{pk}_{\noti}, r))\cr
+    \end{aligned}
+}\cr
+\otimes\cr
+1(\tx{Send}_i, \tx{Recv}_i)\cr
+\end{matrix}
+\circ \tx{Inst}_{\tx{H}}(\mathcal{Q})
+$$
+which concludes this part of our proof, having written out our simulator,
+and proven that $\tx{Inst}_{\tx{H}}(\mathcal{P}) \overset{\epsilon}{\approx} \tx{SimInst}_{S, \tx{H}}(\mathcal{Q})$.
+
 
 \txbf{Malicious Case:}
 Without loss of generality, we can consider the case where $P_1$ is malicious.

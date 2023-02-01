@@ -12,6 +12,17 @@
 \end{equation*}
 \egroup
 }
+\newcommand{\inlinepackage}[2]{
+\bgroup
+\boxed{
+\begin{aligned}
+&\colorbox{gamebg}{#1}\cr
+\cr
+#2
+\end{aligned}
+}
+\egroup
+}
 
 \newcommand{\tx}[1]{\text{#1}}
 \newcommand{\txbf}[1]{\textbf{#1}}
@@ -24,6 +35,7 @@
 \newcommand{\await}[1]{\txbf{await } #1}
 \newcommand{\draw}[2]{#1 \xleftarrow{\$} #2}
 \newcommand{\pif}[1]{\txbf{if } #1 \tx{:}}
+\newcommand{\pwhile}[1]{\txbf{while } #1 \tx{:}}
 \newcommand{\pelsif}[1]{\txbf{else if } #1 \tx{:}}
 \newcommand{\pelse}{\txbf{else}\tx{:}}
 \newcommand{\preturn}[1]{\txbf{return } #1}
