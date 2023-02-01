@@ -82,3 +82,90 @@ The reason for having a historical log, rather than just a snapshot
 of the lengths of the current messages,
 is to make the simulator's job easier
 in the eventual proof of security.
+
+Now, we need to define the protocols.
+One protocol will use the private channel to send messages,
+and the other will try and implement the same behavior,
+but using only the public channel, aided by an encryption scheme.
+
+Let's start with the simpler private channel protocol, which we'll
+call, for lack of imagination, $\mathcal{Q}$,
+and defined via Protocol~\ref{prot:privchan}
+
+\begin{protocol}{prot:privchan}{Private Channel Protocol}
+    $\mathcal{Q}$ is characterized by:
+    \begin{itemize}
+        \item $\tx{Leakage} := \{l_{1\to 2}, l_{2\to1}\}$,
+        \item $F := \tx{PrivChan}$,
+        \item And two players defined via the following system (for $i \in \{1, 2\}$):
+\package{$P_i$}{
+    &\begin{aligned}
+        &\pfn{$\tx{Send}_{i}$}{m}\cr
+        \pind{1} \tx{Send}_{i \to \noti}(m)\cr
+    \end{aligned}
+    \begin{aligned}
+        &\pfn{$\tx{Recv}_{i}$}{}\cr
+        \pind{1} \preturn{\await \tx{Recv}_{\noti \to i}()}\cr
+    \end{aligned}
+}
+    \end{itemize}
+
+\end{protocol}
+
+This protocol basically just provides each player access with their corresponding
+functions in the functionality, and leaks the parts of the functionality
+that the adversary should have access to, as expected.
+
+Next, we need to define a protocol providing an encrypted channel.
+Thanks to a brilliant stroke of creativity, we'll call this one $\mathcal{P}$.
+The basic idea is that $\mathcal{P}$ will encrypt messages before sending
+them over the public channel.
+We'll be using public-key encryption, as defined in \todo{todo}.
+For the sake of simplicity, we'll be relying on an additional global functionality,
+$\tx{Keys}$, which will be used to setup each party's key pair, and allow
+each party to agree on the other's public key.
+
+This functionality is defined in Game~\ref{game:keys}.
+The basic idea is that a key pair is generated for each party,
+and that party can see their secret key, along with the public key for the other party.
+
+\begin{game}{game:keys}{Keys Functionality}
+\package{Keys}{
+&\draw{(\tx{sk}_1, \tx{pk}_1)}{\tx{Gen}()}\cr
+&\draw{(\tx{sk}_2, \tx{pk}_2)}{\tx{Gen}()}\cr
+\cr
+&\pfn{$\tx{Keys}_i$}{}\cr
+\pind{1} \preturn{(\tx{sk}_i, \tx{pk}_{\noti})}\cr
+}
+\end{game}
+
+With this in hand, we can define $\mathcal{P}$ itself, in Protocol~\ref{prot:encchan}.
+
+\begin{protocol}{prot:encchan}{Encrypted Channel Protocol}
+    $\mathcal{P}$ is characterized by:
+    \begin{itemize}
+        \item $\tx{Leakage} := \{m_{1\to 2}, m_{2\to1}\}$,
+        \item $F := 1(\tx{Keys}) \otimes \tx{PrivChan}$,
+        \item And two players defined via the following system (for $i \in \{1, 2\}$):
+\package{$P_i$}{
+    &(\tx{sk}_i, \tx{pk}_{\noti}) \gets \tx{Keys}_i()\cr
+    \cr
+    &\begin{aligned}
+        &\pfn{$\tx{Send}_{i}$}{m}\cr
+        \pind{1} \tx{Send}_{i \to \noti}(\tx{Enc}(\tx{pk}_{\noti}, m))\cr
+        \cr
+    \end{aligned}
+    \begin{aligned}
+        &\pfn{$\tx{Recv}_{i}$}{}\cr
+        \pind{1} \set{c}{\await \tx{Recv}_{\noti \to i}()}\cr
+        \pind{1} \preturn{\tx{Dec}(\tx{sk}_i, c)}\cr
+    \end{aligned}
+}
+    \end{itemize}
+
+\end{protocol}
+
+Each player will encrypt their message for the other player before sending it,
+and then decrypt it using their secret key after receiving it.
+The $\tx{Keys}$ functionality isn't embedded into the protocol,
+but is instead considered to be a global functionality.

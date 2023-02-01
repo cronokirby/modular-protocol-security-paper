@@ -138,15 +138,17 @@
 
 \DeclareFloatingEnvironment[placement={!h},name=Protocol,within=section]{protocolfloat}
 \captionsetup[protocolfloat]{labelfont=bf}
+\newcommand{\protocollabel}{}
 \newcommand{\protocolcaption}{}
 \newenvironment{protocol}[2]
 {
 \renewcommand{\protocolcaption}{#2}
+\renewcommand{\protocollabel}{#1}
 \begin{protocolfloat} 
-\label{#1}
 }
 {
 \caption{\protocolcaption}
+\label{\protocollabel}
 \end{protocolfloat}
 }
 
