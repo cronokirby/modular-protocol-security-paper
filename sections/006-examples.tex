@@ -121,7 +121,7 @@ Thanks to a brilliant stroke of creativity, we'll call this one $\mathcal{P}$.
 The basic idea is that $\mathcal{P}$ will encrypt messages before sending
 them over the public channel.
 We'll be using public-key encryption, as defined in \todo{todo}.
-For the sake of simplicity, we'll be relying on an additional global functionality,
+For the sake of simplicity, we'll be relying on an additional functionality,
 $\tx{Keys}$, which will be used to setup each party's key pair, and allow
 each party to agree on the other's public key.
 
@@ -145,8 +145,8 @@ With this in hand, we can define $\mathcal{P}$ itself, in Protocol~\ref{prot:enc
     $\mathcal{P}$ is characterized by:
     \begin{itemize}
         \item $\tx{Leakage} := \{m_{1\to 2}, m_{2\to1}\}$,
-        \item $F := 1(\tx{Keys}) \otimes \tx{PrivChan}$,
-        \item And two players defined via the following system (for $i \in \{1, 2\}$):
+        \item $F := \tx{Keys} \otimes \tx{PrivChan}$,
+        \item and two players defined via the following system (for $i \in \{1, 2\}$):
 \package{$P_i$}{
     &(\tx{sk}_i, \tx{pk}_{\noti}) \gets \tx{Keys}_i()\cr
     \cr
@@ -167,24 +167,38 @@ With this in hand, we can define $\mathcal{P}$ itself, in Protocol~\ref{prot:enc
 
 Each player will encrypt their message for the other player before sending it,
 and then decrypt it using their secret key after receiving it.
-The $\tx{Keys}$ functionality isn't embedded into the protocol,
-but is instead considered to be a global functionality.
 
 At this point we can state and prove the crux of this example:
 
-\begin{lemma}
+\begin{claim}
 Let $\mathcal{C}$ be the class of corruptions where up to 1 of 2 parties
 is either maliciously corrupt or semi-honestly corrupt.
 Then we have:
 $$
-\mathcal{P} \overset{\epsilon}{\leadsto}^{\tx{Keys}}_{\mathcal{C}} \mathcal{Q}
+\mathcal{P} \overset{2 \cdot \tx{IND}}{\leadsto}_{\mathcal{C}} \mathcal{Q}
 $$
-with $\epsilon = 2 \cdot \tx{IND}$.
 
 \txbf{Proof:} We consider the cases where all the parties are honest
 and some of the parties are corrupted separately.
 Furthermore, we only need to consider malicious corruption,
 since the parties in $\mathcal{Q}$ just directly call functions from
-the ideal functionality, and so semi-honest corruption and malicious corruption
-are effectively identical.
-\end{lemma}
+the ideal functionality, and so we can simulate malicious corruption
+from semi-honest corruption, and can thus apply part 3
+of Theorem~\ref{thm:mal_complete}.
+
+\txbf{Honest Case:} Let $\tx{H}$ be a corruption model where both parties are honest.
+We prove that $\mathcal{P} \overset{2 \cdot \tx{IND}}{\leadsto}_{\{\tx{H}\}} \mathcal{Q}$.
+
+\txbf{Malicious Case:}
+Without loss of generality, we can consider the case where $P_1$ is malicious.
+This is because the difference between the parties is just a matter of renaming
+variables.
+Let $\tx{M}$ denote this corruption model.
+We prove that $\mathcal{P} \overset{0}{\leadsto}_{\{\tx{M}\}} \mathcal{Q}$,
+which naturally implies the slightly higher upper bound of $2 \cdot \tx{IND}$.
+
+Having now proved the upper bound for all the corruption models in $\mathcal{C}$,
+we conclude that our claim holds.
+
+$\blacksquare$
+\end{claim}
