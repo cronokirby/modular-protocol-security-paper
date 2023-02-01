@@ -169,3 +169,22 @@ Each player will encrypt their message for the other player before sending it,
 and then decrypt it using their secret key after receiving it.
 The $\tx{Keys}$ functionality isn't embedded into the protocol,
 but is instead considered to be a global functionality.
+
+At this point we can state and prove the crux of this example:
+
+\begin{lemma}
+Let $\mathcal{C}$ be the class of corruptions where up to 1 of 2 parties
+is either maliciously corrupt or semi-honestly corrupt.
+Then we have:
+$$
+\mathcal{P} \overset{\epsilon}{\leadsto}^{\tx{Keys}}_{\mathcal{C}} \mathcal{Q}
+$$
+with $\epsilon = 2 \cdot \tx{IND}$.
+
+\txbf{Proof:} We consider the cases where all the parties are honest
+and some of the parties are corrupted separately.
+Furthermore, we only need to consider malicious corruption,
+since the parties in $\mathcal{Q}$ just directly call functions from
+the ideal functionality, and so semi-honest corruption and malicious corruption
+are effectively identical.
+\end{lemma}

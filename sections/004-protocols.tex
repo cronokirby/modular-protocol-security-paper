@@ -1172,8 +1172,15 @@ $\blacksquare$
   malicious corruptions replaced with semi-honest corruptions.
   We then have:
   \begin{enumerate}
-    \item $\mathcal{P} =_{C} \mathcal{Q} \implies \mathcal{P} =_{C'} \mathcal{Q}$,
-    \item $\mathcal{P} \overset{\epsilon}{\approx}_{C} \mathcal{Q} \implies \mathcal{P} \overset{\epsilon}{\approx}_{C'} \mathcal{Q}$,
+    \item $\mathcal{P} =_{\mathcal{C}} \mathcal{Q} \implies \mathcal{P} =_{\mathcal{C}'} \mathcal{Q}$,
+    \item $\mathcal{P} \overset{\epsilon}{\approx}_{\mathcal{C}} \mathcal{Q} \implies \mathcal{P} \overset{\epsilon}{\approx}_{\mathcal{C}'} \mathcal{Q}$,
+  \end{enumerate}
+  Furthermore, if for any $C \in \mathcal{C}$ and its related model $C' \in \mathcal{C}$,
+  there exists a simulator $S_{\tx{M}}$ such that $\tx{Inst}_C(\mathcal{Q}) = \tx{SimInst}_{S, C'}(\mathcal{Q})$,
+  then it additionally holds that:
+  \begin{enumerate}
+    \setcounter{enumi}{2}
+    \item $\mathcal{P} \overset{\epsilon}{\leadsto}_{\mathcal{C}} \mathcal{Q} \implies \mathcal{P} \overset{\epsilon}{\leadsto}_{\mathcal{C}'} \mathcal{Q}$
   \end{enumerate}
 
   \txbf{Proof:} Lemma~\label{thm:simulatingcorruption} (simulating corruptions) is the crux of our proof.
@@ -1197,6 +1204,55 @@ $\blacksquare$
 
   This immediately implies parts 1 and 2, by the fact that $\circ$ for systems
   respects equality and indistinguishability.
+
+  For part 3, we apply the assumption in the implication to get:
+  $$
+  \begin{pmatrix}
+    S_{\tx{SH}}\cr
+    \otimes\cr
+    1(O)
+  \end{pmatrix}
+  \circ
+  \begin{pmatrix}
+    S\cr
+    \otimes\cr
+    1(O)
+  \end{pmatrix}
+  \circ \tx{Inst}_{C}(\mathcal{Q})
+  $$
+  Then, apply our assumption about being able to simulate malicious corruption
+  from semi-honest corruption to get:
+  $$
+  \begin{pmatrix}
+    S_{\tx{SH}}\cr
+    \otimes\cr
+    1(O)
+  \end{pmatrix}
+  \circ
+  \begin{pmatrix}
+    S\cr
+    \otimes\cr
+    1(O)
+  \end{pmatrix}
+  \circ
+  \begin{pmatrix}
+    S_M\cr
+    \otimes\cr
+    1(O)
+  \end{pmatrix}
+  \circ \tx{Inst}_{C'}(\mathcal{Q})
+  $$
+  which we can then apply interchange to to end up with:
+  $$
+  \begin{pmatrix}
+    S_{\tx{SH}} \circ S \circ S_M\cr
+    \otimes\cr
+    1(O)
+  \end{pmatrix}
+  \circ \tx{Inst}_{C'}(\mathcal{Q})
+  = \tx{SimInst}_{S', C'}(\mathcal{Q})
+  $$
+  for $S' := S_{\tx{SH}} \circ S \circ S_M$, concluding our proof.
 
   $\blacksquare$
 \end{theorem}
