@@ -34,7 +34,7 @@ A few clarifications on the notation in this game:
     \end{aligned}
     \quad
     \begin{aligned}
-        &\pfn{$\tx{Recv}_{i\to \noti}$}{m}\cr
+        &\pfn{$\tx{Recv}_{i\to \noti}$}{}\cr
         &\preturn{\await{m_{i\to \noti}.\tx{pop}()}}
     \end{aligned}
 }
@@ -48,3 +48,37 @@ Note that this assignment of which functions
 are usable by which entities is not defined by the functionality \emph{itself},
 but rather merely suggested by its syntax, and enforced only by how
 protocols will eventually use the functionality.
+
+Next, we look at a functionality for \emph{private} channels,
+captured by Game~\ref{game:privchan}.
+
+\begin{game}{game:privchan}{Private Channel Functionality}
+\package{$F[\tx{PrivChan}]$}{
+    &\txbf{pub } m_{1\to2}, m_{2\to1} \gets \tx{FifoQueue}.\tx{new}()\cr
+    &\txbf{pub } l_{1\to2}, l_{2\to1} \gets \tx{FifoQueue}.\tx{new}()\cr
+    \cr
+    &\begin{aligned}
+        &\pfn{$\tx{Send}_{i\to \noti}$}{m}\cr
+        \pind{1}m_{i\to \noti}.\tx{push}(m)\cr
+        \pind{1}l_{i\to \noti}.\tx{push}((\txt{push}, |m|))\cr
+        \cr
+    \end{aligned}
+    \quad
+    \begin{aligned}
+        &\pfn{$\tx{Recv}_{i\to \noti}$}{}\cr
+        \pind{1} \set{m}{\await{m_{i\to \noti}.\tx{pop}()}}\cr
+        \pind{1}l_{i\to \noti}.\tx{push}(\txt{pop})\cr
+        \pind{1} \preturn{m}\cr
+    \end{aligned}
+}
+\end{game}
+
+The crucial difference is the nature of the leakage.
+Now, rather than being able to see the current state of either message queue,
+including the messages themselves, now the adversary can only
+see a historical log for each queue, describing only the \emph{length}
+of the messages inserted into the queue.
+The reason for having a historical log, rather than just a snapshot
+of the lengths of the current messages,
+is to make the simulator's job easier
+in the eventual proof of security.
