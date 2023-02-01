@@ -1,3 +1,50 @@
 \section{Examples}
 
 \subsection{Constructing Private Channels}
+
+In this section, we consider the problem of constructing a \emph{private}
+channel from a \emph{public} channel.
+A public channel leaks all messages sent over it to an adversary,
+whereas a private channel leaks a minimal amount of information:
+in our case, essentially just the length of messages sent over the channel.
+
+We'll be constructing a two-party private channel from a public channel
+using an encryption scheme, and will also show that this construction is secure,
+even if one of the two parties using the channel is corrupted.
+
+Let's start with the ideal functionality representing a public channel,
+as Game~\ref{game:pubchan}.
+
+A few clarifications on the notation in this game:
+\begin{itemize}
+    \item For $i \in \{1, 2\}$, we let $\noti$ denote either $2$ or $1$, respectively.
+    \item There are two versions of $\tx{Send}_i$ and $\tx{Recv}_i$, for $i \in \{1, 2\}$.
+    \item The $\tx{pop}$ function on queues is asynchronous, meaning that we wait until the queue is not empty
+    to remove the oldest element from it.
+    \item The queues are public in an \emph{immutable} fashion: they can be read but not modified outside the package.
+\end{itemize}
+
+\begin{game}{game:pubchan}{Public Channel Functionality}
+\package{$F[\tx{PubChan}]$}{
+    &\txbf{pub } m_{1\to2}, m_{2\to1} \gets \tx{FifoQueue}.\tx{new}()\cr
+    \cr
+    &\begin{aligned}
+        &\pfn{$\tx{Send}_{i\to \noti}$}{m}\cr
+        \pind{1}m_{i\to \noti}.\tx{push}(m)\cr
+    \end{aligned}
+    \quad
+    \begin{aligned}
+        &\pfn{$\tx{Recv}_{i\to \noti}$}{m}\cr
+        &\preturn{\await{m_{i\to \noti}.\tx{pop}()}}
+    \end{aligned}
+}
+\end{game}
+
+The idea behind this functionality is that each party can send messages to,
+or receive messages from the other party.
+However, at any point, the currently stored messages are readable by
+the adversary.
+Note that this assignment of which functions
+are usable by which entities is not defined by the functionality \emph{itself},
+but rather merely suggested by its syntax, and enforced only by how
+protocols will eventually use the functionality.
