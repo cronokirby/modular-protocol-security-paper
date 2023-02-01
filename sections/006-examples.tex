@@ -26,7 +26,7 @@ A few clarifications on the notation in this game:
 
 \begin{game}{game:pubchan}{Public Channel Functionality}
 \package{$F[\tx{PubChan}]$}{
-    &\txbf{pub } m_{1\to2}, m_{2\to1} \gets \tx{FifoQueue}.\tx{new}()\cr
+    &\txbf{view } m_{1\to2}, m_{2\to1} \gets \tx{FifoQueue}.\tx{new}()\cr
     \cr
     &\begin{aligned}
         &\pfn{$\tx{Send}_{i\to \noti}$}{m}\cr
@@ -54,7 +54,7 @@ captured by Game~\ref{game:privchan}.
 
 \begin{game}{game:privchan}{Private Channel Functionality}
 \package{$F[\tx{PrivChan}]$}{
-    &\txbf{pub } m_{1\to2}, m_{2\to1} \gets \tx{FifoQueue}.\tx{new}()\cr
+    &\txbf{view } m_{1\to2}, m_{2\to1} \gets \tx{FifoQueue}.\tx{new}()\cr
     &\txbf{pub } l_{1\to2}, l_{2\to1} \gets \tx{FifoQueue}.\tx{new}()\cr
     \cr
     &\begin{aligned}
@@ -82,6 +82,9 @@ The reason for having a historical log, rather than just a snapshot
 of the lengths of the current messages,
 is to make the simulator's job easier
 in the eventual proof of security.
+For technical reasons, it's simpler to allow the log to be mutated,
+so that the simulator can ``remember'' which parts of the log they've
+already seen, by popping elements from the queue.
 
 Now, we need to define the protocols.
 One protocol will use the private channel to send messages,
@@ -201,7 +204,7 @@ We start by unrolling $\tx{Inst}_{\tx{H}}(\mathcal{P})$, obtaining:
 $$
 \tx{Inst}_{\tx{H}}(\mathcal{P}) =
 \inlinepackage{$\Gamma^0$}{
-    &\txbf{pub } c_{1\to2}, c_{2\to1} \gets \tx{FifoQueue}.\tx{new}()\cr
+    &\txbf{view } c_{1\to2}, c_{2\to1} \gets \tx{FifoQueue}.\tx{new}()\cr
     &(\tx{sk}_i, \tx{pk}_{\noti}) \gets \tx{Keys}_i()\cr
     \cr
     &\pfn{PKs}{}\cr
@@ -233,8 +236,8 @@ Applying this gives us:
 $$
 \Gamma^0 \circ \tx{Keys} = 
 \inlinepackage{$\Gamma^1$}{
-    &\txbf{pub } c_{1\to2}, c_{2\to1} \gets \tx{FifoQueue}.\tx{new}()\cr
-    &\txbf{pub } m_{1\to2}, m_{2\to1} \gets \tx{FifoQueue}.\tx{new}()\cr
+    &\txbf{view } c_{1\to2}, c_{2\to1} \gets \tx{FifoQueue}.\tx{new}()\cr
+    &\txbf{view } m_{1\to2}, m_{2\to1} \gets \tx{FifoQueue}.\tx{new}()\cr
     &(\bullet, \tx{pk}_{\noti}) \gets \tx{Keys}_i()\cr
     \cr
     &\pfn{PKs}{}\cr
@@ -264,8 +267,8 @@ At this point, we can offload the decryption to the $\tx{IND}$ game, giving us:
 $$
 \Gamma^1 \circ \tx{Keys} = 
 \inlinepackage{$\Gamma^2$}{
-    &\txbf{pub } c_{1\to2}, c_{2\to1} \gets \tx{FifoQueue}.\tx{new}()\cr
-    &\txbf{pub } m_{1\to2}, m_{2\to1} \gets \tx{FifoQueue}.\tx{new}()\cr
+    &\txbf{view } c_{1\to2}, c_{2\to1} \gets \tx{FifoQueue}.\tx{new}()\cr
+    &\txbf{view } m_{1\to2}, m_{2\to1} \gets \tx{FifoQueue}.\tx{new}()\cr
     \cr
     &\pfn{PKs}{}\cr
     \pind{1} \preturn (\txbf{super}.\tx{pk}_1, \super.\tx{pk}_2)\cr
@@ -320,8 +323,8 @@ $$
 \end{pmatrix}
 =
 \inlinepackage{$\Gamma^3$}{
-    &\txbf{pub } c_{1\to2}, c_{2\to1} \gets \tx{FifoQueue}.\tx{new}()\cr
-    &\txbf{pub } m_{1\to2}, m_{2\to1} \gets \tx{FifoQueue}.\tx{new}()\cr
+    &\txbf{view } c_{1\to2}, c_{2\to1} \gets \tx{FifoQueue}.\tx{new}()\cr
+    &\txbf{view } m_{1\to2}, m_{2\to1} \gets \tx{FifoQueue}.\tx{new}()\cr
     &(\tx{sk}_i, \tx{pk}_i) \xleftarrow{\$} \tx{Gen}()\cr
     \cr
     &\pfn{PKs}{}\cr
@@ -351,8 +354,8 @@ $$
 \Gamma^4 =
 \inlinepackage{$\Gamma^5$}{
     &\txbf{pub } l_{1\to2}, l_{2\to1} \gets \tx{FifoQueue}.\tx{new}()\cr
-    &\txbf{pub } c_{1\to2}, c_{2\to1} \gets \tx{FifoQueue}.\tx{new}()\cr
-    &\txbf{pub } m_{1\to2}, m_{2\to1} \gets \tx{FifoQueue}.\tx{new}()\cr
+    &\txbf{view } c_{1\to2}, c_{2\to1} \gets \tx{FifoQueue}.\tx{new}()\cr
+    &\txbf{view } m_{1\to2}, m_{2\to1} \gets \tx{FifoQueue}.\tx{new}()\cr
     &(\tx{sk}_i, \tx{pk}_i) \xleftarrow{\$} \tx{Gen}()\cr
     \cr
     &\begin{aligned}
@@ -362,6 +365,7 @@ $$
         &\pfn{$\tx{Send}_{i}$}{m}\cr
         \pind{1} l_{i\to\noti}.\tx{push}((\txt{push}, |m|))\cr
         \pind{1} m_{i\to\noti}.\tx{push}(m)\cr
+        \cr
     \end{aligned}
     \begin{aligned}
         &\pfn{$c_{i\to\noti}$}{}\cr
@@ -371,6 +375,7 @@ $$
         \pind{2} \pif{\tx{cmd} = (\txt{push}, |m|)}\cr
         \pind{3} \draw{r}{\txbf{M}(|m|)}\cr
         \pind{3} c_{i\to\noti}.\tx{push}(\tx{Enc}(\tx{pk}_{\noti}, r))\cr
+        \pind{1} \preturn{c_{i \to \noti}}\cr
         \cr
         &\pfn{$\tx{Recv}_{i}$}{}\cr
         \pind{1} \set{m}{\await \tx{m}_{\noti \to i}.\tx{pop}()}\cr
@@ -386,7 +391,7 @@ $$
 \Gamma^5 = 
 \begin{matrix}
 \inlinepackage{$S$}{
-    &\txbf{pub } c_{1\to2}, c_{2\to1} \gets \tx{FifoQueue}.\tx{new}()\cr
+    &\txbf{view } c_{1\to2}, c_{2\to1} \gets \tx{FifoQueue}.\tx{new}()\cr
     &(\tx{sk}_i, \tx{pk}_i) \xleftarrow{\$} \tx{Gen}()\cr
     \cr
     &\begin{aligned}
@@ -416,10 +421,218 @@ and proven that $\tx{Inst}_{\tx{H}}(\mathcal{P}) \overset{\epsilon}{\approx} \tx
 \txbf{Malicious Case:}
 Without loss of generality, we can consider the case where $P_1$ is malicious.
 This is because the difference between the parties is just a matter of renaming
-variables.
+variables, so the case where $P_2$ is malicious would be the same.
 Let $\tx{M}$ denote this corruption model.
 We prove that $\mathcal{P} \overset{0}{\leadsto}_{\{\tx{M}\}} \mathcal{Q}$,
 which naturally implies the slightly higher upper bound of $2 \cdot \tx{IND}$.
+
+We start by unrolling $\tx{Inst}_{\tx{M}}(\mathcal{P})$, to get:
+$$
+\tx{Inst}_{\tx{M}}(\mathcal{P}) =
+\inlinepackage{$\Gamma^1$}{
+    &\txbf{view } c_{1\to2}, c_{2\to1} \gets \tx{FifoQueue}.\tx{new}()\cr
+    &(\tx{sk}_2, \tx{pk}_1) \gets \tx{Keys}_2()\cr
+    \cr
+    &\begin{aligned}
+        &\pfn{PKs}{}\cr
+        \pind{1} \preturn{(\tx{pk}_1, \tx{pk}_2)}\cr
+        \cr
+        &\pfn{$\tx{Send}_{1}$}{c}\cr
+        \pind{1} c_{1 \to 2}.\tx{push}(c)\cr
+        \cr
+        &\pfn{$\tx{Send}_{2}$}{m}\cr
+        \pind{1} \set{c}{\tx{Enc}(\tx{pk}_1, m)}\cr
+        \pind{1} c_{2 \to 1}.\tx{push}(c)\cr
+    \end{aligned}
+    \begin{aligned}
+        &\pfn{$\tx{Keys}_1$}{}\cr
+        \pind{1} \preturn{\super.\tx{Keys}_1()}\cr
+        \cr
+        &\pfn{$\tx{Recv}_{1}$}{}\cr
+        \pind{1} \preturn{\await c_{2 \to 1}.\tx{pop}()}\cr
+        \cr
+        &\pfn{$\tx{Recv}_{2}$}{m}\cr
+        \pind{1} \set{c}{\await c_{1 \to 2}.\tx{pop}()}\cr
+        \pind{1} \preturn{\tx{Dec}(\tx{sk}_2, c)}\cr
+    \end{aligned}
+}
+\circ \tx{Keys}
+$$
+The key affordances for malicious corruption are that the adversary
+can now see the output of $\tx{Keys}_1$, including their secret key,
+and the public key of the other party,
+and that they have direct access to $c_{1 \to 2}$.
+This allows them to send potentially ``fake'' ciphertexts to the other
+party, rather than going through the decryption process.
+
+Next, we explicitly include the code of $\tx{Keys}$, and also include
+an additional key pair, used in $\tx{Recv}_2$, this key pair encrypts
+and then immediately decrypts the message being received, and thus
+has no effect by the correctness property of encryption.
+Writing this out, we get:
+$$
+\Gamma^1 \circ \tx{Keys} =
+\inlinepackage{$\Gamma^2$}{
+    &\txbf{view } c_{1\to2}, c_{2\to1} \gets \tx{FifoQueue}.\tx{new}()\cr
+    &(\tx{sk}_1, \tx{pk}_1),\
+    (\tx{sk}_2, \tx{pk}_2),\
+    (\tx{sk}'_2, \tx{pk}'_2) \gets \tx{Gen}()\cr
+    \cr
+    &\begin{aligned}
+        &\pfn{PKs}{}\cr
+        \pind{1} \preturn{(\tx{pk}_1, \tx{pk}_2)}\cr
+        \cr
+        &\pfn{$\tx{Send}_{1}$}{c}\cr
+        \pind{1} c_{1 \to 2}.\tx{push}(c)\cr
+        \cr
+        &\pfn{$\tx{Send}_{2}$}{m}\cr
+        \pind{1} \set{c}{\tx{Enc}(\tx{pk}_1, m)}\cr
+        \pind{1} c_{2 \to 1}.\tx{push}(c)\cr
+        \cr
+        \cr
+        \cr
+    \end{aligned}
+    \begin{aligned}
+        &\pfn{$\tx{Keys}_1$}{}\cr
+        \pind{1} \preturn{(\tx{sk}_1, \tx{pk}_2)}\cr
+        \cr
+        &\pfn{$\tx{Recv}_{1}$}{}\cr
+        \pind{1} \preturn{\await c_{2 \to 1}.\tx{pop}()}\cr
+        \cr
+        &\pfn{$\tx{Recv}_{2}$}{m}\cr
+        \pind{1} \set{c}{\await c_{1 \to 2}.\tx{pop}()}\cr
+        \pind{1} \set{m}{\tx{Dec}(\tx{sk}_2, c)}\cr
+        \pind{1} \set{c'}{\tx{Enc}(\tx{pk}'_2, m)}\cr
+        \pind{1} \set{m}{\tx{Dec}(\tx{sk}'_2, c')}\cr
+        \pind{1} \preturn{m}\cr
+    \end{aligned}
+}
+$$
+
+The next step we perform is a bit of a trick.
+We swap the names of $\tx{sk}_2$ and $\tx{sk}'_2$, as well as $\tx{pk}_2$ and $\tx{pk}'_2$,
+after all, renaming has no effect on a system.
+We also create a separate message queue $m_{1 \to 2}$ which will be used
+to send messages directly.
+This gives us:
+$$
+\Gamma^2 =
+\inlinepackage{$\Gamma^3$}{
+    &\txbf{view } m_{1\to 2}, c_{1\to2}, c_{2\to1} \gets \tx{FifoQueue}.\tx{new}()\cr
+    &(\tx{sk}_1, \tx{pk}_1),\
+    (\tx{sk}_2, \tx{pk}_2),\
+    (\tx{sk}'_2, \tx{pk}'_2) \gets \tx{Gen}()\cr
+    \cr
+    &\begin{aligned}
+        &\pfn{PKs}{}\cr
+        \pind{1} \preturn{(\tx{pk}_1, \tx{pk}'_2)}\cr
+        \cr
+        &\pfn{$\tx{Send}_{1}$}{c}\cr
+        \pind{1} c_{1 \to 2}.\tx{push}(c)\cr
+        \pind{1} m \gets \tx{Dec}(\tx{sk}'_2, c)\cr
+        \pind{1} m_{1 \to 2}.\tx{push}(m)\cr
+        \cr
+        &\pfn{$\tx{Send}_{2}$}{m}\cr
+        \pind{1} \set{c}{\tx{Enc}(\tx{pk}_1, m)}\cr
+        \pind{1} c_{2 \to 1}.\tx{push}(c)\cr
+        \cr
+    \end{aligned}
+    \begin{aligned}
+        &\pfn{$\tx{Keys}_1$}{}\cr
+        \pind{1} \preturn{(\tx{sk}_1, \tx{pk}'_2)}\cr
+        \cr
+        &\pfn{$\tx{Recv}_{1}$}{}\cr
+        \pind{1} \preturn{\await c_{2 \to 1}.\tx{pop}()}\cr
+        \cr
+        &\pfn{$\tx{Recv}_{2}$}{m}\cr
+        \pind{1} \set{c}{\await c_{1 \to 2}.\tx{pop}()}\cr
+        \pind{1} \set{m}{\await m_{1 \to 2}.\tx{pop}()}\cr
+        \pind{1} \set{c'}{\tx{Enc}(\tx{pk}_2, m)}\cr
+        \pind{1} \set{m}{\tx{Dec}(\tx{sk}_2, c')}\cr
+        \pind{1} \preturn{m}\cr
+    \end{aligned}
+}
+$$
+Notice that at this point $\tx{sk}_2$ and $\tx{pk}_2$ now don't actually
+do anything, since they don't actually modify the message in $\tx{Recv}_2$.
+The main remaining barrier to writing this as a simulator over $\mathcal{Q}$
+is that the ciphertext queues $c_{i \to \noti}$ are modified both in functions
+we control $\tx{Send}_1$ and $\tx{Recv}_1$, but also in the two functions
+which we don't control $\tx{Send}_2$, and $\tx{Recv}_2$, and will eventually
+need to become pass through functions for $\mathcal{Q}$.
+
+For $\tx{Recv}_2$, it modifies $c_{1 \to 2}$ by popping elements off of it.
+We can emulate this behavior by reading the access log of $l_{1 \to 2}$ we
+get from $\mathcal{Q}$, and using the pop commands inside to modify $c_{1 \to 2}$
+when necessary.
+
+For $\tx{Send}_2$, our task is a bit harder, since we need to create an encryption
+of $m$, and the log will only contain $|m|$.
+However, our simulator over $\mathcal{Q}$ will be able to receive messages
+on behalf of the first party, allowing us to retrieve the message,
+and then create a simulate ciphertext by encrypting it.
+
+Putting these ideas together, we write:
+$$
+\Gamma^3 =
+\begin{matrix}
+\inlinepackage{$S$}{
+    &c_{1\to2}, c_{2\to1} \gets \tx{FifoQueue}.\tx{new}()\cr
+    &(\tx{sk}_1, \tx{pk}_1),\
+    (\tx{sk}'_2, \tx{pk}'_2) \gets \tx{Gen}()\cr
+    \cr
+    &\begin{aligned}
+        &\pfn{PKs}{}\cr
+        \pind{1} \preturn{(\tx{pk}_1, \tx{pk}'_2)}\cr
+        \cr
+        &\pfn{$\tx{Keys}_1$}{}\cr
+        \pind{1} \preturn{(\tx{sk}_1, \tx{pk}'_2)}\cr
+        \cr
+        &\pfn{$c_{i \to \noti}$}{}\cr
+        \pind{1} \tx{Update}_{i \to \noti}()\cr
+        \pind{1} \preturn{c_{i \to \noti}}\cr
+        \cr
+        &\pfn{$\tx{Send}_{1}$}{c}\cr
+        \pind{1} \tx{Update}_{1 \to 2}()\cr
+        \pind{1} c_{1 \to 2}.\tx{push}(c)\cr
+        \pind{1} m \gets \tx{Dec}(\tx{sk}'_2, c)\cr
+        \pind{1} \super.\tx{Send}_1(m)\cr
+        \cr
+    \end{aligned}
+    \begin{aligned}
+        &\pfn{$\tx{Update}_{1 \to 2}$}{}\cr
+        \pind{1} \pwhile{\tx{cmd} \gets l_{1 \to 2}.\tx{pop}() \neq \bot}\cr
+        \pind{2} \pif{\tx{cmd} = \txt{pop}}\cr
+        \pind{3} c_{1 \to 2}.\tx{pop}()\cr
+        \cr
+        &\pfn{$\tx{Update}_{2 \to 1}$}{}\cr
+        \pind{1} \pwhile{\tx{cmd} \gets l_{2 \to 1}.\tx{pop}() \neq \bot}\cr
+        \pind{2} \pif{\tx{cmd} = (\txt{push}, \bullet)}\cr
+        \pind{3} \set{m}{\await \super.\tx{Recv}_1()}\cr
+        \pind{3} c_{2 \to 1}.\tx{push}(\tx{Enc}(\tx{pk}_1, m))\cr
+        \cr
+        &\pfn{$\tx{Recv}_{1}$}{}\cr
+        \pind{1} \tx{Update}_{2 \to 1}()\cr
+        \pind{1} \preturn{\await c_{2 \to 1}.\tx{pop}()}
+        \cr
+    \end{aligned}
+}\cr
+\otimes\cr
+1(\{\tx{Send}_2, \tx{Recv}_2\})
+\end{matrix}
+\circ
+\tx{Inst}_{\tx{M}}(\mathcal{Q})
+$$
+We make sure to update both queues whenever necessary.
+This includes when they're viewed by the adversary, but also
+whenever we modify the queues ourselves, so that we've popped or pushed
+everything that we need to before using the queue.
+
+This simulator is effectively creating a man-in-the-middle attack on the adversary,
+by providing them with the wrong public key, allowing them to decrypt the ciphertexts
+they see.
+On the other side, the simulator can receive messages on behalf of the adversary,
+and then reencrypt them to create the fake ciphertext queue.
 
 Having now proved the upper bound for all the corruption models in $\mathcal{C}$,
 we conclude that our claim holds.
