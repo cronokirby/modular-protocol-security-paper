@@ -1,0 +1,40 @@
+\section{Additional Game Definitions}
+
+In this section, we include explicit definitions of several games we
+use throughout the rest of this work.
+While we expect these notions to be familiar, we think the precise
+details are worth spelling out here.
+
+\subsection{Encryption}
+\label{app:encryption}
+An encryption scheme consists of types $\txbf{K}, \txbf{M}, \txbf{C}$,
+along with probabilistic functions $\tx{Enc} : \txbf{K} \times \txbf{M} \xleftarrow{\$} \txbf{C}$ and $\tx{Dec} : \txbf{K} \times \txbf{C} \to \txbf{M}$.
+By $\txbf{M}(|m|)$ we denote the distribution of messages with the same
+length as $m$.
+We require that $\txbf{K}$ and $\txbf{M}(|m|)$ are efficiently sampleable.
+
+The encryption scheme must satisfy a correctness property:
+$$
+\forall k \in \txbf{K},\ m \in \txbf{M}.\ P[\tx{Dec}(\tx{Enc}(k, m)) = m] = 1
+$$
+Encrypting and then decrypting a message should return that same message.
+
+The security of an encryption scheme can be captured by the following game:
+\package{$\tx{IND-CPA}_b$}{
+\pind{0} \draw{k}{\txbf{K}}\cr
+\cr
+&\begin{aligned}
+    &\pfn{Challenge}{m_0}\cr
+    \pind{1} \draw{m_1}{\txbf{M}(|m|)}\cr
+    \pind{1} \preturn{\tx{Enc}(k, m_b)}\cr
+\end{aligned}
+&\begin{aligned}
+    &\pfn{Enc}{m}\cr
+    \pind{1} \preturn{\tx{Enc}(k, m)}\cr
+    &\cr
+\end{aligned}
+}
+
+In essence, an adversary cannot distinguish between an encryption of a message
+of their choice and that of a random message, even if they can encrypt
+messages at will.
