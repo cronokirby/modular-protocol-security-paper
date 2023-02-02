@@ -661,25 +661,19 @@ This is contained in Game~\ref{game:add}.
 \begin{game}{game:add}{Addition Functionality}
 \package{$F[\tx{Add}]$}{
     &x_1, \ldots, x_n \gets \bot\cr
-    &\set{\tx{step}}{0}\cr
     \cr
     &\begin{aligned}
         &\pfn{$(1)\tx{Add}_{i}$}{x}\cr
         \pind{1} \set{x_i}{x}\cr
-        \pind{1} \pwait{\tx{step} = 1}\cr
+        \pind{1} \pwait{\forall i.\ x_i \neq \bot}\cr
         \pind{1} \preturn{\textstyle \sum_i x_i}\cr
     \end{aligned}
+    \quad
     \begin{aligned}
         &\pfn{Leak}{}\cr
         \pind{1} \pif{\exists i.\ x_i = \bot}\cr
-        \pind{2} \preturn{\bot}\cr
-        \pind{1} \preturn{\textstyle \sum_i x_i}\cr
-    \end{aligned}
-    \begin{aligned}
-        &\pfn{Continue}{}\cr
-        \pind{1} \pif{\tx{step} = 0 \land \forall i.\ x_i \neq \bot}\cr
-        \pind{2} \set{\tx{step}}{1}\cr
-        \cr
+        \pind{2} \preturn{(\txt{waiting}, \{i \mid x_i = \bot\})}\cr
+        \pind{1} \preturn{(\txt{done}, \textstyle \sum_i x_i)}\cr
     \end{aligned}
 }
 \end{game}
@@ -687,11 +681,7 @@ This is contained in Game~\ref{game:add}.
 This game works by first collecting a contribution from each party,
 and then adding them together.
 At any point after all contributions have been gathered,
-the adversary can also see their sum through the $\tx{Leak}$ function,
-although we let the adversary to delay this revelation.
-This is to make simulation easier, since it can accomodate
-the fact that in a concrete implementation, the adversary can delay
-routed messages.
+the adversary can also see their sum through the $\tx{Leak}$ function.
 Note that we only allow a contribution to be provided once,
 as marked by the $(1)$ in front of the function.
 This will be the case for the random sampling as well.
@@ -728,25 +718,19 @@ defined in Game~\ref{game:add'}.
 \begin{game}{game:add'}{Addition Functionality}
 \package{$F[\tx{Add}']$}{
     &x_1, \ldots, x_n \gets \bot\cr
-    &\set{\tx{step}}{0}\cr
     \cr
     &\begin{aligned}
         &\pfn{$(1)\tx{Add}_{i}$}{x}\cr
         \pind{1} \set{x_i}{x}\cr
-        \pind{1} \pwait{\tx{step} = 1}\cr
+        \pind{1} \pwait{\forall i.\ x_i \neq \bot}\cr
         \pind{1} \preturn{\textstyle \sum_i x_i}\cr
     \end{aligned}
+    \quad
     \begin{aligned}
         &\pfn{Leak}{}\cr
         \pind{1} \pif{\exists i.\ x_i = \bot}\cr
-        \pind{2} \preturn{\bot}\cr
-        \pind{1} \preturn{[x_i \mid i \in [n]]}\cr
-    \end{aligned}
-    \begin{aligned}
-        &\pfn{Continue}{}\cr
-        \pind{1} \pif{\tx{step} = 0 \land \forall i.\ x_i \neq \bot}\cr
-        \pind{2} \set{\tx{step}}{1}\cr
-        \cr
+        \pind{2} \preturn{(\txt{waiting}, \{i \mid x_i = \bot\})}\cr
+        \pind{1} \preturn{(\txt{done}, [x_i \mid i \in [n]])}\cr
     \end{aligned}
 }
 \end{game}
@@ -805,15 +789,15 @@ the stronger functionality from the weaker one.
         \begin{aligned}
         &\pfn{Leak}{}\cr
         \pind{1} \tx{out} \gets \super.\tx{Leak}()\cr
-        \pind{1} \pif{\tx{out} = \bot}\cr
-        \pind{2} \preturn{\bot}\cr
+        \pind{1} \pif{\tx{out} = (\txt{waiting}, \tx{on})}\cr
+        \pind{2} \preturn{(\txt{waiting}, \tx{on})}\cr
         \pind{1} \pif{\tx{faked} = \txt{false}}\cr
         \pind{2} \set{\tx{faked}}{\txt{true}}\cr
         \pind{2} \pfor{j \in h + 1, \ldots, m}\cr
         \pind{3} x'_j \gets \tx{Contribution}_j()\cr
         \pind{2} \draw{x'_2, \ldots, x_h}{\mathbb{G}}\cr
         \pind{2} \set{x'_1}{\textstyle \tx{out} - \sum_{i \in [2, \ldots, n]} x_i}\cr
-        \pind{1} \preturn{[x'_i \mid i \in [n]]}\cr
+        \pind{1} \preturn{(\txt{done}, [x'_i \mid i \in [n]])}\cr
         \end{aligned}
     }\cr
     \otimes\cr
@@ -852,7 +836,7 @@ which we do in Game~\ref{game:com}
         &\pfn{$(1)\tx{Commit}_i$}{x}\cr
         \pind{1} \set{c_i}{x}\cr
         \cr
-        &\pfn{$\tx{Open}_i$}{}\cr
+        &\pfn{$(1)\tx{Open}_i$}{}\cr
         \pind{1} \txbf{assert } c_i \neq \bot\cr
         \pind{1} \set{o_i}{\txt{true}}\cr
         \cr
@@ -913,5 +897,167 @@ Indeed, in $\mathcal{P}[\tx{IdealRand}]$, it suffices to activate
 each participant once in order to learn the result,
 whereas in $\mathcal{P}[\tx{Rand}]$, two activations are needed,
 once to commit, and another time to open.
-This is more than just a matter of timing though:
-if some parties are corrupted, then the adversary can directly
+
+Instead we introduce a sepate protocol, making use of
+a ``synchronization'' functionality, defined in Game~\ref{game:sync}.
+
+\begin{game}{game:sync}{Synchronization Game}
+\package{$F[\tx{Sync}]$}{
+    &\set{\txbf{view } \tx{done}_1, \ldots, \tx{done}_n}{\txt{false}}\cr
+    \cr
+    &\pfn{$(1)\tx{Sync}_i$}{}\cr
+    \pind{1} \tx{done}_i \gets \txt{true}\cr
+    \pind{1} \pwait{\forall i.\ \tx{done}_i = \txt{true}}\cr
+}
+\end{game}
+
+This functionality allows the parties to first ``synchronize'',
+by waiting for each party to contribute, before being able to continue.
+
+The protocol using this functionality is then called $\mathcal{Q}$,
+and defined in Protocol~\ref{prot:simrand}
+
+\begin{protocol}{prot:simrand}{Synchronized Random Protocol}
+    $\mathcal{Q}$ is characterized by:
+    \begin{itemize}
+        \item $F = F[\tx{Sync}]$,
+        \item $\tx{Leakage} := \{\tx{done}_1, \ldots, \tx{done}_n\}$,
+        \item And $n$ players defined by the following system, for $i \in [n]$:
+        \package{$P_i$}{
+            &\pfn{$(1)\tx{Rand}_i$}{}\cr
+            \pind{1} \set{\tx{out}}{\await \super.\tx{Rand}_i()}\cr
+            \pind{1} \await \tx{Sync}_i()\cr
+            \pind{1} \preturn{\tx{out}}\cr
+        }
+    \end{itemize}
+\end{protocol}
+
+The full protocol we consider is $\mathcal{Q} \lhd (\mathcal{P}[\tx{IdealRand}] \circ F[\tx{Add}])$,
+which can perfectly simulate $\mathcal{P}[\tx{Rand}]$, as we now prove.
+
+\begin{claim}
+    Let $\mathcal{C}$ be the class of corruptions where up to $n - 1$ parties
+    are corrupt.
+    Then it holds that:
+    $$
+    \mathcal{P}[\tx{Rand}] \overset{0}{\leadsto} \mathcal{Q} \lhd (\mathcal{P}[\tx{IdealRand}] \circ F[\tx{Add}])
+    $$
+    \txbf{Proof:} Thanks to the composition properties of protocols, it suffices to prove the above claim using $F[\tx{Add}']$ instead,
+    since we already proved that:
+    $$
+    \mathcal{P}[\tx{IdealRand}] \circ F[\tx{Add}'] \overset{0}{\leadsto}_{\mathcal{C}}
+    \mathcal{P}[\tx{IdealRand}] \circ F[\tx{Add}]
+    $$
+
+    As before, we let $1, \ldots, h$ be the indices of honest parties,
+    $h + 1, \ldots, m$ the indices of semi-honest parties,
+    and use $i, j, k$ for denoting indices of honest, semi-honest, and malicious
+    parties, respectively.
+    We start by unrolling $\tx{Inst}_C(\mathcal{P}[\tx{Rand}])$, to get:
+    
+    \package{$\Gamma^0$}{
+        &\begin{aligned}
+            &\pfn{$(1)\tx{Rand}_i$}{}\cr
+            \pind{1} \draw{x_i}{\mathbb{G}}\cr
+            \pind{1} \pwait{\forall i.\ \tx{View}_i \neq \txt{empty}}\cr
+            \pind{1} \set{o_i}{\txt{true}}\cr
+            \pind{1} \pwait{\forall i.\ \tx{View}_i = (\txt{open}, x_i)}\cr
+            \pind{1} \preturn{\textstyle \sum_i x_i}\cr
+        \end{aligned}
+        \begin{aligned}
+            &\pfn{$(1)\tx{Commit}_k$}{x}\cr
+            \pind{1} \set{x_k}{x}\cr
+            \cr
+            &\pfn{$(1)\tx{Open}_k$}{}\cr
+            \pind{1} \txbf{assert } x_k \neq \bot\cr
+            \pind{1} \set{o_k}{\txt{true}}\cr
+        \end{aligned}\cr
+        &\pfn{$\tx{View}_i$}{x}\cr
+        \pind{1} \pif{x_i = \bot}\cr
+        \pind{2} \preturn{\txt{empty}}\cr
+        \pind{1} \pif{\neg o_i}\cr
+        \pind{2} \preturn{\txt{set}}\cr
+        \pind{1} \pelse\cr
+        \pind{2} \preturn{(\txt{open}, c_i)}\cr
+        \cr
+    }
+
+    We now rewrite this game slightly, to make the connection with what we're
+    trying to simulate a bit clearer:
+
+    \package{$\Gamma^1$}{
+        &\begin{aligned}
+            &\pfn{$(1)\tx{Rand}_i$}{}\cr
+            \pind{1} \draw{x_i}{\mathbb{G}}\cr
+            \pind{1} \pwait{\forall i.\ \tx{View}_i \neq \txt{empty}}\cr
+            \pind{1} \set{\tx{done}_i}{\txt{true}}\cr
+            \pind{1} \pwait{\forall i.\ \tx{View}_i = (\txt{open}, x_i)}\cr
+            \pind{1} \preturn{\textstyle \sum_i x_i}\cr
+            \cr
+            &\pfn{$\tx{View}_i$}{x}\cr
+            \pind{1} \pif{\tx{Leak}() = (\txt{waiting}, s) \land i \in s}\cr
+            \pind{2} \preturn{\txt{empty}}\cr
+            \pind{1} \txbf{else } \pif{\tx{done}_i}\cr
+            \pind{2} \pif{\tx{rush}_i \neq \bot}\cr
+            \pind{3} \preturn{(\txt{open}, \tx{rush}_i)}\cr
+            \pind{2} \txbf{assert } (\txt{done}, [y_i]) = \tx{Leak}()\cr
+            \pind{2} \preturn{(\txt{open}, y_i)}\cr
+            \pind{1} \preturn{\txt{set}}\cr
+            \cr
+        \end{aligned}
+        \begin{aligned}
+            &\pfn{$(1)\tx{Commit}_k$}{x}\cr
+            \pind{1} \set{\tx{rush}_k}{x}\cr
+            \pind{1} \set{x_k}{x}\cr
+            \cr
+            &\pfn{$(1)\tx{Open}_k$}{}\cr
+            \pind{1} \txbf{assert } \tx{rush}_k \neq \bot\cr
+            \pind{1} \set{\tx{done}_k}{\txt{true}}\cr
+            \cr
+            &\pfn{Leak}{}\cr
+            \pind{1} \pif{\exists i.\ x_i = \bot}\cr
+            \pind{2} \preturn{(\txt{waiting}, \{i \mid x_i = \bot\})}\cr
+            \pind{1} \preturn{(\txt{done}, [x_i \mid i \in [n]])}\cr
+        \end{aligned}
+    }
+
+    Then, write this as:
+
+    $$
+    \begin{matrix}
+    \inlinepackage{$S$}{
+        &\begin{aligned}
+            &\pfn{$(1)\tx{Commit}_k$}{x}\cr
+            \pind{1} \set{\tx{rush}_k}{x}\cr
+            \pind{1} \tx{Add}_k(x)\cr
+            \cr
+            &\pfn{$(1)\tx{Open}_k$}{}\cr
+            \pind{1} \txbf{assert } \tx{rush}_k \neq \bot\cr
+            \pind{1} \tx{Sync}_k()\cr
+            \cr
+            &\pfn{$\tx{View}_i$}{x}\cr
+            \pind{1} \pif{\tx{Leak}() = (\txt{waiting}, s) \land i \in s}\cr
+            \pind{2} \preturn{\txt{empty}}\cr
+            \pind{1} \txbf{else } \pif{\tx{done}_i}\cr
+            \pind{2} \pif{\tx{rush}_i \neq \bot}\cr
+            \pind{3} \preturn{(\txt{open}, \tx{rush}_i)}\cr
+            \pind{2} \txbf{assert } (\txt{done}, [y_i]) = \tx{Leak}()\cr
+            \pind{2} \preturn{(\txt{open}, y_i)}\cr
+            \pind{1} \preturn{\txt{set}}\cr
+            \cr
+        \end{aligned}
+        \begin{aligned}
+
+        \end{aligned}
+    }
+        \cr
+        \otimes\cr
+        1(\ldots)
+    \end{matrix}
+    \circ \tx{Inst}_C(\mathcal{Q} \lhd (\mathcal{P}[\tx{IdealRand}] \circ F[\tx{Add}']))
+    $$
+
+    Concluding our proof.
+
+    $\blacksquare$
+\end{claim}
