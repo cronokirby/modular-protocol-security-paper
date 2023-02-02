@@ -639,3 +639,185 @@ we conclude that our claim holds.
 
 $\blacksquare$
 \end{claim}
+
+\subsection{Drawing a Random Value}
+
+The basic goal of this section is to develop a protocol for securely
+choosing a common random value.
+This process should such that no party can bias the resulting value.
+We will follow the common paradigm of ``commit-reveal'', where the parties
+first commit to their random values, then wait for all these commitments to have been made,
+before finally opening the random values and mixing them together.
+This ensures that no party can bias the result, since they have to choose
+their contribution before learning any information about the result.
+
+We start by defining the ideal protocol for drawing a random value.
+We'll be working over an additive group $\mathbb{G}$,
+and assuming that we have parties numbered $1, \ldots, n$.
+The core functionality we use allows each party to set a random value,
+and then have the functionality add them together.
+This is contained in Game~\ref{game:add}.
+
+\begin{game}{game:add}{Addition Functionality}
+\package{$F[\tx{Add}]$}{
+    &x_1, \ldots, x_n \gets \bot\cr
+    \cr
+    &\begin{aligned}
+        &\pfn{$(1)\tx{Add}_{i}$}{x}\cr
+        \pind{1} \set{x_i}{x}\cr
+        \pind{1} \pwait{\forall i.\ x_i \neq \bot}\cr
+        \pind{1} \preturn{\textstyle \sum_i x_i}\cr
+    \end{aligned}
+    \quad
+    \begin{aligned}
+        &\pfn{Leak}{}\cr
+        \pind{1} \pif{\exists i.\ x_i = \bot}\cr
+        \pind{2} \preturn{\bot}\cr
+        \pind{1} \preturn{\textstyle \sum_i x_i}\cr
+    \end{aligned}
+}
+\end{game}
+
+This game works by first collecting a contribution from each party,
+and then adding them together.
+At any point after all contributions have been gathered,
+the adversary can also see their sum through the $\tx{Leak}$ function.
+Note that we only allow a contribution to be provided once,
+as marked by the $(1)$ in front of the function.
+This will be the case for the random sampling as well.
+
+Using this functionality, we create an ideal protocol for sampling
+a random value, defined in Protocol~\ref{prot:rand}
+
+\begin{protocol}{prot:rand}{Ideal Random Protocol}
+$\mathcal{P}[\tx{IdealRand}]$ is characterized by:
+\begin{itemize}
+    \item $F := 1(\tx{Add})$,
+    \item $\tx{Leakage} = \{\tx{Leak}\}$,
+    \item And $n$ players defined via the following system, for $i \in [n]$:
+        \package{$P_i$}{
+            &\pfn{$(1)\tx{Rand}_i$}{}\cr
+            \pind{1} \draw{x}{\mathbb{G}}\cr
+            \pind{1} \preturn{\await \tx{Add}_i(x)}\cr
+        }
+\end{itemize}
+\end{protocol}
+
+The idea is that each party samples a random value, and then submits
+that to the addition functionality.
+If at least one of the values was sampled randomly, 
+then the final result is also random.
+Technically, this is an \emph{endemic} random functionality,
+in the sense that malicious parties are allowed to choose their own randomness.
+We also don't embed the $F[\tx{Add}]$ functionality into the protocol itself,
+which makes the ideal protocol technically $\mathcal{P}[\tx{IdealRand}] \circ F[\tx{Add}]$.
+We do this to allow considering a slightly modified variant of the protocol,
+which uses a version of the addition functionality leaking more information,
+defined in Game~\ref{game:add'}.
+
+\begin{game}{game:add'}{Addition Functionality}
+\package{$F[\tx{Add}']$}{
+    &x_1, \ldots, x_n \gets \bot\cr
+    \cr
+    &\begin{aligned}
+        &\pfn{$(1)\tx{Add}_{i}$}{x}\cr
+        \pind{1} \set{x_i}{x}\cr
+        \pind{1} \pwait{\forall i.\ x_i \neq \bot}\cr
+        \pind{1} \preturn{\textstyle \sum_i x_i}\cr
+    \end{aligned}
+    \quad
+    \begin{aligned}
+        &\pfn{Leak}{}\cr
+        \pind{1} \pif{\exists i.\ x_i = \bot}\cr
+        \pind{2} \preturn{\bot}\cr
+        \pind{1} \preturn{[x_i \mid i \in [n]]}\cr
+    \end{aligned}
+}
+\end{game}
+
+The difference in $F[\tx{Add}']$ is simply that the entire list of contributions
+is leaked, rather than just their sum.
+We introduce this functionality because it will be simpler
+to show that our concrete protocol is simulated by this slightly stronger functionality.
+Thankfully, the difference doesn't matter in the end, because we can simulate
+the stronger functionality from the weaker one.
+
+\begin{claim}
+    Let $\mathcal{C}$ be the corruption class where all up to $n - 1$ parties
+    are corrupted.
+    It then holds that:
+    $$
+    \mathcal{P}[\tx{IdealRand}] \circ F[\tx{Add}'] \overset{0}{\leadsto}_{\mathcal{C}}
+    \mathcal{P}[\tx{IdealRand}] \circ F[\tx{Add}]
+    $$
+    \txbf{Proof:} The crux of the proof is that we can simply invent random
+    shares for the honest parties, subject to the constraint that the sum
+    of all shares is the same.
+
+    Now, onto the more formal proof.
+    We assume, without loss of generality,
+    that $1, \ldots, h$ are the indices of the honest parties,
+    and $h + 1, \ldots, m$ the semi-honest parties.
+    Another convention we use is that $j$ is used as a subscript
+    for semi-honest parties, and $k$ for malicious parties.
+
+    The only difference between the instantiation of both protocols lies
+    in $\tx{Leak}$.
+    Otherwise, the behavior of all the functions is identical.
+    Thus, we simply need to write a simulator for that function.
+    The basic idea is to intercept calls to the corrupted parties to
+    learn their contributions, and then simply invent some fake but plausible
+    contributions for the honest parties.
+
+    This gives us:
+
+    $$
+    \begin{matrix}
+    \inlinepackage{$S$}{
+        &\set{\tx{faked}}{\txt{false}}\cr
+        &\set{x'_1, \ldots, x'_n}{\bot}\cr
+        \cr
+        &\begin{aligned}
+            &\pfn{$(1)\tx{Add}_k$}{x}\cr
+            \pind{1} \set{x'_k}{x}\cr
+            \pind{1} \preturn{\tx{Add}_k(x)}\cr
+            \cr
+            &\pfn{$\tx{Contribution}_j$}{}\cr
+            \pind{1} \txbf{assert} (\txt{call}, x) \in \tx{log}.\tx{Add}_j\cr
+            \pind{1} \preturn{x}\cr
+        \end{aligned}
+        \begin{aligned}
+        &\pfn{Leak}{}\cr
+        \pind{1} \tx{out} \gets \super.\tx{Leak}()\cr
+        \pind{1} \pif{\tx{out} = \bot}\cr
+        \pind{2} \preturn{\bot}\cr
+        \pind{1} \pif{\tx{faked} = \txt{false}}\cr
+        \pind{2} \set{\tx{faked}}{\txt{true}}\cr
+        \pind{2} \pfor{j \in h + 1, \ldots, m}\cr
+        \pind{3} x'_j \gets \tx{Contribution}_j()\cr
+        \pind{2} \draw{x'_2, \ldots, x_h}{\mathbb{G}}\cr
+        \pind{2} \set{x'_1}{\textstyle \tx{out} - \sum_{i \in [2, \ldots, n]} x_i}\cr
+        \pind{1} \preturn{[x'_i \mid i \in [n]]}\cr
+        \end{aligned}
+    }\cr
+    \otimes\cr
+    1(\ldots)
+    \end{matrix}
+    $$
+
+    The shares of the malicious parties are obtained by catching them
+    when the call to $\tx{Add}_k$ is made, whereas for the semi-honest party
+    we instead fetch them from the log.
+    Note that because the leakage is only made available once all the parties
+    have contributed, we're guaranteed to have already seen the shares
+    from the corrupted parties by the time we fake the other shares.
+
+    It should be clear that:
+    $$
+    \tx{Inst}_C(\mathcal{P}[\tx{IdealRand}] \circ F[\tx{Add}']) = 
+    \tx{SimInst}_{S, C}(\mathcal{P}[\tx{IdealRand}] \circ F[\tx{Add}])
+    $$
+    concluding our proof.
+
+    $\blacksquare$
+\end{claim}
