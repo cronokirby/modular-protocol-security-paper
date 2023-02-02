@@ -661,19 +661,25 @@ This is contained in Game~\ref{game:add}.
 \begin{game}{game:add}{Addition Functionality}
 \package{$F[\tx{Add}]$}{
     &x_1, \ldots, x_n \gets \bot\cr
+    &\set{\tx{step}}{0}\cr
     \cr
     &\begin{aligned}
         &\pfn{$(1)\tx{Add}_{i}$}{x}\cr
         \pind{1} \set{x_i}{x}\cr
-        \pind{1} \pwait{\forall i.\ x_i \neq \bot}\cr
+        \pind{1} \pwait{\tx{step} = 1}\cr
         \pind{1} \preturn{\textstyle \sum_i x_i}\cr
     \end{aligned}
-    \quad
     \begin{aligned}
         &\pfn{Leak}{}\cr
         \pind{1} \pif{\exists i.\ x_i = \bot}\cr
         \pind{2} \preturn{\bot}\cr
         \pind{1} \preturn{\textstyle \sum_i x_i}\cr
+    \end{aligned}
+    \begin{aligned}
+        &\pfn{Continue}{}\cr
+        \pind{1} \pif{\tx{step} = 0 \land \forall i.\ x_i \neq \bot}\cr
+        \pind{2} \set{\tx{step}}{1}\cr
+        \cr
     \end{aligned}
 }
 \end{game}
@@ -681,7 +687,11 @@ This is contained in Game~\ref{game:add}.
 This game works by first collecting a contribution from each party,
 and then adding them together.
 At any point after all contributions have been gathered,
-the adversary can also see their sum through the $\tx{Leak}$ function.
+the adversary can also see their sum through the $\tx{Leak}$ function,
+although we let the adversary to delay this revelation.
+This is to make simulation easier, since it can accomodate
+the fact that in a concrete implementation, the adversary can delay
+routed messages.
 Note that we only allow a contribution to be provided once,
 as marked by the $(1)$ in front of the function.
 This will be the case for the random sampling as well.
@@ -718,19 +728,25 @@ defined in Game~\ref{game:add'}.
 \begin{game}{game:add'}{Addition Functionality}
 \package{$F[\tx{Add}']$}{
     &x_1, \ldots, x_n \gets \bot\cr
+    &\set{\tx{step}}{0}\cr
     \cr
     &\begin{aligned}
         &\pfn{$(1)\tx{Add}_{i}$}{x}\cr
         \pind{1} \set{x_i}{x}\cr
-        \pind{1} \pwait{\forall i.\ x_i \neq \bot}\cr
+        \pind{1} \pwait{\tx{step} = 1}\cr
         \pind{1} \preturn{\textstyle \sum_i x_i}\cr
     \end{aligned}
-    \quad
     \begin{aligned}
         &\pfn{Leak}{}\cr
         \pind{1} \pif{\exists i.\ x_i = \bot}\cr
         \pind{2} \preturn{\bot}\cr
         \pind{1} \preturn{[x_i \mid i \in [n]]}\cr
+    \end{aligned}
+    \begin{aligned}
+        &\pfn{Continue}{}\cr
+        \pind{1} \pif{\tx{step} = 0 \land \forall i.\ x_i \neq \bot}\cr
+        \pind{2} \set{\tx{step}}{1}\cr
+        \cr
     \end{aligned}
 }
 \end{game}
