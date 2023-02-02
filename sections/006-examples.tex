@@ -821,3 +821,81 @@ the stronger functionality from the weaker one.
 
     $\blacksquare$
 \end{claim}
+
+The next task on our hands is to write down the concrete protocol
+for sampling randomness via the commit-reveal paradigm.
+To do that, we first need to define an appropriate commitment functionality,
+which we do in Game~\ref{game:com}
+
+\begin{game}{game:com}{Commitment Functionality}
+\package{$F[\tx{Com}]$}{
+    &\set{c_1, \ldots, c_n}{\bot}\cr
+    &\set{o_1, \ldots, o_n}{\txt{false}}\cr
+    \cr
+    &\begin{aligned}
+        &\pfn{$(1)\tx{Commit}_i$}{x}\cr
+        \pind{1} \set{c_i}{x}\cr
+        \cr
+        &\pfn{$\tx{Open}_i$}{}\cr
+        \pind{1} \txbf{assert } c_i \neq \bot\cr
+        \pind{1} \set{o_i}{\txt{true}}\cr
+        \cr
+        \cr
+    \end{aligned}
+    \begin{aligned}
+        &\pfn{$\tx{View}_i$}{x}\cr
+        \pind{1} \pif{c_i = \bot}\cr
+        \pind{2} \preturn{\txt{empty}}\cr
+        \pind{1} \pif{\neg o_i}\cr
+        \pind{2} \preturn{\txt{set}}\cr
+        \pind{1} \pelse\cr
+        \pind{2} \preturn{(\txt{open}, c_i)}\cr
+        \cr
+    \end{aligned}
+}
+\end{game}
+
+This functionality acts as a one shot commitment for each participant.
+Each party can commit to a value, and then open it at a later point in time.
+At any time, each participant can view the state of another participant's
+commitment.
+This view tells us what stage of the commitment the participant is at,
+along with their committed value, once opened.
+
+We can now define a protocol sampling randomness, thanks to this commitment
+scheme, in Protocol~\ref{prot:realrand}.
+
+\begin{protocol}{prot:realrand}{Random Protocol}
+$\mathcal{P}[\tx{Rand}]$ is characterized by:
+\begin{itemize}
+    \item $F := F[\tx{Com}]$,
+    \item $\tx{Leakage} = \{\tx{View}_1, \ldots, \tx{View}_n\}$,
+    \item And $n$ players defined via the following system, for $i \in [n]$:
+        \package{$P_i$}{
+            &\pfn{$(1)\tx{Rand}_i$}{}\cr
+            \pind{1} \draw{x}{\mathbb{G}}\cr
+            \pind{1} \tx{Commit}_i(x)\cr
+            \pind{1} \pwait{\forall i. \tx{View}_i() \neq \txt{empty}}\cr
+            \pind{1} \tx{Open}_i()\cr
+            \pind{1} \pwait{\forall i. \tx{View}_i() = (\txt{open}, x_i)}\cr
+            \pind{1} \preturn{\textstyle \sum_i x_i}\cr
+        }
+\end{itemize}
+\end{protocol}
+
+The idea is quite simple, everybody generates a random value,
+commits to it, and then once everybody has committed, they open the value,
+and sum up all the contributions.
+The result is, as we'll prove, a random value that no participant
+can bias.
+
+Unfortunately, it's not quite the case that $\mathcal{P}[\tx{Rand}]$
+is simulated by $\mathcal{P}[\tx{IdealRand}]$.
+The reason is a consequence of the timing properties
+of the protocols.
+Indeed, in $\mathcal{P}[\tx{IdealRand}]$, it suffices to activate
+each participant once in order to learn the result,
+whereas in $\mathcal{P}[\tx{Rand}]$, two activations are needed,
+once to commit, and another time to open.
+This is more than just a matter of timing though:
+if some parties are corrupted, then the adversary can directly
