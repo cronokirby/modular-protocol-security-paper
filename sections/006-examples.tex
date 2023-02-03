@@ -940,7 +940,7 @@ which can perfectly simulate $\mathcal{P}[\tx{Rand}]$, as we now prove.
     are corrupt.
     Then it holds that:
     $$
-    \mathcal{P}[\tx{Rand}] \overset{0}{\leadsto} \mathcal{Q} \lhd (\mathcal{P}[\tx{IdealRand}] \circ F[\tx{Add}])
+    \mathcal{P}[\tx{Rand}] \overset{0}{\leadsto}_{\mathcal{C}} \mathcal{Q} \lhd (\mathcal{P}[\tx{IdealRand}] \circ F[\tx{Add}])
     $$
     \txbf{Proof:} Thanks to the composition properties of protocols, it suffices to prove the above claim using $F[\tx{Add}']$ instead,
     since we already proved that:
@@ -956,6 +956,10 @@ which can perfectly simulate $\mathcal{P}[\tx{Rand}]$, as we now prove.
     We start by unrolling $\tx{Inst}_C(\mathcal{P}[\tx{Rand}])$, to get:
     
     \package{$\Gamma^0$}{
+        &\set{x_1, \ldots, x_n, \tx{rush}_{m + 1}, \ldots, \tx{rush}_n}{\bot}\cr
+        &\set{\tx{o}_1, \ldots, \tx{o}_n}{\txt{false}}\cr
+        &\set{\tx{log}_j}{\tx{NewLog}()}\cr
+        \cr
         &\begin{aligned}
             &\pfn{$(1)\tx{Rand}_i$}{}\cr
             \pind{1} \draw{x_i}{\mathbb{G}}\cr
@@ -963,8 +967,27 @@ which can perfectly simulate $\mathcal{P}[\tx{Rand}]$, as we now prove.
             \pind{1} \set{o_i}{\txt{true}}\cr
             \pind{1} \pwait{\forall i.\ \tx{View}_i = (\txt{open}, x_i)}\cr
             \pind{1} \preturn{\textstyle \sum_i x_i}\cr
+            \cr
+            &\pfn{$\tx{View}_i$}{}\cr
+            \pind{1} \pif{x_i = \bot}\cr
+            \pind{2} \preturn{\txt{empty}}\cr
+            \pind{1} \pif{\neg o_i}\cr
+            \pind{2} \preturn{\txt{set}}\cr
+            \pind{1} \pelse\cr
+            \pind{2} \preturn{(\txt{open}, c_i)}\cr
+            \cr
         \end{aligned}
         \begin{aligned}
+            &\pfn{$(1)\tx{Rand}_j$}{}\cr
+            \pind{1} \tx{log}.\tx{Rand}_j.\tx{push}(\txt{input})\cr
+            \pind{1} \draw{x_i}{\mathbb{G}}\cr
+            \pind{1} \tx{log}_j.\tx{Commit}_j.\tx{push}((\txt{call}, x_i))\cr
+            \pind{1} \pwait{\forall i.\ \tx{View}_i \neq \txt{empty}}\cr
+            \pind{1} \tx{log}_j.\tx{Open}_j.\tx{push}(\txt{call})\cr
+            \pind{1} \set{o_i}{\txt{true}}\cr
+            \pind{1} \pwait{\forall i.\ \tx{View}_i = (\txt{open}, x_i)}\cr
+            \pind{1} \preturn{\textstyle \sum_i x_i}\cr
+            \cr
             &\pfn{$(1)\tx{Commit}_k$}{x}\cr
             \pind{1} \set{x_k}{x}\cr
             \cr
@@ -972,20 +995,22 @@ which can perfectly simulate $\mathcal{P}[\tx{Rand}]$, as we now prove.
             \pind{1} \txbf{assert } x_k \neq \bot\cr
             \pind{1} \set{o_k}{\txt{true}}\cr
         \end{aligned}\cr
-        &\pfn{$\tx{View}_i$}{x}\cr
-        \pind{1} \pif{x_i = \bot}\cr
-        \pind{2} \preturn{\txt{empty}}\cr
-        \pind{1} \pif{\neg o_i}\cr
-        \pind{2} \preturn{\txt{set}}\cr
-        \pind{1} \pelse\cr
-        \pind{2} \preturn{(\txt{open}, c_i)}\cr
-        \cr
     }
+
+    Here we've just inlined the main elements of the game.
+    The key difference for the semi-honest parties is that we're able
+    to see the randomness they used, since they commit to it.
+    For the malicious parties, they can commit to any value they want,
+    and can also choose when to open their values.
 
     We now rewrite this game slightly, to make the connection with what we're
     trying to simulate a bit clearer:
 
     \package{$\Gamma^1$}{
+        &\set{x_1, \ldots, x_n, \tx{rush}_{m + 1}, \ldots, \tx{rush}_n}{\bot}\cr
+        &\set{\tx{done}_1, \ldots, \tx{done}_n}{\txt{false}}\cr
+        &\set{\tx{log}_j}{\tx{NewLog}()}\cr
+        \cr
         &\begin{aligned}
             &\pfn{$(1)\tx{Rand}_i$}{}\cr
             \pind{1} \draw{x_i}{\mathbb{G}}\cr
@@ -994,7 +1019,7 @@ which can perfectly simulate $\mathcal{P}[\tx{Rand}]$, as we now prove.
             \pind{1} \pwait{\forall i.\ \tx{View}_i = (\txt{open}, x_i)}\cr
             \pind{1} \preturn{\textstyle \sum_i x_i}\cr
             \cr
-            &\pfn{$\tx{View}_i$}{x}\cr
+            &\pfn{$\tx{View}_i$}{}\cr
             \pind{1} \pif{\tx{Leak}() = (\txt{waiting}, s) \land i \in s}\cr
             \pind{2} \preturn{\txt{empty}}\cr
             \pind{1} \txbf{else } \pif{\tx{done}_i}\cr
@@ -1004,8 +1029,24 @@ which can perfectly simulate $\mathcal{P}[\tx{Rand}]$, as we now prove.
             \pind{2} \preturn{(\txt{open}, y_i)}\cr
             \pind{1} \preturn{\txt{set}}\cr
             \cr
+            &\pfn{$\tx{log}_j$}{}\cr
+            \pind{1} \set{\tx{log}'_j}{\tx{NewLog}()}\cr
+            \pind{1} \set{\tx{log}'_j.\tx{Rand}_j}{\tx{log}_j.\tx{Rand}_j}\cr
+            \pind{1} \set{\tx{log}'_j.\tx{Commit}_j}{\tx{log}_j.\tx{Add}_j}\cr
+            \pind{1} \set{\tx{log}'_j.\tx{Open}_j}{\tx{log}_j.\tx{Sync}_j}\cr
+            \pind{1} \preturn{\tx{log}'_j}\cr
         \end{aligned}
         \begin{aligned}
+            &\pfn{$(1)\tx{Rand}_j$}{}\cr
+            \pind{1} \tx{log}_j.\tx{Rand}_j.\tx{push}(\txt{input})\cr
+            \pind{1} \draw{x_i}{\mathbb{G}}\cr
+            \pind{1} \tx{log}_j.\tx{Add}_j.\tx{push}((\txt{call}, x_i))\cr
+            \pind{1} \pwait{\forall i.\ \tx{View}_i \neq \txt{empty}}\cr
+            \pind{1} \tx{log}_j.\tx{Sync}_j.\tx{push}(\txt{call})\cr
+            \pind{1} \set{o_i}{\txt{true}}\cr
+            \pind{1} \pwait{\forall i.\ \tx{View}_i = (\txt{open}, x_i)}\cr
+            \pind{1} \preturn{\textstyle \sum_i x_i}\cr
+            \cr
             &\pfn{$(1)\tx{Commit}_k$}{x}\cr
             \pind{1} \set{\tx{rush}_k}{x}\cr
             \pind{1} \set{x_k}{x}\cr
@@ -1020,22 +1061,38 @@ which can perfectly simulate $\mathcal{P}[\tx{Rand}]$, as we now prove.
             \pind{1} \preturn{(\txt{done}, [x_i \mid i \in [n]])}\cr
         \end{aligned}
     }
+    First of all, we've renamed several variables, like $o_i$ becoming
+    $\tx{done}_i$, which has no effect on the game, of course.
+    We've also introduced a secondary set of variables $\tx{rush}_k$
+    to hold the values the malicious parties are committing to.
+    We do this to stress the fact that the simulator will be able to see
+    and capture these values.
+    We also modify the logging in the semi-honest parties
+    to use different names, reflecting what will happen in the eventual
+    semi-honest party of $\mathcal{Q}$.
+    This requires introducing a $\tx{log}_j$ function which will produce
+    a simulated log by renaming these entries.
 
-    Then, write this as:
+    Finally, the biggest change is in the $\tx{View}_i$ functions.
+    We've rewritten the logic to be based on this $\tx{Leak}$ method
+    we've introduced, which informs of us the status of the contributions.
+    This gives us enough information to simulate the views accurately.
+    For the honest parties, we know that they'll only open their values
+    after everybody has already committed, so the assertion will always pass.
+    This may not be the case for malicious parties, which may ``rush'',
+    opening their values \emph{before} the other parties have finished comitting.
+    This is why it's important to keep track of their commitments separately,
+    so that we can present them inside the view, if necessary.
+
+    At this point, the next step is to realize that all of this logic
+    can in fact work inside of a simulator, written as:
 
     $$
     \begin{matrix}
     \inlinepackage{$S$}{
+        &\set{\tx{rush}_{m + 1}, \ldots, \tx{rush}_n}{\bot}\cr
         &\begin{aligned}
-            &\pfn{$(1)\tx{Commit}_k$}{x}\cr
-            \pind{1} \set{\tx{rush}_k}{x}\cr
-            \pind{1} \tx{Add}_k(x)\cr
-            \cr
-            &\pfn{$(1)\tx{Open}_k$}{}\cr
-            \pind{1} \txbf{assert } \tx{rush}_k \neq \bot\cr
-            \pind{1} \tx{Sync}_k()\cr
-            \cr
-            &\pfn{$\tx{View}_i$}{x}\cr
+            &\pfn{$\tx{View}_i$}{}\cr
             \pind{1} \pif{\tx{Leak}() = (\txt{waiting}, s) \land i \in s}\cr
             \pind{2} \preturn{\txt{empty}}\cr
             \pind{1} \txbf{else } \pif{\tx{done}_i}\cr
@@ -1047,6 +1104,22 @@ which can perfectly simulate $\mathcal{P}[\tx{Rand}]$, as we now prove.
             \cr
         \end{aligned}
         \begin{aligned}
+            &\pfn{$(1)\tx{Commit}_k$}{x}\cr
+            \pind{1} \set{\tx{rush}_k}{x}\cr
+            \pind{1} \tx{Add}_k(x)\cr
+            \cr
+            &\pfn{$(1)\tx{Open}_k$}{}\cr
+            \pind{1} \txbf{assert } \tx{rush}_k \neq \bot\cr
+            \pind{1} \tx{Sync}_k()\cr
+            \cr
+            &\pfn{$\tx{log}_j$}{}\cr
+            \pind{1} \set{\tx{log}'_j}{\tx{NewLog}()}\cr
+            \pind{1} \set{\tx{log}'_j.\tx{Rand}_j}{\super.\tx{log}_j.\tx{Rand}_j}\cr
+            \pind{1} \set{\tx{log}'_j.\tx{Commit}_j}{\super.\tx{log}_j.\tx{Add}_j}\cr
+            \pind{1} \set{\tx{log}'_j.\tx{Open}_j}{\super.\tx{log}_j.\tx{Sync}_j}\cr
+            \pind{1} \preturn{\tx{log}'_j}\cr
+        \end{aligned}
+        \begin{aligned}
 
         \end{aligned}
     }
@@ -1054,10 +1127,12 @@ which can perfectly simulate $\mathcal{P}[\tx{Rand}]$, as we now prove.
         \otimes\cr
         1(\ldots)
     \end{matrix}
-    \circ \tx{Inst}_C(\mathcal{Q} \lhd (\mathcal{P}[\tx{IdealRand}] \circ F[\tx{Add}']))
     $$
 
-    Concluding our proof.
+    And this concludes our proof, having shown that:
+    $$
+    \tx{Inst}_C(\mathcal{P}[\tx{Rand}]) = \tx{SimInst}_{S, C}(\mathcal{Q} \lhd (\mathcal{P}[\tx{IdealRand}] \circ F[\tx{Add}]))
+    $$
 
     $\blacksquare$
 \end{claim}
