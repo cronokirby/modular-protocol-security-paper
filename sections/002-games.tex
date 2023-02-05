@@ -286,8 +286,18 @@ notion of package \emph{composition}.
         \item output names $\tx{Out}(A)$,
         \item $\pi_{\tx{in}} := B.\pi_{\tx{in}}$,
         \item $\pi_{\tx{out}} := A.\pi_{\tx{out}}$,
-
+        \item output functions $A.f_1[B.f_1, \ldots, B.f_{B.n}], \ldots$
+        of type $\forall s.\stateful{s}^{B.m} \to \stateful{(A.S, B.S)}$.
     \end{itemize}
+
+    In more detail, each output function is of the form:
+    $$
+    (h_1, \ldots, h_{B.m}) \mapsto A.f_i[B.f_1[h_1, \ldots], \ldots, B.f_n[h_1, \ldots]]
+    $$
+    with the same input functions $h_j$ being given
+    to all the functions used by $A.f_i$.
+
+    $\square$
 \end{definition}
 
 \subsection{Syntactical Conventions for Packages}
