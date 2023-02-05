@@ -24,6 +24,8 @@ with state-separable proofs.
 
 \subsection{Some Notational Conventions}
 
+We write $[n]$ to denote the set $\{1, \ldots, n\}$.
+
 We write $\txt{01}$ to denote the set $\{0, 1\}$,
 and write $\str$ to denote binary strings.
 We write $\bullet$ to denote the empty string,
@@ -153,6 +155,19 @@ over binary strings, using a suitable encoding and decoding mechanism,
 as well as perhaps having a special output value that $f$ can return
 if it fails to decode its input successfully.
 
+Being able to quantify types is also useful for the formalism itself,
+and potentially even for some packages.
+This allows us to type functions such as:
+$$
+\begin{aligned}
+    &\tx{id} : \forall s.\ s \to s\cr
+    &\tx{id} = x \mapsto x
+\end{aligned}
+$$
+In this example, $s$ is a quantified type variable.
+Formally, we can see $\tx{id}$ as a function parametrized by a type,
+with $\tx{id}_S$ being a concrete function, after having chosen this type.
+
 \subsection{Packages}
 
 Our next goal is to define the central object of state-separable proofs:
@@ -185,9 +200,94 @@ Our first definition will be a little bit of shorthand.
     $$
     f :\ \stateful{S}
     $$
+
+    $\square$
 \end{definition}
 It's useful to have a bit of typing to separate the state from the rest
 of the input and output, since it allows us to avoid defining
 inessential padding details inside the formalism itself.
+
+We also need to consider functions parametrized by other functions.
+Intuitively, this arises when one function calls another.
+For example, consider:
+$$
+f(x) := g(x) \oplus g(x)
+$$
+which is well defined regardless of what $g$ is.
+Here $f$ is implicitly parametrized by $g$, but we could write this explicitly
+as $f(x) := g \mapsto g(x) \oplus g(x)$.
+We could write $f : (\randf{\str}{\str}) \to (\randf{\str}{\str})$  
+as a potential type in this example.
+We write $f[g]$ for the instantiation of a parametrized function $f$
+with an input function $g$.
+It might also be the case that $g$ is itself parametrized,
+in which case $f[g]$ is defined as:
+$$
+f[g] := h \mapsto f[g[h]]
+$$
+
+We've now developed enough tools to define packages.
+
+\begin{definition}[Package]
+    A package $A$ consists of:
+    \begin{itemize}
+        \item a type $S$, for its state,
+        \item a set of \emph{input names} $\tx{In}(A)$, of size $m$,
+        \item a permutation $\pi_{\tx{in}} : \tx{In}(A) \leftrightarrow [m]$,
+        \item a set of \emph{output names} $\tx{In}(A)$, of size $n$,
+        \item a permutation $\pi_{\tx{out}} : \tx{Out}(A) \leftrightarrow [m]$,
+        \item a set of parametrized functions $f_1, \ldots, f_n : \forall s. \stateful{s}^m \to \stateful{(S, s)}$.
+    \end{itemize}
+
+    We also only consider a package to be defined \emph{up to} potentially
+    renaming its input and output functions injectively.
+
+    $\blacksquare$
+\end{definition}
+
+The basic idea is that a package has an internal state $S$, which gets
+manipulated by each of the functions it exports.
+These functions, in turn, can depend on other input functions.
+If a stateful function $f$ uses a stateful function $g$,
+then the result is a stateful function $f[g]$ manipulating 
+\emph{both} the state of $f$, and the state of $g$.
+Furthermore, $f$ is defined in such way agnostic to what the state manipulated
+by $g$ happens to be,
+which is why we use a \emph{quantified} type instead, to allow instantiation
+with functions manipulating different kinds of state.
+
+In practice, each function in a package is unlikely to use \emph{all}
+of the input functions of the package, but it is much simpler
+to have each function parametrized by all the possible inputs,
+even if some are left unused.
+It's also much simpler to define an ordering of the input functions
+$\pi$, so be able to use $\stateful{s}^m$ as the input type for
+the parametrized functions.
+
+The semantics of a package without inputs are intuitively that of a stateful computer program
+or machine you can interact with.
+The machine has some kind of state, represented by $S$,
+along with various functions you can call, represented by $f_1, \ldots, f_n$.
+Each of these will use the input you provide, along with the current state
+of the machine, in order to supply you with an output,
+potentially modifying the state along the way.
+The input functions allow a package to interact with other packages itself.
+
+We describe this kind of interaction using the formal
+notion of package \emph{composition}.
+
+\begin{definition}[Package Composition]
+    Given two packages $A, B$ with $\tx{In}(A) \subseteq \tx{Out}(B)$,
+    we define their composition $A \circ B$ as a package characterized by:
+
+    \begin{itemize}
+        \item a state type $(A.S, B.S)$,
+        \item input names $\tx{In}(B)$,
+        \item output names $\tx{Out}(A)$,
+        \item $\pi_{\tx{in}} := B.\pi_{\tx{in}}$,
+        \item $\pi_{\tx{out}} := A.\pi_{\tx{out}}$,
+
+    \end{itemize}
+\end{definition}
 
 \subsection{Syntactical Conventions for Packages}
