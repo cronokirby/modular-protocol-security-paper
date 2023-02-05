@@ -309,7 +309,7 @@ notion of package \emph{composition}.
 
     In more detail, each output function is of the form:
     $$
-    (h_1, \ldots, h_{B.m}) \mapsto A.f_i[B.f_1[h_1, \ldots], \ldots, B.f_n[h_1, \ldots]]
+    (h_1, \ldots, h_{B.m}) \mapsto A.f_i[B.f_1[h_1, \ldots], \ldots, B.f_{B.n}[h_1, \ldots]]
     $$
     with the same input functions $h_j$ being given
     to all the functions used by $A.f_i$.
@@ -357,5 +357,21 @@ it imposes on the functions defined in each package.
 While it suffices to explore basic properties of composition for packages,
 we'll want to abandon it quite quickly for a looser and more easily
 used notion of equality.
+
+The first property we prove is the one used as an example above.
+
+\begin{lemma}[Associativity of Composition]
+    Given packages $A, B, C$, it holds that:
+    $$
+    A \circ (B \circ C) \equiv (A \circ B) \circ C
+    $$
+    provided these expressions are well defined.
+
+    \txbf{Proof:} The input and output names are clearly equal on both sides.
+    Furthermore, the state on the left is $(A.S, (B.S, C.S))$,
+    $((A.S, B.S), C.S)$ on the right, and so the two states are isomorphic.
+    All that's left is the final condition, talking about the equality
+    of the functions defined in each package.
+\end{lemma}
 
 \subsection{Syntactical Conventions for Packages}
