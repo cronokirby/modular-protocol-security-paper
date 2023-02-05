@@ -24,7 +24,122 @@ with state-separable proofs.
 
 \subsection{Some Notational Conventions}
 
+We write $\txt{01}$ to denote the set $\{0, 1\}$,
+and write $\str$ to denote binary strings.
+We write $\bullet$ to denote the empty string,
+which also serves as a ``dummy'' value in various contexts.
+
 \subsection{Probabilistic Functions}
+
+Our starting point is the notion of \emph{randomized computable functions}.
+This is a notion we assume can be defined in a rigorous way, but whose
+concrete semantics we don't assign.
+We write $f : \randf{\str}{\str}$ to denote such a function (named $f$).
+Intuitively, this represents a function described by some algorithm,
+which takes in a binary string as an input, and produces a binary string
+as output, and is allowed to make randomized decisions to aid its computation.
+
+We mainly consider \emph{families} of functions,
+parametrized by a security parameter $\lambda$.
+Formally, this is in fact a function $f : \mathbb{N} \to \randf{\str}{\str}$,
+and we write $f_{\lambda} : \randf{\str}{\str}$ to denote a particular
+function in the family.
+In most cases, this security parameter is left \emph{implicit}.
+In fact, all of the objects we consider from here on out will \emph{implicitly}
+be \emph{families} of objects, parametrized by a security parameter $\lambda$,
+and we will invoke this fact only as necessary.
+
+\begin{definition}[Efficient Functions]
+    We assume that a function $f$ has a runtime, denoted $T(f, x)$,
+    measuring how long the function takes to execute on a given input $x \in \str$.
+
+    We say that a function family is \emph{efficient} if:
+    $$
+    \forall \lambda.\ \forall x, |x| \in \mathcal{O}(\tx{poly}(\lambda)).\quad T(f_\lambda, x) \in \mathcal{O}(\tx{poly}(\lambda))
+    $$
+    In other words, the runtime is always polynomial in $\lambda$, regardless
+    of the input, or the random choices of the function.
+
+    $\square$
+\end{definition}
+
+Functions which are not necessarily efficient are said to be \emph{unbounded}.
+
+Considering efficient functions is essential, because the vast majority
+of cryptographic techniques depend on assuming that some problems are ``hard''
+for adversaries with bounded computational resources,
+and so this notion of efficiency is critical to defining game-based
+security.
+Ironically, for protocol security, many protocols can be proved secure
+without this restriction.
+
+Another crucial notion we need to develop is that of a \emph{distance},
+measuring how different two functions behave.
+This will underpin our later notion of security for games,
+which is based on saying that two different games are difficult
+to tell apart.
+
+\begin{definition}[Distance Function]
+    Given a function $f : \randf{\bullet}{\bin}$, we assume that the probability
+    $P[f \to 1]$ of the function returning $1$ on the input $\bullet$ is well defined.
+
+    Given two functions $f, g$, we define their distance $\epsilon(f, g)$ as:
+    $$
+    \epsilon(f, g) := |P[f \to 1] - P[g \to 1]|
+    $$
+
+    $\square$
+\end{definition}
+
+In other words, the distance looks at how often one function returns $1$
+compared to the other.
+If the functions agree most of the time, then their distance will be small,
+whereas if they disagree very often, their distance will be large.
+This definition is actually quite natural.
+Since $P[f \to 1] = (1 - P[f \to 0])$, $\epsilon$ is actually
+just the total variation---or statistical---distance.
+This immediately implies that this distance has some nice properties,
+in particular that it forms a \emph{metric}.
+
+\begin{lemma}[Distance is a Metric]
+    $\epsilon$ is a valid metric, in particular, it holds
+    for any functions $f, g, h$, that:
+    \begin{enumerate}
+        \item $\epsilon(f, f) = 0$,
+        \item $\epsilon(f, g) = \epsilon(g, f)$,
+        \item $\epsilon(f, h) \leq \epsilon(f, g) + \epsilon(g, h)$.
+    \end{enumerate}
+
+    \txbf{Proof:}
+
+    \txbf{1.} Follows from the fact that $P[f \to 1] = P[f \to 1]$,
+    so $\epsilon(f, f) = 0$.
+
+    \txbf{2.} Follows from the fact that $|a - b| = |b - a|$.
+
+    \txbf{3.} Follows from the triangle inequality for $\mathbb{R}$
+    and the fact that:
+    $$
+    |P[f \to 1] - P[h \to 1]| = |(P[f \to 1] - P[g \to 1]) + (P[g \to 1] - P[H \to 1])|
+    $$
+
+    $\blacksquare$
+\end{lemma}
+
+We actually skipped on property in our proof that $\epsilon$ is a valid metric,
+which requires that if $f \neq g$, then $\epsilon(f, g) > 0$.
+This is because we haven't yet defined what equality should mean
+for functions.
+This metric property gives us a very natural definition though.
+
+\begin{definition}[Function Equality]
+    Two functions, $f$ and $g$, are \emph{equal}, written $f = g$, when:
+    $$
+    \epsilon(f, g) = 0
+    $$
+
+    $\square$
+\end{definition}
 
 \subsection{Packages}
 
