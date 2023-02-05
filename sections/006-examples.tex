@@ -92,11 +92,11 @@ and the other will try and implement the same behavior,
 but using only the public channel, aided by an encryption scheme.
 
 Let's start with the simpler private channel protocol, which we'll
-call $\mathcal{Q}$,
+call $\mathscr{Q}$,
 and defined via Protocol~\ref{prot:privchan}
 
 \begin{protocol}{prot:privchan}{Private Channel Protocol}
-    $\mathcal{Q}$ is characterized by:
+    $\mathscr{Q}$ is characterized by:
     \begin{itemize}
         \item $\tx{Leakage} := \{l_{1\to 2}, l_{2\to1}\}$,
         \item $F := \tx{PrivChan}$,
@@ -120,8 +120,8 @@ functions in the functionality, and leaks the parts of the functionality
 that the adversary should have access to, as expected.
 
 Next, we need to define a protocol providing an encrypted channel.
-We'll call this one $\mathcal{P}$.
-The basic idea is that $\mathcal{P}$ will encrypt messages before sending
+We'll call this one $\mathscr{P}$.
+The basic idea is that $\mathscr{P}$ will encrypt messages before sending
 them over the public channel.
 We'll be using public-key encryption, as defined in \todo{todo}.
 For the sake of simplicity, we'll be relying on an additional functionality,
@@ -146,10 +146,10 @@ Furthermore, we allow the adversary to see both public keys.
 }
 \end{game}
 
-With this in hand, we can define $\mathcal{P}$ itself, in Protocol~\ref{prot:encchan}.
+With this in hand, we can define $\mathscr{P}$ itself, in Protocol~\ref{prot:encchan}.
 
 \begin{protocol}{prot:encchan}{Encrypted Channel Protocol}
-    $\mathcal{P}$ is characterized by:
+    $\mathscr{P}$ is characterized by:
     \begin{itemize}
         \item $\tx{Leakage} := \{m_{1\to 2}, m_{2\to1}, \tx{PKs}\}$,
         \item $F := \tx{Keys} \otimes \tx{PrivChan}$,
@@ -178,31 +178,31 @@ and then decrypt it using their secret key after receiving it.
 At this point we can state and prove the crux of this example:
 
 \begin{claim}
-Let $\mathcal{C}$ be the class of corruptions where up to 1 of 2 parties
+Let $\mathscr{C}$ be the class of corruptions where up to 1 of 2 parties
 is either maliciously corrupt or semi-honestly corrupt.
 Then we have:
 $$
-\mathcal{P} \overset{2 \cdot \tx{IND}}{\leadsto}_{\mathcal{C}} \mathcal{Q}
+\mathscr{P} \overset{2 \cdot \tx{IND}}{\leadsto}_{\mathscr{C}} \mathscr{Q}
 $$
 
 \txbf{Proof:} We consider the cases where all the parties are honest
 and some of the parties are corrupted separately.
 Furthermore, we only need to consider malicious corruption,
-since the parties in $\mathcal{Q}$ just directly call functions from
+since the parties in $\mathscr{Q}$ just directly call functions from
 the ideal functionality, and so we can simulate malicious corruption
 from semi-honest corruption, and can thus apply part 3
 of Theorem~\ref{thm:mal_complete}.
 
 \txbf{Honest Case:} Let $\tx{H}$ be a corruption model where both parties are honest.
-We prove that $\mathcal{P} \overset{2 \cdot \tx{IND}}{\leadsto}_{\{\tx{H}\}} \mathcal{Q}$.
+We prove that $\mathscr{P} \overset{2 \cdot \tx{IND}}{\leadsto}_{\{\tx{H}\}} \mathscr{Q}$.
 
 The high level idea is that since ciphertexts should be indistinguishable from random
-encryptions, the information in the log we get as a simulator for $\mathcal{Q}$
-is enough to fake all the ciphertexts the environment expects to see in $\mathcal{P}$.
+encryptions, the information in the log we get as a simulator for $\mathscr{Q}$
+is enough to fake all the ciphertexts the environment expects to see in $\mathscr{P}$.
 
-We start by unrolling $\tx{Inst}_{\tx{H}}(\mathcal{P})$, obtaining:
+We start by unrolling $\tx{Inst}_{\tx{H}}(\mathscr{P})$, obtaining:
 $$
-\tx{Inst}_{\tx{H}}(\mathcal{P}) =
+\tx{Inst}_{\tx{H}}(\mathscr{P}) =
 \inlinepackage{$\Gamma^0$}{
     &\txbf{view } c_{1\to2}, c_{2\to1} \gets \tx{FifoQueue}.\tx{new}()\cr
     &(\tx{sk}_i, \tx{pk}_{\noti}) \gets \tx{Keys}_i()\cr
@@ -386,7 +386,7 @@ $$
 $$
 
 But, at this point the behavior of $\tx{Send}_i$ and $\tx{Recv}_i$ is identical
-to that in $\mathcal{Q}$, allowing us to write:
+to that in $\mathscr{Q}$, allowing us to write:
 $$
 \Gamma^5 = 
 \begin{matrix}
@@ -412,10 +412,10 @@ $$
 \otimes\cr
 1(\tx{Send}_i, \tx{Recv}_i)\cr
 \end{matrix}
-\circ \tx{Inst}_{\tx{H}}(\mathcal{Q})
+\circ \tx{Inst}_{\tx{H}}(\mathscr{Q})
 $$
 which concludes this part of our proof, having written out our simulator,
-and proven that $\tx{Inst}_{\tx{H}}(\mathcal{P}) \overset{\epsilon}{\approx} \tx{SimInst}_{S, \tx{H}}(\mathcal{Q})$.
+and proven that $\tx{Inst}_{\tx{H}}(\mathscr{P}) \overset{\epsilon}{\approx} \tx{SimInst}_{S, \tx{H}}(\mathscr{Q})$.
 
 
 \txbf{Malicious Case:}
@@ -423,12 +423,12 @@ Without loss of generality, we can consider the case where $P_1$ is malicious.
 This is because the difference between the parties is just a matter of renaming
 variables, so the case where $P_2$ is malicious would be the same.
 Let $\tx{M}$ denote this corruption model.
-We prove that $\mathcal{P} \overset{0}{\leadsto}_{\{\tx{M}\}} \mathcal{Q}$,
+We prove that $\mathscr{P} \overset{0}{\leadsto}_{\{\tx{M}\}} \mathscr{Q}$,
 which naturally implies the slightly higher upper bound of $2 \cdot \tx{IND}$.
 
-We start by unrolling $\tx{Inst}_{\tx{M}}(\mathcal{P})$, to get:
+We start by unrolling $\tx{Inst}_{\tx{M}}(\mathscr{P})$, to get:
 $$
-\tx{Inst}_{\tx{M}}(\mathcal{P}) =
+\tx{Inst}_{\tx{M}}(\mathscr{P}) =
 \inlinepackage{$\Gamma^1$}{
     &\txbf{view } c_{1\to2}, c_{2\to1} \gets \tx{FifoQueue}.\tx{new}()\cr
     &(\tx{sk}_2, \tx{pk}_1) \gets \tx{Keys}_2()\cr
@@ -555,20 +555,20 @@ $$
 $$
 Notice that at this point $\tx{sk}_2$ and $\tx{pk}_2$ now don't actually
 do anything, since they don't actually modify the message in $\tx{Recv}_2$.
-The main remaining barrier to writing this as a simulator over $\mathcal{Q}$
+The main remaining barrier to writing this as a simulator over $\mathscr{Q}$
 is that the ciphertext queues $c_{i \to \noti}$ are modified both in functions
 we control $\tx{Send}_1$ and $\tx{Recv}_1$, but also in the two functions
 which we don't control $\tx{Send}_2$, and $\tx{Recv}_2$, and will eventually
-need to become pass through functions for $\mathcal{Q}$.
+need to become pass through functions for $\mathscr{Q}$.
 
 For $\tx{Recv}_2$, it modifies $c_{1 \to 2}$ by popping elements off of it.
 We can emulate this behavior by reading the access log of $l_{1 \to 2}$ we
-get from $\mathcal{Q}$, and using the pop commands inside to modify $c_{1 \to 2}$
+get from $\mathscr{Q}$, and using the pop commands inside to modify $c_{1 \to 2}$
 when necessary.
 
 For $\tx{Send}_2$, our task is a bit harder, since we need to create an encryption
 of $m$, and the log will only contain $|m|$.
-However, our simulator over $\mathcal{Q}$ will be able to receive messages
+However, our simulator over $\mathscr{Q}$ will be able to receive messages
 on behalf of the first party, allowing us to retrieve the message,
 and then create a simulate ciphertext by encrypting it.
 
@@ -621,7 +621,7 @@ $$
 1(\{\tx{Send}_2, \tx{Recv}_2\})
 \end{matrix}
 \circ
-\tx{Inst}_{\tx{M}}(\mathcal{Q})
+\tx{Inst}_{\tx{M}}(\mathscr{Q})
 $$
 We make sure to update both queues whenever necessary.
 This includes when they're viewed by the adversary, but also
@@ -634,7 +634,7 @@ they see.
 On the other side, the simulator can receive messages on behalf of the adversary,
 and then reencrypt them to create the fake ciphertext queue.
 
-Having now proved the upper bound for all the corruption models in $\mathcal{C}$,
+Having now proved the upper bound for all the corruption models in $\mathscr{C}$,
 we conclude that our claim holds.
 
 $\blacksquare$
@@ -690,7 +690,7 @@ Using this functionality, we create an ideal protocol for sampling
 a random value, defined in Protocol~\ref{prot:rand}
 
 \begin{protocol}{prot:rand}{Ideal Random Protocol}
-$\mathcal{P}[\tx{IdealRand}]$ is characterized by:
+$\mathscr{P}[\tx{IdealRand}]$ is characterized by:
 \begin{itemize}
     \item $F := 1(\tx{Add})$,
     \item $\tx{Leakage} = \{\tx{Leak}\}$,
@@ -710,7 +710,7 @@ then the final result is also random.
 Technically, this is an \emph{endemic} random functionality,
 in the sense that malicious parties are allowed to choose their own randomness.
 We also don't embed the $F[\tx{Add}]$ functionality into the protocol itself,
-which makes the ideal protocol technically $\mathcal{P}[\tx{IdealRand}] \circ F[\tx{Add}]$.
+which makes the ideal protocol technically $\mathscr{P}[\tx{IdealRand}] \circ F[\tx{Add}]$.
 We do this to allow considering a slightly modified variant of the protocol,
 which uses a version of the addition functionality leaking more information,
 defined in Game~\ref{game:add'}.
@@ -743,12 +743,12 @@ Thankfully, the difference doesn't matter in the end, because we can simulate
 the stronger functionality from the weaker one.
 
 \begin{claim}
-    Let $\mathcal{C}$ be the corruption class where all up to $n - 1$ parties
+    Let $\mathscr{C}$ be the corruption class where all up to $n - 1$ parties
     are corrupted.
     It then holds that:
     $$
-    \mathcal{P}[\tx{IdealRand}] \circ F[\tx{Add}'] \overset{0}{\leadsto}_{\mathcal{C}}
-    \mathcal{P}[\tx{IdealRand}] \circ F[\tx{Add}]
+    \mathscr{P}[\tx{IdealRand}] \circ F[\tx{Add}'] \overset{0}{\leadsto}_{\mathscr{C}}
+    \mathscr{P}[\tx{IdealRand}] \circ F[\tx{Add}]
     $$
     \txbf{Proof:} The crux of the proof is that we can simply invent random
     shares for the honest parties, subject to the constraint that the sum
@@ -814,8 +814,8 @@ the stronger functionality from the weaker one.
 
     It should be clear that:
     $$
-    \tx{Inst}_C(\mathcal{P}[\tx{IdealRand}] \circ F[\tx{Add}']) = 
-    \tx{SimInst}_{S, C}(\mathcal{P}[\tx{IdealRand}] \circ F[\tx{Add}])
+    \tx{Inst}_C(\mathscr{P}[\tx{IdealRand}] \circ F[\tx{Add}']) = 
+    \tx{SimInst}_{S, C}(\mathscr{P}[\tx{IdealRand}] \circ F[\tx{Add}])
     $$
     concluding our proof.
 
@@ -866,7 +866,7 @@ We can now define a protocol sampling randomness, thanks to this commitment
 scheme, in Protocol~\ref{prot:realrand}.
 
 \begin{protocol}{prot:realrand}{Random Protocol}
-$\mathcal{P}[\tx{Rand}]$ is characterized by:
+$\mathscr{P}[\tx{Rand}]$ is characterized by:
 \begin{itemize}
     \item $F := F[\tx{Com}]$,
     \item $\tx{Leakage} = \{\tx{View}_1, \ldots, \tx{View}_n\}$,
@@ -889,13 +889,13 @@ and sum up all the contributions.
 The result is, as we'll prove, a random value that no participant
 can bias.
 
-Unfortunately, it's not quite the case that $\mathcal{P}[\tx{Rand}]$
-is simulated by $\mathcal{P}[\tx{IdealRand}]$.
+Unfortunately, it's not quite the case that $\mathscr{P}[\tx{Rand}]$
+is simulated by $\mathscr{P}[\tx{IdealRand}]$.
 The reason is a consequence of the timing properties
 of the protocols.
-Indeed, in $\mathcal{P}[\tx{IdealRand}]$, it suffices to activate
+Indeed, in $\mathscr{P}[\tx{IdealRand}]$, it suffices to activate
 each participant once in order to learn the result,
-whereas in $\mathcal{P}[\tx{Rand}]$, two activations are needed,
+whereas in $\mathscr{P}[\tx{Rand}]$, two activations are needed,
 once to commit, and another time to open.
 
 Instead we introduce a sepate protocol, making use of
@@ -914,11 +914,11 @@ a ``synchronization'' functionality, defined in Game~\ref{game:sync}.
 This functionality allows the parties to first ``synchronize'',
 by waiting for each party to contribute, before being able to continue.
 
-The protocol using this functionality is then called $\mathcal{Q}$,
+The protocol using this functionality is then called $\mathscr{Q}$,
 and defined in Protocol~\ref{prot:simrand}
 
 \begin{protocol}{prot:simrand}{Synchronized Random Protocol}
-    $\mathcal{Q}$ is characterized by:
+    $\mathscr{Q}$ is characterized by:
     \begin{itemize}
         \item $F = F[\tx{Sync}]$,
         \item $\tx{Leakage} := \{\tx{done}_1, \ldots, \tx{done}_n\}$,
@@ -932,28 +932,28 @@ and defined in Protocol~\ref{prot:simrand}
     \end{itemize}
 \end{protocol}
 
-The full protocol we consider is $\mathcal{Q} \lhd (\mathcal{P}[\tx{IdealRand}] \circ F[\tx{Add}])$,
-which can perfectly simulate $\mathcal{P}[\tx{Rand}]$, as we now prove.
+The full protocol we consider is $\mathscr{Q} \lhd (\mathscr{P}[\tx{IdealRand}] \circ F[\tx{Add}])$,
+which can perfectly simulate $\mathscr{P}[\tx{Rand}]$, as we now prove.
 
 \begin{claim}
-    Let $\mathcal{C}$ be the class of corruptions where up to $n - 1$ parties
+    Let $\mathscr{C}$ be the class of corruptions where up to $n - 1$ parties
     are corrupt.
     Then it holds that:
     $$
-    \mathcal{P}[\tx{Rand}] \overset{0}{\leadsto}_{\mathcal{C}} \mathcal{Q} \lhd (\mathcal{P}[\tx{IdealRand}] \circ F[\tx{Add}])
+    \mathscr{P}[\tx{Rand}] \overset{0}{\leadsto}_{\mathscr{C}} \mathscr{Q} \lhd (\mathscr{P}[\tx{IdealRand}] \circ F[\tx{Add}])
     $$
     \txbf{Proof:} Thanks to the composition properties of protocols, it suffices to prove the above claim using $F[\tx{Add}']$ instead,
     since we already proved that:
     $$
-    \mathcal{P}[\tx{IdealRand}] \circ F[\tx{Add}'] \overset{0}{\leadsto}_{\mathcal{C}}
-    \mathcal{P}[\tx{IdealRand}] \circ F[\tx{Add}]
+    \mathscr{P}[\tx{IdealRand}] \circ F[\tx{Add}'] \overset{0}{\leadsto}_{\mathscr{C}}
+    \mathscr{P}[\tx{IdealRand}] \circ F[\tx{Add}]
     $$
 
     As before, we let $1, \ldots, h$ be the indices of honest parties,
     $h + 1, \ldots, m$ the indices of semi-honest parties,
     and use $i, j, k$ for denoting indices of honest, semi-honest, and malicious
     parties, respectively.
-    We start by unrolling $\tx{Inst}_C(\mathcal{P}[\tx{Rand}])$, to get:
+    We start by unrolling $\tx{Inst}_C(\mathscr{P}[\tx{Rand}])$, to get:
     
     \package{$\Gamma^0$}{
         &\set{x_1, \ldots, x_n, \tx{rush}_{m + 1}, \ldots, \tx{rush}_n}{\bot}\cr
@@ -1069,7 +1069,7 @@ which can perfectly simulate $\mathcal{P}[\tx{Rand}]$, as we now prove.
     and capture these values.
     We also modify the logging in the semi-honest parties
     to use different names, reflecting what will happen in the eventual
-    semi-honest party of $\mathcal{Q}$.
+    semi-honest party of $\mathscr{Q}$.
     This requires introducing a $\tx{log}_j$ function which will produce
     a simulated log by renaming these entries.
 
@@ -1131,7 +1131,7 @@ which can perfectly simulate $\mathcal{P}[\tx{Rand}]$, as we now prove.
 
     And this concludes our proof, having shown that:
     $$
-    \tx{Inst}_C(\mathcal{P}[\tx{Rand}]) = \tx{SimInst}_{S, C}(\mathcal{Q} \lhd (\mathcal{P}[\tx{IdealRand}] \circ F[\tx{Add}]))
+    \tx{Inst}_C(\mathscr{P}[\tx{Rand}]) = \tx{SimInst}_{S, C}(\mathscr{Q} \lhd (\mathscr{P}[\tx{IdealRand}] \circ F[\tx{Add}]))
     $$
 
     $\blacksquare$

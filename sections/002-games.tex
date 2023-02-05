@@ -83,9 +83,9 @@ to tell apart.
     Given a function $f : \randf{\bullet}{\bin}$, we assume that the probability
     $P[f \to 1]$ of the function returning $1$ on the input $\bullet$ is well defined.
 
-    Given two functions $f, g$, we define their distance $\epsilon(f, g)$ as:
+    Given two functions $f, g$, we define their distance $\varepsilon(f, g)$ as:
     $$
-    \epsilon(f, g) := |P[f \to 1] - P[g \to 1]|
+    \varepsilon(f, g) := |P[f \to 1] - P[g \to 1]|
     $$
 
     $\square$
@@ -96,24 +96,24 @@ compared to the other.
 If the functions agree most of the time, then their distance will be small,
 whereas if they disagree very often, their distance will be large.
 This definition is actually quite natural.
-Since $P[f \to 1] = (1 - P[f \to 0])$, $\epsilon$ is actually
+Since $P[f \to 1] = (1 - P[f \to 0])$, $\varepsilon$ is actually
 just the total variation---or statistical---distance.
 This immediately implies that this distance has some nice properties,
 in particular that it forms a \emph{metric}.
 
 \begin{lemma}[Distance is a Metric]
-    $\epsilon$ is a valid metric, in particular, it holds
+    $\varepsilon$ is a valid metric, in particular, it holds
     for any functions $f, g, h$, that:
     \begin{enumerate}
-        \item $\epsilon(f, f) = 0$,
-        \item $\epsilon(f, g) = \epsilon(g, f)$,
-        \item $\epsilon(f, h) \leq \epsilon(f, g) + \epsilon(g, h)$.
+        \item $\varepsilon(f, f) = 0$,
+        \item $\varepsilon(f, g) = \varepsilon(g, f)$,
+        \item $\varepsilon(f, h) \leq \varepsilon(f, g) + \varepsilon(g, h)$.
     \end{enumerate}
 
     \txbf{Proof:}
 
     \txbf{1.} Follows from the fact that $P[f \to 1] = P[f \to 1]$,
-    so $\epsilon(f, f) = 0$.
+    so $\varepsilon(f, f) = 0$.
 
     \txbf{2.} Follows from the fact that $|a - b| = |b - a|$.
 
@@ -126,8 +126,8 @@ in particular that it forms a \emph{metric}.
     $\blacksquare$
 \end{lemma}
 
-We actually skipped on property in our proof that $\epsilon$ is a valid metric,
-which requires that if $f \neq g$, then $\epsilon(f, g) > 0$.
+We actually skipped one property in our proof that $\varepsilon$ is a valid metric,
+which requires that if $f \neq g$, then $\varepsilon(f, g) > 0$.
 This is because we haven't yet defined what equality should mean
 for functions.
 This metric property gives us a very natural definition though.
@@ -135,12 +135,59 @@ This metric property gives us a very natural definition though.
 \begin{definition}[Function Equality]
     Two functions, $f$ and $g$, are \emph{equal}, written $f = g$, when:
     $$
-    \epsilon(f, g) = 0
+    \varepsilon(f, g) = 0
     $$
 
     $\square$
 \end{definition}
 
+It's easy to see that this is an equality relation, satisfying
+reflexivity, symmetry, and transitivity.
+
+While the functions we've considered so far only manipulate binary strings,
+it's useful to allow \emph{typed} functions,
+with richer input and output types.
+This could be defined in several ways, but the end result means
+that a typed function $f : \randf{A}{B}$ can be interpreted as a function
+over binary strings, using a suitable encoding and decoding mechanism,
+as well as perhaps having a special output value that $f$ can return
+if it fails to decode its input successfully.
+
 \subsection{Packages}
+
+Our next goal is to define the central object of state-separable proofs:
+the \emph{package}.
+Intuitively, a package has some kind of state, as well as functions
+which manipulate this state.
+You can interact with a package by calling the various output functions
+it provides.
+This makes packages a natural fit for security games.
+What distinguishes packages from games is that they can have \emph{input}
+functions.
+A package can depend on another package, with each of its functions
+potentially using the functions provided by this other package.
+This modularity makes the common proof technique of ``game-hopping''
+much more easily usable, and is the core strength of the state-separable
+proof formalism.
+
+Before we get to packages, we first need to define a few convenient
+notions for functions manipulating a state, and parametrizing
+functions with other functions.
+
+Our first definition will be a little bit of shorthand.
+\begin{definition}[Stateful Function]
+    A \emph{stateful} function is simply a function $f$ of the form:
+    $$
+    f : \randf{(S, \str)}{(S, \str)}
+    $$
+    $S$ represents the state being used and modified by the function.
+    As a convenient shorthand, we write:
+    $$
+    f :\ \stateful{S}
+    $$
+\end{definition}
+It's useful to have a bit of typing to separate the state from the rest
+of the input and output, since it allows us to avoid defining
+inessential padding details inside the formalism itself.
 
 \subsection{Syntactical Conventions for Packages}

@@ -1,7 +1,7 @@
 \section{Protocols and Composition}
 
 \begin{definition}[Protocols]
-A \emph{protocol} $\mathcal{P}$ consists of:
+A \emph{protocol} $\mathscr{P}$ consists of:
 \begin{itemize}
 \item Systems $P_1, \ldots, P_n$, called \emph{players}
 \item An asynchronous package $F$, called the \emph{ideal functionality}
@@ -31,15 +31,15 @@ $$
 We can also define a few convenient notations related to the interface of a base
 protocol.
 
-Let $\text{Out}_i(\mathcal{P}) := \text{Out}(P_i)$, and let $\text{In}_i(\mathcal{P}) := \text{In}(P_i) / \text{Out}(F)$.
-We then define $\text{Out}(\mathcal{P}) := \bigcup_{i \in [n]} \text{Out}_i(\mathcal{P})$
-and $\text{In}(\mathcal{P}) := \bigcup_{i \in [n]} \text{In}_i(\mathcal{P})$.
-Let $\tx{IdealIn}_i(\mathcal{P}) := \tx{In}(P_i) \cap \tx{Out}(F)$.
+Let $\text{Out}_i(\mathscr{P}) := \text{Out}(P_i)$, and let $\text{In}_i(\mathscr{P}) := \text{In}(P_i) / \text{Out}(F)$.
+We then define $\text{Out}(\mathscr{P}) := \bigcup_{i \in [n]} \text{Out}_i(\mathscr{P})$
+and $\text{In}(\mathscr{P}) := \bigcup_{i \in [n]} \text{In}_i(\mathscr{P})$.
+Let $\tx{IdealIn}_i(\mathscr{P}) := \tx{In}(P_i) \cap \tx{Out}(F)$.
 
 Finally, we define
 $$
 \begin{aligned}
-&\text{IdealIn}(\mathcal{P}) := \text{In}(F)\cr
+&\text{IdealIn}(\mathscr{P}) := \text{In}(F)\cr
 \end{aligned}
 $$
 
@@ -47,45 +47,45 @@ $\square$
 \end{definition}
 
 \begin{definition}[Closed Protocol]
-  We say that a protocol $\mathcal{P}$ is \emph{closed} if
-  $\tx{In}(\mathcal{P}) = \emptyset$ and $\tx{IdealIn}(\mathcal{P}) = \emptyset$.
+  We say that a protocol $\mathscr{P}$ is \emph{closed} if
+  $\tx{In}(\mathscr{P}) = \emptyset$ and $\tx{IdealIn}(\mathscr{P}) = \emptyset$.
 
   $\square$
 \end{definition}
 
 \begin{definition}[Literal Equality]
-Given two protocols $\mathcal{P}$ and $\mathcal{Q}$, we say that
-they are \emph{literally equal}, written as $\mathcal{P} \equiv \mathcal{Q}$
+Given two protocols $\mathscr{P}$ and $\mathscr{Q}$, we say that
+they are \emph{literally equal}, written as $\mathscr{P} \equiv \mathscr{Q}$
 when:
 \begin{itemize}
-\item $\mathcal{P}.n = \mathcal{Q}.n$
+\item $\mathscr{P}.n = \mathscr{Q}.n$
 \item There exists a permuation $\pi : [n] \leftrightarrow [n]$ such that
 $
-{\forall i \in [n].\enspace \mathcal{P}.P_i \equiv \mathcal{Q}.P_{\pi(i)}}
+{\forall i \in [n].\enspace \mathscr{P}.P_i \equiv \mathscr{Q}.P_{\pi(i)}}
 $
-\item $\mathcal{P}.F = \mathcal{Q}.F$
-\item $\mathcal{P}.\tx{Leakage} = \mathcal{Q}.\tx{Leakage}$
+\item $\mathscr{P}.F = \mathscr{Q}.F$
+\item $\mathscr{P}.\tx{Leakage} = \mathscr{Q}.\tx{Leakage}$
 \end{itemize}
 
 $\square$
 \end{definition}
 
 \begin{definition}[Vertical Composition]
-Given an protocol $\mathcal{P}$ and a package $G$, satisfying
-$\text{IdealIn}(\mathcal{P}) \subseteq \text{Out}(G)$,
-we can define the protocol $\mathcal{P} \circ G$.
+Given an protocol $\mathscr{P}$ and a package $G$, satisfying
+$\text{IdealIn}(\mathscr{P}) \subseteq \text{Out}(G)$,
+we can define the protocol $\mathscr{P} \circ G$.
 
-$\mathcal{P} \circ G$ has the same players and leakage as $\mathcal{P}$,
+$\mathscr{P} \circ G$ has the same players and leakage as $\mathscr{P}$,
 but its ideal functionality $F$ becomes $F \circ G$.
 
 $\square$
 \end{definition}
 
 \begin{claim}[Vertical Composition is Associative]
-For any protocol $\mathcal{P}$, and packages $G, H$, such that their composition
+For any protocol $\mathscr{P}$, and packages $G, H$, such that their composition
 is well defined, we have
 $$
-\mathcal{P} \circ (G \circ H) = (\mathcal{P} \circ G) \circ H
+\mathscr{P} \circ (G \circ H) = (\mathscr{P} \circ G) \circ H
 $$
 
 \txbf{Proof:} This follows from the definition of vertical composition
@@ -94,79 +94,79 @@ $\blacksquare$
 \end{claim}
 
 \begin{definition}[Horizontal Composition]
-Given two protocols $\mathcal{P}, \mathcal{Q}$,
-we can define the protocol $\mathcal{P} \lhd \mathcal{Q}$,
+Given two protocols $\mathscr{P}, \mathscr{Q}$,
+we can define the protocol $\mathscr{P} \lhd \mathscr{Q}$,
 provided a few requirements hold.
 
-First, we need: $\text{In}(\mathcal{P}) \subseteq \text{Out}(\mathcal{Q})$.
-We also require that the functions exposed by a player in $\mathcal{Q}$
-are used by \emph{exactly} one player in $\mathcal{P}$.
+First, we need: $\text{In}(\mathscr{P}) \subseteq \text{Out}(\mathscr{Q})$.
+We also require that the functions exposed by a player in $\mathscr{Q}$
+are used by \emph{exactly} one player in $\mathscr{P}$.
 We express this as:
 \[
-  \forall i \in [\mathcal{Q}.n].\ \exists! j \in [\mathcal{P}.n].\quad \text{In}_j \cap \text{Out}_i \neq \emptyset
+  \forall i \in [\mathscr{Q}.n].\ \exists! j \in [\mathscr{P}.n].\quad \text{In}_j \cap \text{Out}_i \neq \emptyset
 \]
 
 Second, we require that the players share no channels between the two
 protocols.
-In other words $\text{Chan}(\mathcal{P}.P_i) \cap \text{Chan}(\mathcal{Q}.P_j) = \emptyset$, for all $P_i, P_j$.
+In other words $\text{Chan}(\mathscr{P}.P_i) \cap \text{Chan}(\mathscr{Q}.P_j) = \emptyset$, for all $P_i, P_j$.
 
 Third, we require that the ideal functionalities of one protocol aren't used in the other.
 $$
 \begin{aligned}
-&\tx{Out}(\mathcal{P}.F) \cap \tx{In}(\mathcal{Q}) = \emptyset\cr
-&\tx{Out}(\mathcal{Q}.F) \cap \tx{In}(\mathcal{P}) = \emptyset
+&\tx{Out}(\mathscr{P}.F) \cap \tx{In}(\mathscr{Q}) = \emptyset\cr
+&\tx{Out}(\mathscr{Q}.F) \cap \tx{In}(\mathscr{P}) = \emptyset
 \end{aligned}
 $$
 
 Finally, we require that the ideal functionalities do not overlap, 
-  in the sense that $\text{Out}(\mathcal{P}.F) \cap \text{Out}(\mathcal{Q}.F) = \emptyset$
+  in the sense that $\text{Out}(\mathscr{P}.F) \cap \text{Out}(\mathscr{Q}.F) = \emptyset$
 
-Our first condition has an interesting consequence: every player $\mathcal{Q}.P_j$
-has its functions used by exactly one player $\mathcal{P}.P_i$.
-In that case, we say that $\mathcal{P}.P_i$ \emph{uses} $\mathcal{Q}.P_j$.
+Our first condition has an interesting consequence: every player $\mathscr{Q}.P_j$
+has its functions used by exactly one player $\mathscr{P}.P_i$.
+In that case, we say that $\mathscr{P}.P_i$ \emph{uses} $\mathscr{Q}.P_j$.
 
-With this in hand, we can define $\mathcal{P} \lhd \mathcal{Q}$.
+With this in hand, we can define $\mathscr{P} \lhd \mathscr{Q}$.
 
 The players will consist of:
 $$
-  \mathcal{P}.P_i \circ
+  \mathscr{P}.P_i \circ
   \begin{pmatrix}
-    {\displaystyle \bigast_{\mathcal{Q}.P_j \text{ used by } \mathcal{P}.P_i } \mathcal{Q}.P_j} \cr
+    {\displaystyle \bigast_{\mathscr{Q}.P_j \text{ used by } \mathscr{P}.P_i } \mathscr{Q}.P_j} \cr
     \otimes\cr
     1(\tx{IdealIn}_i)
   \end{pmatrix}
 $$
-And, because of our assumption, each player in $\mathcal{Q}$ appears
+And, because of our assumption, each player in $\mathscr{Q}$ appears
 somewhere in this equation.
 
-The ideal functionality is $\mathcal{P}.F \otimes \mathcal{Q}.F$,
-and the leakage is $\mathcal{P}.\tx{Leakage} \cup \mathcal{Q}.\tx{Leakage}$.
+The ideal functionality is $\mathscr{P}.F \otimes \mathscr{Q}.F$,
+and the leakage is $\mathscr{P}.\tx{Leakage} \cup \mathscr{Q}.\tx{Leakage}$.
 
 We can also easily show that this definition is well defined, satisfying
 the required properties of an protocol.
 Because of the definition of the players, we see that:
 $$
-  \bigcup_{i \in [(\mathcal{P} \lhd \mathcal{Q}).n]} \tx{OutChan}((\mathcal{P} \lhd \mathcal{Q}).{P_i})
-  = \left(\bigcup_{i \in [\mathcal{P}.n]} \tx{OutChan}(\mathcal{P}.P_i)\right) \cup
-  \left(\bigcup_{i \in [\mathcal{Q}.n]} \tx{OutChan}(\mathcal{Q}.P_i)\right)
+  \bigcup_{i \in [(\mathscr{P} \lhd \mathscr{Q}).n]} \tx{OutChan}((\mathscr{P} \lhd \mathscr{Q}).{P_i})
+  = \left(\bigcup_{i \in [\mathscr{P}.n]} \tx{OutChan}(\mathscr{P}.P_i)\right) \cup
+  \left(\bigcup_{i \in [\mathscr{Q}.n]} \tx{OutChan}(\mathscr{Q}.P_i)\right)
 $$
   since $\text{OutChan}(A \circ B) = \text{OutChan}(A \otimes B) = \text{OutChan}(A, B)$.
 A similar reasoning applies to $\text{InChan}$, allowing us to conclude that:
 $$
-  \bigcup_{i \in [(\mathcal{P} \lhd \mathcal{Q}).n]} \tx{OutChan}((\mathcal{P} \lhd \mathcal{Q}).{P_i}) =
-  \bigcup_{i \in [(\mathcal{P} \lhd \mathcal{Q}).n]} \tx{InChan}((\mathcal{P} \lhd \mathcal{Q}).{P_i})
+  \bigcup_{i \in [(\mathscr{P} \lhd \mathscr{Q}).n]} \tx{OutChan}((\mathscr{P} \lhd \mathscr{Q}).{P_i}) =
+  \bigcup_{i \in [(\mathscr{P} \lhd \mathscr{Q}).n]} \tx{InChan}((\mathscr{P} \lhd \mathscr{Q}).{P_i})
 $$
 as required.
 
-By definition, the dependencies $\text{In}$ of each player in $\mathcal{P} \lhd \mathcal{Q}$
-are the union of several players in $\mathcal{Q}$, and
-the ideal dependencies of players in $\mathcal{P}$,
+By definition, the dependencies $\text{In}$ of each player in $\mathscr{P} \lhd \mathscr{Q}$
+are the union of several players in $\mathscr{Q}$, and
+the ideal dependencies of players in $\mathscr{P}$,
 both of these are required to be disjoint, so disjointness property
 continues to hold.
 
-Finally, since each player is of the form $\mathcal{P}.P_i \circ \ldots$,
-the condition on $\text{Out}_i$ is also satisfied in $\mathcal{P} \lhd \mathcal{Q}$,
-since $\mathcal{P}$ does.
+Finally, since each player is of the form $\mathscr{P}.P_i \circ \ldots$,
+the condition on $\text{Out}_i$ is also satisfied in $\mathscr{P} \lhd \mathscr{Q}$,
+since $\mathscr{P}$ does.
 
 $\square$
 
@@ -174,8 +174,8 @@ $\square$
 
 \begin{lemma}
 Horizontal composition is associative, i.e.
-${\mathcal{P} \lhd (\mathcal{Q} \lhd \mathcal{R}) \equiv (\mathcal{P} \lhd \mathcal{Q}) \lhd \mathcal{R}}$
-for all protocols $\mathcal{P}, \mathcal{Q}, \mathcal{R}$ where this expression is well defined.
+${\mathscr{P} \lhd (\mathscr{Q} \lhd \mathscr{R}) \equiv (\mathscr{P} \lhd \mathscr{Q}) \lhd \mathscr{R}}$
+for all protocols $\mathscr{P}, \mathscr{Q}, \mathscr{R}$ where this expression is well defined.
 
 $\txbf{Proof:}$
 For the ideal functionalities, it's clear that by the associativity
@@ -185,104 +185,104 @@ in both cases.
 The trickier part of the proof is showing that the resulting players
 are identical.
 
-It's convenient to define a relation for the players in $\mathcal{R}$
-that get used in $\mathcal{P}$ via the players in $\mathcal{Q}$.
-To that end, we say that $\mathcal{P}.P_i$ \emph{uses} $\mathcal{R}.P_j$
-if there exists $\mathcal{Q}.P_k$ such that $\mathcal{P}.P_i$ uses
-$\mathcal{Q}.P_k$, and $\mathcal{Q}.P_k$ uses $\mathcal{R}.P_j$.
+It's convenient to define a relation for the players in $\mathscr{R}$
+that get used in $\mathscr{P}$ via the players in $\mathscr{Q}$.
+To that end, we say that $\mathscr{P}.P_i$ \emph{uses} $\mathscr{R}.P_j$
+if there exists $\mathscr{Q}.P_k$ such that $\mathscr{P}.P_i$ uses
+$\mathscr{Q}.P_k$, and $\mathscr{Q}.P_k$ uses $\mathscr{R}.P_j$.
 
-The players of $\mathcal{P} \lhd (\mathcal{Q} \lhd \mathcal{R})$ are of the form:
+The players of $\mathscr{P} \lhd (\mathscr{Q} \lhd \mathscr{R})$ are of the form:
 $$
-  \mathcal{P}.P_i \circ
+  \mathscr{P}.P_i \circ
   \begin{pmatrix}
-  \displaystyle \bigast_{\mathcal{Q}.P_j \text{ used by } \mathcal{P}.P_i } 
-  \mathcal{Q}.P_j \circ
+  \displaystyle \bigast_{\mathscr{Q}.P_j \text{ used by } \mathscr{P}.P_i } 
+  \mathscr{Q}.P_j \circ
   \begin{pmatrix}
-  \displaystyle \bigast_{\mathcal{R}.P_k \text{ used by } \mathcal{Q}.P_j } \mathcal{R}.P_k\cr
+  \displaystyle \bigast_{\mathscr{R}.P_k \text{ used by } \mathscr{Q}.P_j } \mathscr{R}.P_k\cr
   \otimes\cr
-  1(\mathcal{Q}.\tx{IdealIn}_j)
+  1(\mathscr{Q}.\tx{IdealIn}_j)
   \end{pmatrix}\cr
   \otimes\cr
-  1(\mathcal{P}.\tx{IdealIn}_i)
+  1(\mathscr{P}.\tx{IdealIn}_i)
   \end{pmatrix}
 $$
-While those in $(\mathcal{P} \lhd \mathcal{Q}) \mathcal{R}$ are of the form:
+While those in $(\mathscr{P} \lhd \mathscr{Q}) \mathscr{R}$ are of the form:
 $$
-  \left( \mathcal{P}.P_i \circ
+  \left( \mathscr{P}.P_i \circ
   \begin{pmatrix}
-  \displaystyle \bigast_{\mathcal{Q}.P_j \text{ used by } \mathcal{P}.P_i } 
-  \mathcal{Q}.P_j\cr
+  \displaystyle \bigast_{\mathscr{Q}.P_j \text{ used by } \mathscr{P}.P_i } 
+  \mathscr{Q}.P_j\cr
   \otimes\cr
-  1(\mathcal{P}.\tx{IdealIn}_i)
+  1(\mathscr{P}.\tx{IdealIn}_i)
   \end{pmatrix}
   \right)
   \circ
   \begin{pmatrix}
-    \displaystyle \bigast_{\mathcal{R}.P_k \text{ used by } \mathcal{P}.P_i } \mathcal{R}.P_k\cr
+    \displaystyle \bigast_{\mathscr{R}.P_k \text{ used by } \mathscr{P}.P_i } \mathscr{R}.P_k\cr
   \otimes\cr
-  1(\mathcal{Q}.\tx{IdealIn}_j)
+  1(\mathscr{Q}.\tx{IdealIn}_j)
   \end{pmatrix}
 $$
 Now, we can apply the associativity of $\circ$ for systems, and also
-group the $\mathcal{R}.P_k$ players based on which $\mathcal{Q}.P_j$ uses them:
+group the $\mathscr{R}.P_k$ players based on which $\mathscr{Q}.P_j$ uses them:
 $$
-  \mathcal{P}.P_i \circ
+  \mathscr{P}.P_i \circ
   \begin{pmatrix}
-  \displaystyle \bigast_{\mathcal{Q}.P_j \text{ used by } \mathcal{P}.P_i } 
-  \mathcal{Q}.P_j\cr
+  \displaystyle \bigast_{\mathscr{Q}.P_j \text{ used by } \mathscr{P}.P_i } 
+  \mathscr{Q}.P_j\cr
   \otimes\cr
-  1(\mathcal{P}.\tx{IdealIn}_i)
+  1(\mathscr{P}.\tx{IdealIn}_i)
   \end{pmatrix}
   \circ
   \left(
-    \displaystyle \bigast_{\mathcal{Q}.P_j}
+    \displaystyle \bigast_{\mathscr{Q}.P_j}
   \begin{pmatrix}
-  \displaystyle \bigast_{\mathcal{R}.P_k \text{ used by } \mathcal{Q}.P_j } \mathcal{R}.P_k
+  \displaystyle \bigast_{\mathscr{R}.P_k \text{ used by } \mathscr{Q}.P_j } \mathscr{R}.P_k
   \cr
   \otimes\cr
-  1(\mathcal{Q}.\tx{IdealIn}_j)
+  1(\mathscr{Q}.\tx{IdealIn}_j)
   \end{pmatrix}
   \right)
 $$
 Now, the conditions are satisfied for applying the interchange lemma (Lemma~\ref{thm:interchange_system}),
 giving us:
 $$
-  \mathcal{P}.P_i \circ
+  \mathscr{P}.P_i \circ
   \begin{pmatrix}
-  \displaystyle \bigast_{\mathcal{Q}.P_j \text{ used by } \mathcal{P}.P_i } 
-  \mathcal{Q}.P_j \circ
+  \displaystyle \bigast_{\mathscr{Q}.P_j \text{ used by } \mathscr{P}.P_i } 
+  \mathscr{Q}.P_j \circ
   \begin{pmatrix}
-  \displaystyle \bigast_{\mathcal{R}.P_k \text{ used by } \mathcal{Q}.P_j } \mathcal{R}.P_k\cr
+  \displaystyle \bigast_{\mathscr{R}.P_k \text{ used by } \mathscr{Q}.P_j } \mathscr{R}.P_k\cr
   \otimes\cr
-  1(\mathcal{Q}.\tx{IdealIn}_j)
+  1(\mathscr{Q}.\tx{IdealIn}_j)
   \end{pmatrix}\cr
   \otimes\cr
-  1(\mathcal{P}.\tx{IdealIn}_i)
+  1(\mathscr{P}.\tx{IdealIn}_i)
   \end{pmatrix}
 $$
-Which is non other than the players in $\mathcal{P} \lhd (\mathcal{Q} \lhd \mathcal{R})$.
+Which is non other than the players in $\mathscr{P} \lhd (\mathscr{Q} \lhd \mathscr{R})$.
 
 $\blacksquare$
 \end{lemma}
 
 \begin{definition}[Concurrent Composition]
-Given two protocols $\mathcal{P}, \mathcal{Q}$,
+Given two protocols $\mathscr{P}, \mathscr{Q}$,
 we can define their concurrent composition---or tensor product---
-$\mathcal{P} \otimes \mathcal{Q}$, provided a few requirements hold.
+$\mathscr{P} \otimes \mathscr{Q}$, provided a few requirements hold.
 We require that:
 \begin{enumerate}
-\item $\tx{In}(\mathcal{P}) \cap \tx{In}(\mathcal{Q}) = \emptyset$.
-\item $\tx{Out}(\mathcal{P}) \cap \tx{Out}(\mathcal{Q}) = \emptyset$.
-\item $\tx{Out}(\mathcal{P}.F) \cap \tx{Out}(\mathcal{Q}.F) = \emptyset$ \emph{or} $\mathcal{P}.F = \mathcal{Q}.F$.
-\item $\tx{Leakage}(\mathcal{P}) \cap \tx{In}(\mathcal{Q}) = \emptyset = \tx{Leakage}(\mathcal{Q}) \cap \tx{In}(\mathcal{P})$
+\item $\tx{In}(\mathscr{P}) \cap \tx{In}(\mathscr{Q}) = \emptyset$.
+\item $\tx{Out}(\mathscr{P}) \cap \tx{Out}(\mathscr{Q}) = \emptyset$.
+\item $\tx{Out}(\mathscr{P}.F) \cap \tx{Out}(\mathscr{Q}.F) = \emptyset$ \emph{or} $\mathscr{P}.F = \mathscr{Q}.F$.
+\item $\tx{Leakage}(\mathscr{P}) \cap \tx{In}(\mathscr{Q}) = \emptyset = \tx{Leakage}(\mathscr{Q}) \cap \tx{In}(\mathscr{P})$
 \end{enumerate}
 
-The players of $\mathcal{P} \otimes \mathcal{Q}$ consist of all the players
-in $\mathcal{P}$ and $\mathcal{Q}$.
-The ideal functionality is $\mathcal{P}.F \otimes \mathcal{Q}.F$, 
-unless $\mathcal{P}.F = \mathcal{Q}.F$, in which case the ideal functionality
-is simply $\mathcal{P}.F$.
-In either case, the leakage is $\mathcal{P}.\tx{Leakage} \cup \mathcal{Q}.\tx{Leakage}$.
+The players of $\mathscr{P} \otimes \mathscr{Q}$ consist of all the players
+in $\mathscr{P}$ and $\mathscr{Q}$.
+The ideal functionality is $\mathscr{P}.F \otimes \mathscr{Q}.F$, 
+unless $\mathscr{P}.F = \mathscr{Q}.F$, in which case the ideal functionality
+is simply $\mathscr{P}.F$.
+In either case, the leakage is $\mathscr{P}.\tx{Leakage} \cup \mathscr{Q}.\tx{Leakage}$.
 This use of $\otimes$ is well defined by assumption.
 
 The resulting protocol is also clearly well defined.
@@ -290,12 +290,12 @@ The resulting protocol is also clearly well defined.
 The jointly closed property holds because we've simply taken the union
 of both player sets.
 
-Since $\tx{In}(\mathcal{P}) \cap \tx{In}(\mathcal{Q}) = \emptyset$,
-it also holds that for every $P_i, P_j$ in $\mathcal{P} \otimes \mathcal{Q}$,
+Since $\tx{In}(\mathscr{P}) \cap \tx{In}(\mathscr{Q}) = \emptyset$,
+it also holds that for every $P_i, P_j$ in $\mathscr{P} \otimes \mathscr{Q}$,
 we have $\tx{In}(P_i) \cap \tx{In}(P_j) = \emptyset$,
-since each player comes from either $\mathcal{P}$ or $\mathcal{Q}$.
+since each player comes from either $\mathscr{P}$ or $\mathscr{Q}$.
       
-Finally, $\tx{Out}(\mathcal{P}) \cap \tx{Out}(\mathcal{Q}) = \emptyset$,
+Finally, $\tx{Out}(\mathscr{P}) \cap \tx{Out}(\mathscr{Q}) = \emptyset$,
 we have that $\tx{Out}(P_i) \cap \tx{Out}(P_j) = \emptyset$,
 by the same reasoning.
     
@@ -306,9 +306,9 @@ $\square$
 
 \begin{lemma}
 Concurrent composition is associative and commutative.
-I.e. $\mathcal{P} \otimes (\mathcal{Q} \otimes \mathcal{R}) \equiv (\mathcal{P} \otimes \mathcal{Q}) \otimes \mathcal{R}$,
-and $\mathcal{P} \otimes \mathcal{Q} \equiv \mathcal{Q} \otimes \mathcal{P}$ for
-all protocols $\mathcal{P}, \mathcal{Q}, \mathcal{R}$ where these expressions
+I.e. $\mathscr{P} \otimes (\mathscr{Q} \otimes \mathscr{R}) \equiv (\mathscr{P} \otimes \mathscr{Q}) \otimes \mathscr{R}$,
+and $\mathscr{P} \otimes \mathscr{Q} \equiv \mathscr{Q} \otimes \mathscr{P}$ for
+all protocols $\mathscr{P}, \mathscr{Q}, \mathscr{R}$ where these expressions
 are well defined.
 
 \txbf{Proof:}
@@ -444,8 +444,8 @@ in which case we write $\text{Corrupt}_\kappa(P)$,
 for $\kappa \in \{\tx{H}, \tx{SH}, \tx{M}\}$.
 
 \begin{definition}[Corruption Models]
-Given a protocol $\mathcal{P}$ with players $P_1, \ldots, P_n$, a \emph{corruption model} $C$
-is a function $C : [\mathcal{P}.n] \to \{\tx{H}, \tx{SH}, \tx{M}\}$.
+Given a protocol $\mathscr{P}$ with players $P_1, \ldots, P_n$, a \emph{corruption model} $C$
+is a function $C : [\mathscr{P}.n] \to \{\tx{H}, \tx{SH}, \tx{M}\}$.
 This provides a corruption $C_i$ associated with each player $P_i$.
 We can then define $\text{Corrupt}_C(P_i) := \text{Corrupt}_{C_i}(P_i)$.
 
@@ -456,7 +456,7 @@ $$
 $$
   and then we say that $C \geq C'$ if $\forall i \in [n]. \quad C_i \geq C'_i$.
 
-A \emph{class of corruptions} $\mathcal{C}$ is simply a set of corruption models.
+A \emph{class of corruptions} $\mathscr{C}$ is simply a set of corruption models.
 
 $\square$
 \end{definition}
@@ -468,8 +468,8 @@ Some common classes are:
 \end{itemize}
 
 \begin{definition}[Instantiation]
-  Given a protocol $\mathcal{P}$ with $\tx{In}(\mathcal{P}) = \emptyset$, and a corruption model $C$, we can
-  define an \emph{instantiation} $\tx{Inst}_C(\mathcal{P})$, which
+  Given a protocol $\mathscr{P}$ with $\tx{In}(\mathscr{P}) = \emptyset$, and a corruption model $C$, we can
+  define an \emph{instantiation} $\tx{Inst}_C(\mathscr{P})$, which
   is a system defining the semantics of the protocol.
 
   First, we need to define a transformation of systems to use
@@ -493,7 +493,7 @@ Some common classes are:
 
 With this in hand, we define:
 $$
-\tx{Inst}_C(\mathcal{P}) :=
+\tx{Inst}_C(\mathscr{P}) :=
   \begin{pmatrix}
     {\displaystyle \bigast}_{i \in [n]} \tx{Routed}(\tx{Corrupt}_C(P_i))\cr
     *\cr
@@ -532,85 +532,85 @@ $\blacksquare$
 
 \begin{definition}[Compatible Corruptions]
   \label{def:compatc}
-  Given protocols $\mathcal{P}, \mathcal{Q}$, and a corruption model
-  $C$ for $\mathcal{Q}$, we can define a notion of a \emph{compatible}
-  corruption model $C'$ for $\mathcal{P} \otimes \mathcal{Q}$ or $\mathcal{P} \circ \mathcal{Q}$,
+  Given protocols $\mathscr{P}, \mathscr{Q}$, and a corruption model
+  $C$ for $\mathscr{Q}$, we can define a notion of a \emph{compatible}
+  corruption model $C'$ for $\mathscr{P} \otimes \mathscr{Q}$ or $\mathscr{P} \circ \mathscr{Q}$,
   provided these expressions are well defined.
 
-  A corruption model $C'$ for $\mathcal{P} \otimes \mathcal{Q}$.
+  A corruption model $C'$ for $\mathscr{P} \otimes \mathscr{Q}$.
   is compatible with $C$ when every corruption of a player
-  in $\mathcal{Q}$ is $\geq$ that of the corresponding corruption in $C$.
+  in $\mathscr{Q}$ is $\geq$ that of the corresponding corruption in $C$.
 
-  We say that a corruption model $C'$ for $\mathcal{P} \circ \mathcal{Q}$ is compatible with
-a corruption model $C$ for $\mathcal{Q}$ if for every
-$\mathcal{Q}.P_j$ used by $\mathcal{P}.P_i$, the corruption
-level of $\mathcal{Q}.P_j$ in $\mathcal{C}'$ is $\geq$ the corruption level of $\mathcal{P}.P_i$
-in $\mathcal{C}$.
+  We say that a corruption model $C'$ for $\mathscr{P} \circ \mathscr{Q}$ is compatible with
+a corruption model $C$ for $\mathscr{Q}$ if for every
+$\mathscr{Q}.P_j$ used by $\mathscr{P}.P_i$, the corruption
+level of $\mathscr{Q}.P_j$ in $\mathscr{C}'$ is $\geq$ the corruption level of $\mathscr{P}.P_i$
+in $\mathscr{C}$.
 
   Furthermore, we say that $C'$ is \emph{strictly} compatible
   with $C$ if the above property holds with $=$, and not just $\geq$.
 
   This extends to corruption \emph{classes} as well.
-  A corruption class $\mathcal{C}'$ is (strictly) compatible with a class $\mathcal{C}$,
-  if every $C' \in \mathcal{C}'$ is (strictly) compatible with some $C \in \mathcal{C}$.
+  A corruption class $\mathscr{C}'$ is (strictly) compatible with a class $\mathscr{C}$,
+  if every $C' \in \mathscr{C}'$ is (strictly) compatible with some $C \in \mathscr{C}$.
 
   $\square$
 \end{definition}
 
 \begin{theorem}[Concurrent Breakdown]
   \label{thm:concurrent_breakdown}
-  Given protocols $\mathcal{P}, \mathcal{Q}$, and a corruption model $C$
-  for $\mathcal{Q}$, then for any corruption model $C'$ for $\mathcal{P} \otimes \mathcal{Q}$ compatible with $C$, we have:
+  Given protocols $\mathscr{P}, \mathscr{Q}$, and a corruption model $C$
+  for $\mathscr{Q}$, then for any corruption model $C'$ for $\mathscr{P} \otimes \mathscr{Q}$ compatible with $C$, we have:
   \[
-    \tx{Inst}_{C'}(\mathcal{P} \otimes \mathcal{Q}) = \tx{Inst}_{C'}(\mathcal{P}) \otimes \tx{Inst}_C(\mathcal{Q})
+    \tx{Inst}_{C'}(\mathscr{P} \otimes \mathscr{Q}) = \tx{Inst}_{C'}(\mathscr{P}) \otimes \tx{Inst}_C(\mathscr{Q})
   \]
-\txbf{Proof:} If we unroll $\text{Inst}_{C'}(\mathcal{P} \otimes \mathcal{Q})$, we get:
+\txbf{Proof:} If we unroll $\text{Inst}_{C'}(\mathscr{P} \otimes \mathscr{Q})$, we get:
 $$
 \begin{pmatrix}
 \mathcal{R}\cr
 *\cr
-\left(\bigast_{i \in [\mathcal{P}.n]} \tx{Routed}(\tx{Corrupt}_{C'}(\mathcal{P}.P_i))\right)\cr
+\left(\bigast_{i \in [\mathscr{P}.n]} \tx{Routed}(\tx{Corrupt}_{C'}(\mathscr{P}.P_i))\right)\cr
 *\cr
-\left(\bigast_{i \in [\mathcal{Q}.n]} \tx{Routed}(\tx{Corrupt}_{C'}(\mathcal{Q}.P_i))\right)\cr
+\left(\bigast_{i \in [\mathscr{Q}.n]} \tx{Routed}(\tx{Corrupt}_{C'}(\mathscr{Q}.P_i))\right)\cr
 \otimes\cr
-1(\mathcal{P}.\tx{Leakage}, \mathcal{Q}.\tx{Leakage})
+1(\mathscr{P}.\tx{Leakage}, \mathscr{Q}.\tx{Leakage})
 \end{pmatrix}
 \circ
 \begin{pmatrix}
-\mathcal{P}.F\cr
+\mathscr{P}.F\cr
 \otimes\cr
-\mathcal{Q}.F\cr
+\mathscr{Q}.F\cr
 \end{pmatrix}
 $$
 
 We can apply a few observations here:
 \begin{enumerate}
-  \item Since $\mathcal{C}'$ is compatible with $\mathcal{C}$, then $\mathcal{Q}.P_i$ follows a corruption from $\mathcal{C}$.
-  \item $\mathcal{R}$ can be written as $\mathcal{R}_\mathcal{P} \otimes \mathcal{R}_\mathcal{Q}$,
-  with one system using channels in $\mathcal{P}$, and the other using channels in $\mathcal{Q}$.
-  \item Since protocols are closed, we can use $\otimes$ between the players in $\mathcal{P}$ and $\mathcal{Q}$,
+  \item Since $\mathscr{C}'$ is compatible with $\mathscr{C}$, then $\mathscr{Q}.P_i$ follows a corruption from $\mathscr{C}$.
+  \item $\mathcal{R}$ can be written as $\mathcal{R}_\mathscr{P} \otimes \mathcal{R}_\mathscr{Q}$,
+  with one system using channels in $\mathscr{P}$, and the other using channels in $\mathscr{Q}$.
+  \item Since protocols are closed, we can use $\otimes$ between the players in $\mathscr{P}$ and $\mathscr{Q}$,
   since they never send messages to each other.
 \end{enumerate}
 This results in the following:
 $$
 \begin{pmatrix}
-  \mathcal{R}_{\mathcal{P}} * \left(\bigast_{i \in [\mathcal{P}.n]} \tx{Routed}(\tx{Corrupt}_{C'}(\mathcal{P}.P_i))\right) \otimes 1(\mathcal{P}.\tx{Leakage})\cr
+  \mathcal{R}_{\mathscr{P}} * \left(\bigast_{i \in [\mathscr{P}.n]} \tx{Routed}(\tx{Corrupt}_{C'}(\mathscr{P}.P_i))\right) \otimes 1(\mathscr{P}.\tx{Leakage})\cr
 \otimes\cr
-  \mathcal{R}_{\mathcal{Q}} * \left(\bigast_{i \in [\mathcal{Q}.n]} \tx{Routed}(\tx{Corrupt}_{C}(\mathcal{Q}.P_i))\right) \otimes 1(\mathcal{Q}.\tx{Leakage})
+  \mathcal{R}_{\mathscr{Q}} * \left(\bigast_{i \in [\mathscr{Q}.n]} \tx{Routed}(\tx{Corrupt}_{C}(\mathscr{Q}.P_i))\right) \otimes 1(\mathscr{Q}.\tx{Leakage})
 \end{pmatrix}
 \circ
 \begin{pmatrix}
-\mathcal{P}.F\cr
+\mathscr{P}.F\cr
 \otimes\cr
-\mathcal{Q}.F\cr
+\mathscr{Q}.F\cr
 \end{pmatrix}
 $$
 From here, we apply Lemma~\ref{thm:interchange_system} (interchange), to get:
 $$
 \begin{matrix}
-\tx{Inst}_{C'}(\mathcal{P})\cr
+\tx{Inst}_{C'}(\mathscr{P})\cr
 \otimes\cr
-\tx{Inst}_{C}(\mathcal{Q})\cr
+\tx{Inst}_{C}(\mathscr{Q})\cr
 \end{matrix}
 $$
 
@@ -620,57 +620,57 @@ $\blacksquare$
 
 \begin{theorem}[Horizontal Breakdown]
   \label{thm:horizontal_breakdown}
-  Given protocols $\mathcal{P}, \mathcal{Q}$, and a corruption
-  model $C$ for $\mathcal{Q}$, then for any compatible corruption
-  model $C'$ for $\mathcal{P} \lhd \mathcal{Q}$, there exists
-  systems $S_1, \ldots, S_{\mathcal{Q}.n}$ and a set $L_{\mathcal{Q}}$ such that:
+  Given protocols $\mathscr{P}, \mathscr{Q}$, and a corruption
+  model $C$ for $\mathscr{Q}$, then for any compatible corruption
+  model $C'$ for $\mathscr{P} \lhd \mathscr{Q}$, there exists
+  systems $S_1, \ldots, S_{\mathscr{Q}.n}$ and a set $L_{\mathscr{Q}}$ such that:
   $$
-  \tx{Inst}_{C'}(\mathcal{P} \lhd \mathcal{Q}) =
+  \tx{Inst}_{C'}(\mathscr{P} \lhd \mathscr{Q}) =
   1(O)\circ
   \begin{pmatrix}
-    {\displaystyle \bigast}_{i \in [\mathcal{P}.n]} \tx{Routed}(\tx{Corrupt}'_{C'}(\mathcal{P}.P_i))
+    {\displaystyle \bigast}_{i \in [\mathscr{P}.n]} \tx{Routed}(\tx{Corrupt}'_{C'}(\mathscr{P}.P_i))
     \cr
     *\cr
-    \mathcal{R}_{\mathcal{P}}\cr
+    \mathcal{R}_{\mathscr{P}}\cr
     \otimes\cr
-    1(\tx{Leakage}, L_{\mathcal{Q}})
+    1(\tx{Leakage}, L_{\mathscr{Q}})
   \end{pmatrix}
   \circ
   \begin{pmatrix}
-    \mathcal{P}.F\cr
+    \mathscr{P}.F\cr
     \otimes\cr
     1(\tx{Out}(\mathcal{R}_q))\cr
     \otimes\cr
-    1(\mathcal{Q}.\tx{Leakage})\cr
+    1(\mathscr{Q}.\tx{Leakage})\cr
     \otimes\cr
-    \bigotimes_{i \in [\mathcal{Q}.n]} S_i\cr
+    \bigotimes_{i \in [\mathscr{Q}.n]} S_i\cr
   \end{pmatrix}
   \circ
   \begin{pmatrix}
-  \tx{Inst}_C(\mathcal{Q})\cr
+  \tx{Inst}_C(\mathscr{Q})\cr
   \otimes\cr
-  1(\tx{In}(\mathcal{P}.F))
+  1(\tx{In}(\mathscr{P}.F))
   \end{pmatrix}
   $$
-  where $O := \tx{Out}(\tx{Inst}_{C'}(\mathcal{P} \lhd \mathcal{Q}))$,
-  $\mathcal{R}_{\mathcal{P}} \circ \mathcal{R}_{\mathcal{Q}} = \mathcal{R}$
-  are a decomposition of the router $\mathcal{R}$ for $\mathcal{P} \lhd \mathcal{Q}$,
+  where $O := \tx{Out}(\tx{Inst}_{C'}(\mathscr{P} \lhd \mathscr{Q}))$,
+  $\mathcal{R}_{\mathscr{P}} \circ \mathcal{R}_{\mathscr{Q}} = \mathcal{R}$
+  are a decomposition of the router $\mathcal{R}$ for $\mathscr{P} \lhd \mathscr{Q}$,
   and $\tx{Corrupt}'_{C'}(\ldots)$ is the same as $\tx{Corrupt}_{C'}$,
   except that malicious corruption contains no $\tx{Call}_{F_i}$ functions,
-  for $F_i \notin \tx{Out}(\mathcal{P}.F)$
+  for $F_i \notin \tx{Out}(\mathscr{P}.F)$
 
   Furthermore, if the models are \emph{strictly} compatible,
-  then $S_j = 1(\tx{Out}(\tx{Routed}(\tx{Corrupt}_C(\mathcal{Q}.P_i))))$.
+  then $S_j = 1(\tx{Out}(\tx{Routed}(\tx{Corrupt}_C(\mathscr{Q}.P_i))))$.
 
-\txbf{Proof:} We start by unrolling $\tx{Inst}_{C'}(\mathcal{P} \lhd \mathcal{Q})$,
+\txbf{Proof:} We start by unrolling $\tx{Inst}_{C'}(\mathscr{P} \lhd \mathscr{Q})$,
 to get:
 \[
-\tx{Inst}_C(\mathcal{P} \lhd \mathcal{Q}) =
+\tx{Inst}_C(\mathscr{P} \lhd \mathscr{Q}) =
   \begin{pmatrix}
-    {\displaystyle \bigast}_{i \in [\mathcal{P}.n]} \tx{Routed}\left(\tx{Corrupt}_{C'}\left(\mathcal{P}.P_i \circ 
+    {\displaystyle \bigast}_{i \in [\mathscr{P}.n]} \tx{Routed}\left(\tx{Corrupt}_{C'}\left(\mathscr{P}.P_i \circ 
         
     \begin{pmatrix}
-    \bigast_{\mathcal{Q}.P_j \tx{ used by } \mathcal{P}.P_i} \mathcal{Q}.P_j\cr
+    \bigast_{\mathscr{Q}.P_j \tx{ used by } \mathscr{P}.P_i} \mathscr{Q}.P_j\cr
     \otimes\cr
     1(\tx{IdealIn}_i)
     \end{pmatrix}
@@ -681,9 +681,9 @@ to get:
     1(\tx{Leakage})
   \end{pmatrix}
   \circ \begin{pmatrix}
-    \mathcal{P}.F\cr
+    \mathscr{P}.F\cr
     \otimes \cr
-    \mathcal{Q}.F
+    \mathscr{Q}.F
   \end{pmatrix}
 \]
 Our strategy will be to progressively build up an equivalent system
@@ -750,8 +750,8 @@ $$
 $$
 
 Now, the compatibility condition of $C'$ relative to $C$
-does not guarantee that if $\mathcal{P}.P_i$ uses $\mathcal{Q}.P_j$,
-then $\mathcal{Q}.P_j$ has the same level of corruption: 
+does not guarantee that if $\mathscr{P}.P_i$ uses $\mathscr{Q}.P_j$,
+then $\mathscr{Q}.P_j$ has the same level of corruption: 
 it only guarantees a level of corruption at least as strong.
 By Lemma~\ref{thm:simulatingcorruption}, we can simulate a weaker
 form of corruption using a stronger form, via some simulator system $S$,
@@ -762,29 +762,29 @@ on the level of corruption.
 
 When $C'_i = \tx{M}$:
 $$
-\tx{Corrupt}_{C'}((\mathcal{P} \lhd \mathcal{Q}).P_i) =
+\tx{Corrupt}_{C'}((\mathscr{P} \lhd \mathscr{Q}).P_i) =
 1(O_i) \circ
 \begin{pmatrix}
-  \tx{Corrupt}'_{C'}(\mathcal{P}.P_i)\cr
+  \tx{Corrupt}'_{C'}(\mathscr{P}.P_i)\cr
   \otimes\cr
   1(L_i)\cr
 \end{pmatrix}
 \circ
 \begin{pmatrix}
-\displaystyle \bigast_{\mathcal{Q}.P_j \tx{ used by } \mathcal{P}.P_i}
-  \tx{Corrupt}_C(\mathcal{Q}.P_j)\cr
+\displaystyle \bigast_{\mathscr{Q}.P_j \tx{ used by } \mathscr{P}.P_i}
+  \tx{Corrupt}_C(\mathscr{Q}.P_j)\cr
 \otimes\cr
 1(\tx{IdealIn}_i)
 \end{pmatrix}
 $$
-with $O_i = \tx{Out}(\tx{Corrupt}_{C'}(\mathcal{P} \lhd \mathcal{Q}).P_i)$, $L_i= \bigcup_{\mathcal{Q}.P_j \tx{ used by } \mathcal{P}.P_i} \tx{Out}(\tx{Corrupt}_M(\mathcal{Q}.P_j))$.
+with $O_i = \tx{Out}(\tx{Corrupt}_{C'}(\mathscr{P} \lhd \mathscr{Q}).P_i)$, $L_i= \bigcup_{\mathscr{Q}.P_j \tx{ used by } \mathscr{P}.P_i} \tx{Out}(\tx{Corrupt}_M(\mathscr{Q}.P_j))$.
 No simulation is needed, since the compatibility of $C'$ with $C$
-guarantees that all of the players used by $\mathcal{P}.P_i$
+guarantees that all of the players used by $\mathscr{P}.P_i$
 are maliciously corrupted.
 
 When $C'_i = \tx{SH}$:
 $$
-\tx{Corrupt}_{C'}((\mathcal{P} \lhd \mathcal{Q}).P_i) =
+\tx{Corrupt}_{C'}((\mathscr{P} \lhd \mathscr{Q}).P_i) =
 1(O_i) \circ
 \begin{pmatrix}
   \tx{Corrupt}_{\tx{C'}}(P)\cr
@@ -793,15 +793,15 @@ $$
 \end{pmatrix}
 \circ
 \begin{pmatrix}
-\displaystyle \bigast_{\mathcal{Q}.P_j \tx{ used by } \mathcal{P}.P_i}
-  S_j \circ \tx{Corrupt}_C(\mathcal{Q}.P_j)\cr
+\displaystyle \bigast_{\mathscr{Q}.P_j \tx{ used by } \mathscr{P}.P_i}
+  S_j \circ \tx{Corrupt}_C(\mathscr{Q}.P_j)\cr
   \otimes\cr
 1(\tx{IdealIn}_i)
 \end{pmatrix}
 $$
-with $O_i = \tx{Out}(\tx{Corrupt}_{C'}(\mathcal{P} \lhd \mathcal{Q}).P_i)$,
-$L_i = \{\mathcal{Q}.P_j.\tx{log} \mid \mathcal{Q}.P_j \tx{ used by } \mathcal{P}.P_i \}$,
-and $S_j$ depending on the level of corruption for $\mathcal{Q}.P_j$ in $C$:
+with $O_i = \tx{Out}(\tx{Corrupt}_{C'}(\mathscr{P} \lhd \mathscr{Q}).P_i)$,
+$L_i = \{\mathscr{Q}.P_j.\tx{log} \mid \mathscr{Q}.P_j \tx{ used by } \mathscr{P}.P_i \}$,
+and $S_j$ depending on the level of corruption for $\mathscr{Q}.P_j$ in $C$:
 \begin{itemize}
   \item $S_j = S_{\tx{SH}}$ if $C_j = \tx{M}$
   \item $S_j = 1$ if $C_j = \tx{SH}$
@@ -809,17 +809,17 @@ and $S_j$ depending on the level of corruption for $\mathcal{Q}.P_j$ in $C$:
 
 When $C'_i = \tx{H}$:
 $$
-\tx{Corrupt}_{C'}((\mathcal{P} \lhd \mathcal{Q}).P_i) =
+\tx{Corrupt}_{C'}((\mathscr{P} \lhd \mathscr{Q}).P_i) =
   \tx{Corrupt}_{\tx{C'}}(P)
 \circ
 \begin{pmatrix}
-\displaystyle \bigast_{\mathcal{Q}.P_j \tx{ used by } \mathcal{P}.P_i}
-  S_j \circ \tx{Corrupt}_C(\mathcal{Q}.P_j)\cr
+\displaystyle \bigast_{\mathscr{Q}.P_j \tx{ used by } \mathscr{P}.P_i}
+  S_j \circ \tx{Corrupt}_C(\mathscr{Q}.P_j)\cr
 \otimes\cr
 1(\tx{IdealIn}_i)
 \end{pmatrix}
 $$
-with $S_j$ depending on the level of corruption for $\mathcal{Q}.P_j$ in $C$:
+with $S_j$ depending on the level of corruption for $\mathscr{Q}.P_j$ in $C$:
 \begin{itemize}
   \item $S_j = S_{\tx{H}} \circ S_{\tx{SH}}$ if $C_j = \tx{M}$
   \item $S_j = S_{\tx{H}}$ if $C_j = \tx{SH}$
@@ -828,7 +828,7 @@ with $S_j$ depending on the level of corruption for $\mathcal{Q}.P_j$ in $C$:
 
 We can unify these three cases, writing:
 $$
-\tx{Corrupt}'_{C'}((\mathcal{P} \lhd \mathcal{Q}).P_i) =
+\tx{Corrupt}'_{C'}((\mathscr{P} \lhd \mathscr{Q}).P_i) =
 1(O_i) \circ
 \begin{pmatrix}
   \tx{Corrupt}_{\tx{C'}}(P)\cr
@@ -837,20 +837,20 @@ $$
 \end{pmatrix}
 \circ
 \begin{pmatrix}
-\bigast_{\mathcal{Q}.P_j \tx{ used by } \mathcal{P}.P_i}
-  S_j \circ \tx{Corrupt}_C(\mathcal{Q}.P_j)\cr
+\bigast_{\mathscr{Q}.P_j \tx{ used by } \mathscr{P}.P_i}
+  S_j \circ \tx{Corrupt}_C(\mathscr{Q}.P_j)\cr
   \otimes\cr
 1(\tx{IdealIn}_i)
 \end{pmatrix}
 $$
-with $O_i$ and $L_i$ depending on the corruption level of $\mathcal{P}.P_i$,
-and $S_j$ depending on the corruption levels of both $\mathcal{P}.P_i$
-and $\mathcal{Q}.P_j$.
+with $O_i$ and $L_i$ depending on the corruption level of $\mathscr{P}.P_i$,
+and $S_j$ depending on the corruption levels of both $\mathscr{P}.P_i$
+and $\mathscr{Q}.P_j$.
 
 By the properties of $\tx{Routed}$ (Lemma~\ref{thm:routed}), we have:
 $$
 \begin{aligned}
-&\tx{Routed}(\tx{Corrupt}'_{C'}((\mathcal{P} \lhd \mathcal{Q}).P_i)) =\cr
+&\tx{Routed}(\tx{Corrupt}'_{C'}((\mathscr{P} \lhd \mathscr{Q}).P_i)) =\cr
 &1(O_i) \circ
 \begin{pmatrix}
   \tx{Routed}(\tx{Corrupt}'_{\tx{C'}}(P))\cr
@@ -859,8 +859,8 @@ $$
 \end{pmatrix}
 \circ
 \begin{pmatrix}
-\displaystyle\bigast_{\mathcal{Q}.P_j \tx{ used by } \mathcal{P}.P_i}
-  S_j \circ \tx{Routed}(\tx{Corrupt}_C(\mathcal{Q}.P_j))\cr
+\displaystyle\bigast_{\mathscr{Q}.P_j \tx{ used by } \mathscr{P}.P_i}
+  S_j \circ \tx{Routed}(\tx{Corrupt}_C(\mathscr{Q}.P_j))\cr
   \otimes\cr
 1(\tx{IdealIn}_i)
 \end{pmatrix}
@@ -868,30 +868,30 @@ $$
 $$
 
 Next, we need to add the router $\mathcal{R}$.
-We note that since $\mathcal{P}$ and $\mathcal{Q}$ have separate channels,
-we can write $\mathcal{R} = \mathcal{R}_{\mathcal{P}} \circ \mathcal{R}_{\mathcal{Q}}$,
-where the latter contains only the channels in $\mathcal{Q}$,
-and the former contains the channels in $\mathcal{P}$,
-and provides access to those in $\mathcal{Q}$ via its function dependencies.
+We note that since $\mathscr{P}$ and $\mathscr{Q}$ have separate channels,
+we can write $\mathcal{R} = \mathcal{R}_{\mathscr{P}} \circ \mathcal{R}_{\mathscr{Q}}$,
+where the latter contains only the channels in $\mathscr{Q}$,
+and the former contains the channels in $\mathscr{P}$,
+and provides access to those in $\mathscr{Q}$ via its function dependencies.
 Combing this with the interchange lemma, we get:
 $$
 \begin{aligned}
-&\mathcal{R} * \bigast_{i \in [\mathcal{P}.n]}\tx{Routed}(\tx{Corrupt}'_{C'}((\mathcal{P} \lhd \mathcal{Q}).P_i)) * \mathcal{R} =\cr
-&1(\tx{Out}(\mathcal{R}), O_1, \ldots, O_{\mathcal{P}.n}) \circ
+&\mathcal{R} * \bigast_{i \in [\mathscr{P}.n]}\tx{Routed}(\tx{Corrupt}'_{C'}((\mathscr{P} \lhd \mathscr{Q}).P_i)) * \mathcal{R} =\cr
+&1(\tx{Out}(\mathcal{R}), O_1, \ldots, O_{\mathscr{P}.n}) \circ
 \begin{pmatrix}
   \tx{Routed}(\tx{Corrupt}_{\tx{C'}}(P))\cr
   *\cr
-  \mathcal{R}_{\mathcal{P}}\cr
+  \mathcal{R}_{\mathscr{P}}\cr
   \otimes\cr
-  1(L_1, \ldots, L_{\mathcal{P}.n})
+  1(L_1, \ldots, L_{\mathscr{P}.n})
 \end{pmatrix}
 \circ
 \begin{pmatrix}
-\bigast_{j \in [\mathcal{Q}.n]}
-  S_j \circ \tx{Routed}(\tx{Corrupt}_C(\mathcal{Q}.P_j))
+\bigast_{j \in [\mathscr{Q}.n]}
+  S_j \circ \tx{Routed}(\tx{Corrupt}_C(\mathscr{Q}.P_j))
   \cr
   *\cr
-  \mathcal{R}_{\mathcal{Q}}\cr
+  \mathcal{R}_{\mathscr{Q}}\cr
   \otimes\cr
   1(\tx{Out}(F))
 \end{pmatrix}
@@ -902,38 +902,38 @@ All that remains is to add the ideal functionalities, giving us,
 after application of the interchange lemma:
 $$
 \begin{aligned}
-  &\tx{Inst}_{C'}(\mathcal{P} \lhd \mathcal{Q}) =\cr
+  &\tx{Inst}_{C'}(\mathscr{P} \lhd \mathscr{Q}) =\cr
 &1(O) \circ
 \begin{pmatrix}
   \tx{Routed}(\tx{Corrupt}'_{\tx{C'}}(P))\cr
   *\cr
-  \mathcal{R}_{\mathcal{P}}\cr
+  \mathcal{R}_{\mathscr{P}}\cr
   \otimes\cr
-  1(\tx{Leakage}, L_{\mathcal{Q}})
+  1(\tx{Leakage}, L_{\mathscr{Q}})
 \end{pmatrix}
 \circ
 \begin{pmatrix}
-\bigast_{j \in [\mathcal{Q}.n]}
-  S_j \circ \tx{Routed}(\tx{Corrupt}_C(\mathcal{Q}.P_j))
+\bigast_{j \in [\mathscr{Q}.n]}
+  S_j \circ \tx{Routed}(\tx{Corrupt}_C(\mathscr{Q}.P_j))
   \cr
   *\cr
-  \mathcal{R}_{\mathcal{Q}}\cr
+  \mathcal{R}_{\mathscr{Q}}\cr
   \otimes\cr
   1(\tx{Leakage}, \tx{Out}(F))
 \end{pmatrix}
 \circ
 \begin{pmatrix}
-  \mathcal{P}.F\cr
+  \mathscr{P}.F\cr
   \otimes\cr
-  \mathcal{Q}.F
+  \mathscr{Q}.F
 \end{pmatrix}
 \end{aligned}
 $$
-with $O := \tx{Out}(\tx{Inst}_{C'}(\mathcal{P} \lhd \mathcal{Q}))$,
-and $L_{\mathcal{Q}} := \bigcup_{i \in [\mathcal{P}.n]} L_i$.
+with $O := \tx{Out}(\tx{Inst}_{C'}(\mathscr{P} \lhd \mathscr{Q}))$,
+and $L_{\mathscr{Q}} := \bigcup_{i \in [\mathscr{P}.n]} L_i$.
 
-Now, because $\mathcal{Q}$ does not use any of the functions
-in $\mathcal{P}.F$, and because each simulator $S_j$
+Now, because $\mathscr{Q}$ does not use any of the functions
+in $\mathscr{P}.F$, and because each simulator $S_j$
 does not use any channels, we can rewrite this as:
 $$
 \small
@@ -941,41 +941,41 @@ $$
 \begin{pmatrix}
   \tx{Routed}(\tx{Corrupt}'_{\tx{C'}}(P))\cr
   *\cr
-  \mathcal{R}_{\mathcal{P}}\cr
+  \mathcal{R}_{\mathscr{P}}\cr
   \otimes\cr
-  1(\tx{Leakage}, L_{\mathcal{Q}})
+  1(\tx{Leakage}, L_{\mathscr{Q}})
 \end{pmatrix}
 \circ
 \begin{pmatrix}
-  \mathcal{P}.F\cr
+  \mathscr{P}.F\cr
   \otimes\cr
-  1(\tx{Out}(\mathcal{R}_{\mathcal{Q}}))\cr
+  1(\tx{Out}(\mathcal{R}_{\mathscr{Q}}))\cr
   \otimes\cr
-  1(\mathcal{Q}.\tx{Leakage})\cr
+  1(\mathscr{Q}.\tx{Leakage})\cr
   \otimes\cr
-  \bigotimes_{j \in [\mathcal{Q}.n]} S_j
+  \bigotimes_{j \in [\mathscr{Q}.n]} S_j
 \end{pmatrix}
 \circ
 \begin{pmatrix}
 \begin{pmatrix}
-\bigast_{j \in [\mathcal{Q}.n]}
-  \tx{Routed}(\tx{Corrupt}_C(\mathcal{Q}.P_j))
+\bigast_{j \in [\mathscr{Q}.n]}
+  \tx{Routed}(\tx{Corrupt}_C(\mathscr{Q}.P_j))
   \cr
   *\cr
-  \mathcal{R}_{\mathcal{Q}}\cr
+  \mathcal{R}_{\mathscr{Q}}\cr
   \otimes\cr
-  1(\mathcal{Q}.\tx{Leakage})
+  1(\mathscr{Q}.\tx{Leakage})
 \end{pmatrix}
 \circ
-  \mathcal{Q}.F
+  \mathscr{Q}.F
   \cr
   \otimes\cr
-  1(\tx{In}(\mathcal{P}.F))
+  1(\tx{In}(\mathscr{P}.F))
 \end{pmatrix}
 $$
 
 We can then notice that the right hand side of this equation
-is simply $\tx{Inst}_C(\mathcal{Q})$,
+is simply $\tx{Inst}_C(\mathscr{Q})$,
 concluding our proof.
 
 $\blacksquare$
@@ -986,28 +986,28 @@ $\blacksquare$
 
 \begin{definition}[Shape]
   \label{def:shape}
-  We say that two protocols $\mathcal{P}, \mathcal{Q}$ have the same \emph{shape}
-  if there exists a protocol $\mathcal{Q}' \equiv \mathcal{Q}$ such that:
+  We say that two protocols $\mathscr{P}, \mathscr{Q}$ have the same \emph{shape}
+  if there exists a protocol $\mathscr{Q}' \equiv \mathscr{Q}$ such that:
   \begin{itemize}
-    \item $\mathcal{P}.n = \mathcal{Q}'.n$,
-    \item $\forall i \in [n].\quad \tx{In}(\mathcal{P}.P_i) = \tx{In}(\mathcal{Q}'.Q_i)$,
-    \item $\forall i \in [n].\quad \tx{Out}(\mathcal{P}.P_i) = \tx{Out}(\mathcal{Q}'.Q_i)$,
-    \item $\tx{Leakage}(\mathcal{P}) = \tx{Leakage}(\mathcal{Q}')$,
-    \item $\tx{IdealIn}(\mathcal{P}) = \tx{IdealIn}(\mathcal{Q}')$.
+    \item $\mathscr{P}.n = \mathscr{Q}'.n$,
+    \item $\forall i \in [n].\quad \tx{In}(\mathscr{P}.P_i) = \tx{In}(\mathscr{Q}'.Q_i)$,
+    \item $\forall i \in [n].\quad \tx{Out}(\mathscr{P}.P_i) = \tx{Out}(\mathscr{Q}'.Q_i)$,
+    \item $\tx{Leakage}(\mathscr{P}) = \tx{Leakage}(\mathscr{Q}')$,
+    \item $\tx{IdealIn}(\mathscr{P}) = \tx{IdealIn}(\mathscr{Q}')$.
   \end{itemize}
 
   $\square$
 \end{definition}
 
 \begin{definition}[Semantic Equality]
-  We say that two closed protocols $\mathcal{P}$ and $\mathcal{Q}$,
+  We say that two closed protocols $\mathscr{P}$ and $\mathscr{Q}$,
   with the same shape,
-  are equal under a class of corruptions $\mathcal{C}$,
-  written as $\mathcal{P} =_{\mathcal{C}} \mathcal{Q}$, when we have:
+  are equal under a class of corruptions $\mathscr{C}$,
+  written as $\mathscr{P} =_{\mathscr{C}} \mathscr{Q}$, when we have:
   $$
-  \forall C \in \mathcal{C}.\quad \tx{Inst}_C(\mathcal{P}) = \tx{Inst}_C(\mathcal{Q'})
+  \forall C \in \mathscr{C}.\quad \tx{Inst}_C(\mathscr{P}) = \tx{Inst}_C(\mathscr{Q'})
   $$
-  as systems, with $\mathcal{Q}' \equiv \mathcal{Q}$ as per 
+  as systems, with $\mathscr{Q}' \equiv \mathscr{Q}$ as per 
   Definition~\ref{def:shape}.
 
   $\square$
@@ -1015,14 +1015,14 @@ $\blacksquare$
 \end{definition}
 
 \begin{definition}[Indistinguishability]
-  We say that two closed protocols $\mathcal{P}$ and $\mathcal{Q}$,
+  We say that two closed protocols $\mathscr{P}$ and $\mathscr{Q}$,
   with the same shape,
-  are \emph{indistinguishable} up to $\epsilon$ under a class of corruptions $\mathcal{C}$,
-  written as $\mathcal{P} \overset{\epsilon}{\approx}_{\mathcal{C}} \mathcal{Q}$, when we have:
+  are \emph{indistinguishable} up to $\epsilon$ under a class of corruptions $\mathscr{C}$,
+  written as $\mathscr{P} \overset{\epsilon}{\approx}_{\mathscr{C}} \mathscr{Q}$, when we have:
   $$
-  \forall C \in \mathcal{C}.\quad \tx{Inst}_C(\mathcal{P}) \overset{\epsilon}{\approx} \tx{Inst}_C(\mathcal{Q'})
+  \forall C \in \mathscr{C}.\quad \tx{Inst}_C(\mathscr{P}) \overset{\epsilon}{\approx} \tx{Inst}_C(\mathscr{Q'})
   $$
-  as systems, with $\mathcal{Q}' \equiv \mathcal{Q}$ as per 
+  as systems, with $\mathscr{Q}' \equiv \mathscr{Q}$ as per 
   Definition~\ref{def:shape}.
 
   $\square$
@@ -1030,7 +1030,7 @@ $\blacksquare$
 \end{definition}
 
 \begin{definition}[Simulated Instantiation]
-  A simulator $S$ for a closed protocol $\mathcal{P}$ under a corruption
+  A simulator $S$ for a closed protocol $\mathscr{P}$ under a corruption
   model $C$ is a system satisfying:
   \begin{itemize}
     \item $\tx{InChan}(S), \tx{OutChan}(S) = \emptyset$,
@@ -1039,30 +1039,30 @@ $\blacksquare$
   \end{itemize}
 
   Given such a simulator, we can define the simulated instantiation
-  of $\mathcal{P}$ under $C$ with $S$ as:
+  of $\mathscr{P}$ under $C$ with $S$ as:
   $$
-  \tx{SimInst}_{S, C}(\mathcal{P}) := 
+  \tx{SimInst}_{S, C}(\mathscr{P}) := 
   \begin{pmatrix}
     S\cr
     \otimes\cr
-    1(\tx{Out}(\tx{Inst}_C(\mathcal{P})) / \tx{Out}(S))
+    1(\tx{Out}(\tx{Inst}_C(\mathscr{P})) / \tx{Out}(S))
   \end{pmatrix}
-  \circ \tx{Inst}_C(\mathcal{P})
+  \circ \tx{Inst}_C(\mathscr{P})
   $$
 
   $\square$
 \end{definition}
 
 \begin{definition}[Simulatability]
-  Given closed protocols $\mathcal{P}, \mathcal{Q}$ with the same shape,
-  we say that $\mathcal{P}$ is \emph{simulatable} up to $\epsilon$ by $\mathcal{Q}$
-  under a class of corruptions $\mathcal{C}$,
-  written as $\mathcal{P} \overset{\epsilon}{\leadsto}_{\mathcal{C}} \mathcal{Q}$,
+  Given closed protocols $\mathscr{P}, \mathscr{Q}$ with the same shape,
+  we say that $\mathscr{P}$ is \emph{simulatable} up to $\epsilon$ by $\mathscr{Q}$
+  under a class of corruptions $\mathscr{C}$,
+  written as $\mathscr{P} \overset{\epsilon}{\leadsto}_{\mathscr{C}} \mathscr{Q}$,
   when:
   $$
-  \forall C \in \mathcal{C}.\exists S.\quad \tx{Inst}_C(\mathcal{P}) \overset{\epsilon}{\approx} \tx{SimInst}_{S, C}(\mathcal{Q}')
+  \forall C \in \mathscr{C}.\exists S.\quad \tx{Inst}_C(\mathscr{P}) \overset{\epsilon}{\approx} \tx{SimInst}_{S, C}(\mathscr{Q}')
   $$
-  as systems, with $\mathcal{Q}' \equiv \mathcal{Q}$ as per 
+  as systems, with $\mathscr{Q}' \equiv \mathscr{Q}$ as per 
   Definition~\ref{def:shape}.
 
   $\square$
@@ -1070,39 +1070,39 @@ $\blacksquare$
 
 \begin{theorem}[Equality Hierarchy]
   \label{thm:equality_hierarchy}
-For any corruption class $\mathcal{C}$, we have:
+For any corruption class $\mathscr{C}$, we have:
 \begin{enumerate}
-\item $\mathcal{P} \equiv \mathcal{Q} \implies \mathcal{P} =_\mathcal{C} \mathcal{Q}$.
-\item $\mathcal{P} =_{\mathcal{C}} \mathcal{Q} \implies \mathcal{P} \overset{0}{\approx}_\mathcal{C} \mathcal{Q}$.
-\item $\mathcal{P} \overset{\epsilon}{\approx}_{\mathcal{C}} \mathcal{Q} \implies \mathcal{P} \overset{\epsilon}{\leadsto}_\mathcal{C} \mathcal{Q}$.
+\item $\mathscr{P} \equiv \mathscr{Q} \implies \mathscr{P} =_\mathscr{C} \mathscr{Q}$.
+\item $\mathscr{P} =_{\mathscr{C}} \mathscr{Q} \implies \mathscr{P} \overset{0}{\approx}_\mathscr{C} \mathscr{Q}$.
+\item $\mathscr{P} \overset{\epsilon}{\approx}_{\mathscr{C}} \mathscr{Q} \implies \mathscr{P} \overset{\epsilon}{\leadsto}_\mathscr{C} \mathscr{Q}$.
 \end{enumerate}
 
 \txbf{Proof:}
 
 \txbf{1.} 
-For any $C \in \mathcal{C}$, $\tx{Corrupt}_{C}$ and $\tx{Routed}$ are equality respecting,
+For any $C \in \mathscr{C}$, $\tx{Corrupt}_{C}$ and $\tx{Routed}$ are equality respecting,
 so we have:
 $$
-\forall i \in [n].\quad \tx{Routed}(\tx{Corrupt}_C(\mathcal{P}.P_i)) = 
-\tx{Routed}(\tx{Corrupt}_C(\mathcal{Q}.P_i))
+\forall i \in [n].\quad \tx{Routed}(\tx{Corrupt}_C(\mathscr{P}.P_i)) = 
+\tx{Routed}(\tx{Corrupt}_C(\mathscr{Q}.P_i))
 $$
 
-Furthermore, the equality of players between $\mathcal{P}$ and $\mathcal{Q}$
-makes $\mathcal{P}.\mathcal{R} = \mathcal{Q}.\mathcal{R}$.
+Furthermore, the equality of players between $\mathscr{P}$ and $\mathscr{Q}$
+makes $\mathscr{P}.\mathcal{R} = \mathscr{Q}.\mathcal{R}$.
 
-And then, the fact that $\mathcal{P}.F = \mathcal{Q}.F$ forces $\tx{Leakage}$
+And then, the fact that $\mathscr{P}.F = \mathscr{Q}.F$ forces $\tx{Leakage}$
 to be the same as well.
 
 Finally, since $\circ, *, \otimes$ are respect $\equiv$, we
-can clearly see that $\tx{Inst}_C(\mathcal{P}) = \tx{Inst}_C(\mathcal{Q})$,
+can clearly see that $\tx{Inst}_C(\mathscr{P}) = \tx{Inst}_C(\mathscr{Q})$,
 since all the sub-components are literally equal.
 
 \txbf{2.} For any systems $A, B$, we have $A = B \implies A \overset{0}{\approx} B$.
-Applying this to $\tx{Inst}_C(\mathcal{P})$ and $\tx{Inst}_C(\mathcal{Q})$
+Applying this to $\tx{Inst}_C(\mathscr{P})$ and $\tx{Inst}_C(\mathscr{Q})$
 gives us our result.
 
 \txbf{3.} It suffices to define a simulator $S$ such that
-$\tx{SimInst}_{S, C}(\mathcal{Q}) = \tx{Inst}_C(\mathcal{Q})$,
+$\tx{SimInst}_{S, C}(\mathscr{Q}) = \tx{Inst}_C(\mathscr{Q})$,
 which will then show our result.
 We can simply take $S = 1(\ldots)$ for the right set.
 
@@ -1111,28 +1111,28 @@ $\blacksquare$
 
 \begin{theorem}[Transitivity of Equality]
   \label{thm:prot_trans}
-  For any closed protocols $\mathcal{L}, \mathcal{P}, \mathcal{Q}$ with the same shape,
-  and any class of corruptions $\mathcal{C}$, we have:
+  For any closed protocols $\mathscr{L}, \mathscr{P}, \mathscr{Q}$ with the same shape,
+  and any class of corruptions $\mathscr{C}$, we have:
   \begin{enumerate}
-    \item $\mathcal{L} =_{\mathcal{C}} \mathcal{P}, \mathcal{P} =_{\mathcal{C}} \mathcal{Q} \implies \mathcal{L} =_{\mathcal{C}}\mathcal{Q}$,
-    \item $\mathcal{L} \overset{\epsilon_1}{\approx}_{\mathcal{C}} \mathcal{P}, \mathcal{P} \overset{\epsilon_2}{\approx}_{\mathcal{C}} \mathcal{Q} \implies \mathcal{L} \overset{\epsilon_1 + \epsilon_2}{\approx}_{\mathcal{C}} \mathcal{Q}$,
-    \item $\mathcal{L} \overset{\epsilon_1}{\leadsto}_{\mathcal{C}} \mathcal{P}, \mathcal{P} \overset{\epsilon_2}{\leadsto}_{\mathcal{C}} \mathcal{Q} \implies \mathcal{L} \overset{\epsilon_1 + \epsilon_2}{\leadsto}_{\mathcal{C}} \mathcal{Q}$.
+    \item $\mathscr{L} =_{\mathscr{C}} \mathscr{P}, \mathscr{P} =_{\mathscr{C}} \mathscr{Q} \implies \mathscr{L} =_{\mathscr{C}}\mathscr{Q}$,
+    \item $\mathscr{L} \overset{\epsilon_1}{\approx}_{\mathscr{C}} \mathscr{P}, \mathscr{P} \overset{\epsilon_2}{\approx}_{\mathscr{C}} \mathscr{Q} \implies \mathscr{L} \overset{\epsilon_1 + \epsilon_2}{\approx}_{\mathscr{C}} \mathscr{Q}$,
+    \item $\mathscr{L} \overset{\epsilon_1}{\leadsto}_{\mathscr{C}} \mathscr{P}, \mathscr{P} \overset{\epsilon_2}{\leadsto}_{\mathscr{C}} \mathscr{Q} \implies \mathscr{L} \overset{\epsilon_1 + \epsilon_2}{\leadsto}_{\mathscr{C}} \mathscr{Q}$.
   \end{enumerate}
 
   \txbf{Proof:} The first two parts follow directly from Lemma~\ref{thm:system_trans} (
     transitivity for system equality
   ).
-  Indeed, we just look at $\tx{Inst}_C(\mathcal{L})$, $\tx{Inst}_C(\mathcal{P})$, and $\tx{Inst}_C(\mathcal{Q})$
+  Indeed, we just look at $\tx{Inst}_C(\mathscr{L})$, $\tx{Inst}_C(\mathscr{P})$, and $\tx{Inst}_C(\mathscr{Q})$
   as systems, for any corruption model $C$.
 
-  For part 3, by assumption we have, for any $C \in \mathcal{C}$:
+  For part 3, by assumption we have, for any $C \in \mathscr{C}$:
   \begin{itemize}
-  \item $\tx{Inst}_C(\mathcal{L}) \overset{\epsilon_1}{\approx} \begin{pmatrix} S_1\cr \otimes\cr 1(O)\end{pmatrix} \tx{Inst}_C(\mathcal{P})$,
-  \item $\tx{Inst}_C(\mathcal{P}) \overset{\epsilon_1}{\approx} \begin{pmatrix} S_2\cr \otimes\cr 1(O)\end{pmatrix} \tx{Inst}_C(\mathcal{Q})$.
+  \item $\tx{Inst}_C(\mathscr{L}) \overset{\epsilon_1}{\approx} \begin{pmatrix} S_1\cr \otimes\cr 1(O)\end{pmatrix} \tx{Inst}_C(\mathscr{P})$,
+  \item $\tx{Inst}_C(\mathscr{P}) \overset{\epsilon_1}{\approx} \begin{pmatrix} S_2\cr \otimes\cr 1(O)\end{pmatrix} \tx{Inst}_C(\mathscr{Q})$.
   \end{itemize}
   This means that:
   $$
-  \tx{Inst}_C(\mathcal{L}) \overset{\epsilon_1 + \epsilon_2}{\approx}
+  \tx{Inst}_C(\mathscr{L}) \overset{\epsilon_1 + \epsilon_2}{\approx}
   \begin{pmatrix}
     S_1 \cr
     \otimes\cr
@@ -1145,7 +1145,7 @@ $\blacksquare$
     1(O)
   \end{pmatrix}
   \circ
-  \tx{Inst}_C(\mathcal{Q})
+  \tx{Inst}_C(\mathscr{Q})
   $$
   applying the properties we have for systems.
 
@@ -1157,7 +1157,7 @@ $\blacksquare$
     1(O)
   \end{pmatrix}
   \circ
-  \tx{Inst}_C(\mathcal{Q})
+  \tx{Inst}_C(\mathscr{Q})
   $$
   which concludes our proof, since $S_1 \circ S_2$ will be a valid simulator.
 
@@ -1166,21 +1166,21 @@ $\blacksquare$
 
 \begin{theorem}[Malicious Completeness]
   \label{thm:mal_complete}
-  Let $\mathcal{P}$ and $\mathcal{Q}$ closed protocols with the same shape.
-  Given any class of corruptions $\mathcal{C}$, let $\mathcal{C}'$ be a related class, containing
-  models in $\mathcal{C}$ with some
+  Let $\mathscr{P}$ and $\mathscr{Q}$ closed protocols with the same shape.
+  Given any class of corruptions $\mathscr{C}$, let $\mathscr{C}'$ be a related class, containing
+  models in $\mathscr{C}$ with some
   malicious corruptions replaced with semi-honest corruptions.
   We then have:
   \begin{enumerate}
-    \item $\mathcal{P} =_{\mathcal{C}} \mathcal{Q} \implies \mathcal{P} =_{\mathcal{C}'} \mathcal{Q}$,
-    \item $\mathcal{P} \overset{\epsilon}{\approx}_{\mathcal{C}} \mathcal{Q} \implies \mathcal{P} \overset{\epsilon}{\approx}_{\mathcal{C}'} \mathcal{Q}$,
+    \item $\mathscr{P} =_{\mathscr{C}} \mathscr{Q} \implies \mathscr{P} =_{\mathscr{C}'} \mathscr{Q}$,
+    \item $\mathscr{P} \overset{\epsilon}{\approx}_{\mathscr{C}} \mathscr{Q} \implies \mathscr{P} \overset{\epsilon}{\approx}_{\mathscr{C}'} \mathscr{Q}$,
   \end{enumerate}
-  Furthermore, if for any $C \in \mathcal{C}$ and its related model $C' \in \mathcal{C}$,
-  there exists a simulator $S_{\tx{M}}$ such that $\tx{Inst}_C(\mathcal{Q}) = \tx{SimInst}_{S_{\tx{M}}, C'}(\mathcal{Q})$,
+  Furthermore, if for any $C \in \mathscr{C}$ and its related model $C' \in \mathscr{C}$,
+  there exists a simulator $S_{\tx{M}}$ such that $\tx{Inst}_C(\mathscr{Q}) = \tx{SimInst}_{S_{\tx{M}}, C'}(\mathscr{Q})$,
   then it additionally holds that:
   \begin{enumerate}
     \setcounter{enumi}{2}
-    \item $\mathcal{P} \overset{\epsilon}{\leadsto}_{\mathcal{C}} \mathcal{Q} \implies \mathcal{P} \overset{\epsilon}{\leadsto}_{\mathcal{C}'} \mathcal{Q}$
+    \item $\mathscr{P} \overset{\epsilon}{\leadsto}_{\mathscr{C}} \mathscr{Q} \implies \mathscr{P} \overset{\epsilon}{\leadsto}_{\mathscr{C}'} \mathscr{Q}$
   \end{enumerate}
 
   \txbf{Proof:} Lemma~\label{thm:simulatingcorruption} (simulating corruptions) is the crux of our proof.
@@ -1189,16 +1189,16 @@ $\blacksquare$
   \tx{Corrupt}_{\tx{SH}}(P) = S_{\tx{SH}} \circ \tx{Corrupt}_M(P)
   $$
 
-  As a consequence, for any $C' \in \mathcal{C}'$ and the $C \in \mathcal{C}$ it's related to,
+  As a consequence, for any $C' \in \mathscr{C}'$ and the $C \in \mathscr{C}$ it's related to,
   there exists a \emph{simulator} $S_{\tx{SH}}$ such that:
   $$
-  \tx{Inst}_{C'}(\mathcal{P}) =
+  \tx{Inst}_{C'}(\mathscr{P}) =
   \begin{pmatrix}
     S_{\tx{SH}}\cr
     \otimes\cr
     1(O)
   \end{pmatrix}
-  \circ \tx{Inst}_{C}(\mathcal{P})
+  \circ \tx{Inst}_{C}(\mathscr{P})
   $$
   which simulates all of the semi-honest corruptions in $C'$ from the malicious ones in $C$.
 
@@ -1218,7 +1218,7 @@ $\blacksquare$
     \otimes\cr
     1(O)
   \end{pmatrix}
-  \circ \tx{Inst}_{C}(\mathcal{Q})
+  \circ \tx{Inst}_{C}(\mathscr{Q})
   $$
   Then, apply our assumption about being able to simulate malicious corruption
   from semi-honest corruption to get:
@@ -1240,7 +1240,7 @@ $\blacksquare$
     \otimes\cr
     1(O)
   \end{pmatrix}
-  \circ \tx{Inst}_{C'}(\mathcal{Q})
+  \circ \tx{Inst}_{C'}(\mathscr{Q})
   $$
   which we can then apply interchange to to end up with:
   $$
@@ -1249,8 +1249,8 @@ $\blacksquare$
     \otimes\cr
     1(O)
   \end{pmatrix}
-  \circ \tx{Inst}_{C'}(\mathcal{Q})
-  = \tx{SimInst}_{S', C'}(\mathcal{Q})
+  \circ \tx{Inst}_{C'}(\mathscr{Q})
+  = \tx{SimInst}_{S', C'}(\mathscr{Q})
   $$
   for $S' := S_{\tx{SH}} \circ S \circ S_M$, concluding our proof.
 
@@ -1259,14 +1259,14 @@ $\blacksquare$
 
 \begin{theorem}[Vertical Composition Theorem]
   \label{thm:vertical_composition_theorem}
-  For any protocol $\mathcal{P}$ and game $G$, such that $\mathcal{P} \circ G$
-  is well defined and closed, and for any corruption class $\mathcal{C}$, we have:
+  For any protocol $\mathscr{P}$ and game $G$, such that $\mathscr{P} \circ G$
+  is well defined and closed, and for any corruption class $\mathscr{C}$, we have:
   \begin{enumerate}
-    \item $G = G' \implies \mathcal{P} \circ G =_{\mathcal{C}} \mathcal{P} \circ G'$
-    \item $G \overset{\epsilon}{\approx} G' \implies \mathcal{P} \circ G \overset{\epsilon}{\approx}_{\mathcal{C}} \mathcal{P} \circ G'$
+    \item $G = G' \implies \mathscr{P} \circ G =_{\mathscr{C}} \mathscr{P} \circ G'$
+    \item $G \overset{\epsilon}{\approx} G' \implies \mathscr{P} \circ G \overset{\epsilon}{\approx}_{\mathscr{C}} \mathscr{P} \circ G'$
   \end{enumerate}
   
-\txbf{Proof:} We start by noting that $\tx{Inst}_C(\mathcal{P} \circ G) = A \circ F \circ G$,
+\txbf{Proof:} We start by noting that $\tx{Inst}_C(\mathscr{P} \circ G) = A \circ F \circ G$,
 for some system $A$.
 Part 1 follows immediately from this, since $\circ$ is equality respecting.
 
@@ -1277,105 +1277,105 @@ $\blacksquare$
 \end{theorem}
 
 \begin{theorem}[Concurrent Composition Theorem]
-  Let $\mathcal{P}, \mathcal{Q}$ be protocols, with $\mathcal{P} \otimes \mathcal{Q}$
-  well defined and closed. For any compatible corruption classes $\mathcal{C}, \mathcal{C}'$
+  Let $\mathscr{P}, \mathscr{Q}$ be protocols, with $\mathscr{P} \otimes \mathscr{Q}$
+  well defined and closed. For any compatible corruption classes $\mathscr{C}, \mathscr{C}'$
   it holds that:
   \begin{enumerate}
-    \item $\mathcal{Q} =_{\mathcal{C}} \mathcal{Q}' \implies \mathcal{P} \otimes \mathcal{Q} =_{\mathcal{C}'} \mathcal{P} \otimes \mathcal{Q}'$
-    \item $\mathcal{Q} \overset{\epsilon}{\approx}_{\mathcal{C}} \mathcal{Q}' \implies \mathcal{P} \otimes \mathcal{Q} \overset{\epsilon}{\approx}_{\mathcal{C}'} \mathcal{P} \otimes \mathcal{Q}'$
-    \item $\mathcal{Q} \overset{\epsilon}{\leadsto}_{\mathcal{C}} \mathcal{Q}' \implies \mathcal{P} \otimes \mathcal{Q} \overset{\epsilon}{\leadsto}_{\mathcal{C}'} \mathcal{P} \otimes \mathcal{Q}'$
+    \item $\mathscr{Q} =_{\mathscr{C}} \mathscr{Q}' \implies \mathscr{P} \otimes \mathscr{Q} =_{\mathscr{C}'} \mathscr{P} \otimes \mathscr{Q}'$
+    \item $\mathscr{Q} \overset{\epsilon}{\approx}_{\mathscr{C}} \mathscr{Q}' \implies \mathscr{P} \otimes \mathscr{Q} \overset{\epsilon}{\approx}_{\mathscr{C}'} \mathscr{P} \otimes \mathscr{Q}'$
+    \item $\mathscr{Q} \overset{\epsilon}{\leadsto}_{\mathscr{C}} \mathscr{Q}' \implies \mathscr{P} \otimes \mathscr{Q} \overset{\epsilon}{\leadsto}_{\mathscr{C}'} \mathscr{P} \otimes \mathscr{Q}'$
   \end{enumerate}
 
   \txbf{Proof:} Theorem~\ref{thm:concurrent_breakdown} (concurrent breakdown)
   will be essential to our proof.
-  This implies that $\forall C \in \mathcal{C}$, then for any compatible $C' \in \mathcal{C}'$
+  This implies that $\forall C \in \mathscr{C}$, then for any compatible $C' \in \mathscr{C}'$
   we have:
   $$
-  \tx{Inst}_{C'}(\mathcal{P} \otimes \mathcal{Q}) = \tx{Inst}_{C'}(\mathcal{P}) \otimes \tx{Inst}_{C}(\mathcal{Q})
+  \tx{Inst}_{C'}(\mathscr{P} \otimes \mathscr{Q}) = \tx{Inst}_{C'}(\mathscr{P}) \otimes \tx{Inst}_{C}(\mathscr{Q})
   $$
 
 \txbf{1.}
-Since $\mathcal{Q} =_{\mathcal{C}} \mathcal{Q}'$, we have $\forall C \in \mathcal{C}.\ \tx{Inst}_C(\mathcal{Q}) = \tx{Inst}_C(\mathcal{Q}')$.
-Now, consider any $C' \in \mathcal{C}'$.
-By our assumption that $\mathcal{C}'$ is compatible with $\mathcal{C}$,
-there exists a $C \in \mathcal{C}$ that $C'$ is compatible with.
+Since $\mathscr{Q} =_{\mathscr{C}} \mathscr{Q}'$, we have $\forall C \in \mathscr{C}.\ \tx{Inst}_C(\mathscr{Q}) = \tx{Inst}_C(\mathscr{Q}')$.
+Now, consider any $C' \in \mathscr{C}'$.
+By our assumption that $\mathscr{C}'$ is compatible with $\mathscr{C}$,
+there exists a $C \in \mathscr{C}$ that $C'$ is compatible with.
 Using concurrent breakdown, we then have:
 $$
-\tx{Inst}_{C'}(\mathcal{P} \otimes \mathcal{Q}) =
-\tx{Inst}_{C'}(\mathcal{P}) \otimes \tx{Inst}_C(\mathcal{Q})
+\tx{Inst}_{C'}(\mathscr{P} \otimes \mathscr{Q}) =
+\tx{Inst}_{C'}(\mathscr{P}) \otimes \tx{Inst}_C(\mathscr{Q})
 $$
-Then, since $\mathcal{Q} =_{\mathcal{C}} \mathcal{Q}'$, we have:
+Then, since $\mathscr{Q} =_{\mathscr{C}} \mathscr{Q}'$, we have:
 $$
-\tx{Inst}_{C'}(\mathcal{P}) \otimes \tx{Inst}_C(\mathcal{Q}) =
-\tx{Inst}_{C'}(\mathcal{P}) \otimes \tx{Inst}_C(\mathcal{Q}') =
-\tx{Inst}_{C'}(\mathcal{P} \otimes \mathcal{Q}')
+\tx{Inst}_{C'}(\mathscr{P}) \otimes \tx{Inst}_C(\mathscr{Q}) =
+\tx{Inst}_{C'}(\mathscr{P}) \otimes \tx{Inst}_C(\mathscr{Q}') =
+\tx{Inst}_{C'}(\mathscr{P} \otimes \mathscr{Q}')
 $$
 concluding our proof.
 
 \txbf{2.}
 The proof here is similar to part 1.
-For any $C' \in \mathcal{C}'$, there exists a compatible $C \in \mathcal{C}$,
+For any $C' \in \mathscr{C}'$, there exists a compatible $C \in \mathscr{C}$,
 and then we get:
 $$
-\tx{Inst}_{C'}(\mathcal{P} \otimes \mathcal{Q}) =
-\tx{Inst}_{C'}(\mathcal{P}) \otimes \tx{Inst}_C(\mathcal{Q})
+\tx{Inst}_{C'}(\mathscr{P} \otimes \mathscr{Q}) =
+\tx{Inst}_{C'}(\mathscr{P}) \otimes \tx{Inst}_C(\mathscr{Q})
 $$
-Since $\mathcal{Q} \overset{\epsilon}{\approx}_{\mathcal{C}} \mathcal{Q}'$,
+Since $\mathscr{Q} \overset{\epsilon}{\approx}_{\mathscr{C}} \mathscr{Q}'$,
 we have:
 $$
-\tx{Inst}_{C'}(\mathcal{P}) \otimes \tx{Inst}_C(\mathcal{Q})
+\tx{Inst}_{C'}(\mathscr{P}) \otimes \tx{Inst}_C(\mathscr{Q})
 \overset{\epsilon}{\approx} 
-\tx{Inst}_{C'}(\mathcal{P}) \otimes \tx{Inst}_C(\mathcal{Q}')
+\tx{Inst}_{C'}(\mathscr{P}) \otimes \tx{Inst}_C(\mathscr{Q}')
 $$
 since $\otimes$ for systems respects this operation.
 We can then conclude with
 $$
-\tx{Inst}_{C'}(\mathcal{P}) \otimes \tx{Inst}_C(\mathcal{Q}') =
-\tx{Inst}_{C'}(\mathcal{P} \otimes \mathcal{Q}')
+\tx{Inst}_{C'}(\mathscr{P}) \otimes \tx{Inst}_C(\mathscr{Q}') =
+\tx{Inst}_{C'}(\mathscr{P} \otimes \mathscr{Q}')
 $$
 
-\txbf{3.} Once more, for any $C' \in \mathcal{C}'$, there exists a compatible
-$C \in \mathcal{C}$ giving us:
+\txbf{3.} Once more, for any $C' \in \mathscr{C}'$, there exists a compatible
+$C \in \mathscr{C}$ giving us:
 $$
-\tx{Inst}_{C'}(\mathcal{P} \otimes \mathcal{Q}) =
-\tx{Inst}_{C'}(\mathcal{P}) \otimes \tx{Inst}_C(\mathcal{Q})
+\tx{Inst}_{C'}(\mathscr{P} \otimes \mathscr{Q}) =
+\tx{Inst}_{C'}(\mathscr{P}) \otimes \tx{Inst}_C(\mathscr{Q})
 $$
-We then apply our assumption that $\mathcal{Q} \overset{\epsilon}{\leadsto}_{\mathcal{C}} \mathcal{Q}'$
+We then apply our assumption that $\mathscr{Q} \overset{\epsilon}{\leadsto}_{\mathscr{C}} \mathscr{Q}'$
 to get:
 $$
-\tx{Inst}_{C'}(\mathcal{P}) \otimes \tx{Inst}_C(\mathcal{Q})
+\tx{Inst}_{C'}(\mathscr{P}) \otimes \tx{Inst}_C(\mathscr{Q})
 \overset{\epsilon}{\approx}
-\tx{Inst}_{C'}(\mathcal{P}) \otimes ((S \otimes 1(\ldots)) \circ \tx{Inst}_C(\mathcal{Q}'))
+\tx{Inst}_{C'}(\mathscr{P}) \otimes ((S \otimes 1(\ldots)) \circ \tx{Inst}_C(\mathscr{Q}'))
 $$
 Next, we apply interchange to get:
 $$
 \begin{matrix}
-1(\tx{Out}(\tx{Inst}_{C'}(\mathcal{P}))) \circ \tx{Inst}_{C'}(\mathcal{P})\cr
+1(\tx{Out}(\tx{Inst}_{C'}(\mathscr{P}))) \circ \tx{Inst}_{C'}(\mathscr{P})\cr
 \otimes\cr
-((S \otimes 1(\ldots)) \circ \tx{Inst}_C(\mathcal{Q}'))
+((S \otimes 1(\ldots)) \circ \tx{Inst}_C(\mathscr{Q}'))
 \end{matrix}
 =
 \begin{pmatrix}
-1(\tx{Out}(\tx{Inst}_{C'}(\mathcal{P})))\cr
+1(\tx{Out}(\tx{Inst}_{C'}(\mathscr{P})))\cr
 \otimes\cr
 S\cr
 \otimes\cr
-1(\tx{Out}(\tx{Inst}_C(\mathcal{Q})) / \tx{Out}(S))
+1(\tx{Out}(\tx{Inst}_C(\mathscr{Q})) / \tx{Out}(S))
 \end{pmatrix}
 \circ
 \begin{pmatrix}
-  \tx{Inst}_{C'}(\mathcal{P})\cr
+  \tx{Inst}_{C'}(\mathscr{P})\cr
   \otimes\cr
-  \tx{Inst}_{C}(\mathcal{Q}')
+  \tx{Inst}_{C}(\mathscr{Q}')
 \end{pmatrix}
 $$
 Applying concurrent breakdown in reverse, we get that the right hand
-side is $\tx{Inst}_{C'}(\mathcal{P} \otimes \mathcal{Q})$,
+side is $\tx{Inst}_{C'}(\mathscr{P} \otimes \mathscr{Q})$,
 and that the left hand side is the simulator showing
-that $\mathcal{P} \otimes \mathcal{Q} \overset{\epsilon}{\leadsto}_{\mathcal{C}'} \mathcal{P} \otimes \mathcal{Q}'$.
+that $\mathscr{P} \otimes \mathscr{Q} \overset{\epsilon}{\leadsto}_{\mathscr{C}'} \mathscr{P} \otimes \mathscr{Q}'$.
 The left hand side is a valid simulator because
-$\tx{Out}(\tx{Inst}_C(\mathcal{Q})) = \tx{Out}(\tx{Inst}_{C'}(\mathcal{Q}))$,
-and all of the honest parts of $\mathcal{P}$ are left untouched,
+$\tx{Out}(\tx{Inst}_C(\mathscr{Q})) = \tx{Out}(\tx{Inst}_{C'}(\mathscr{Q}))$,
+and all of the honest parts of $\mathscr{P}$ are left untouched,
 since all of it is.
 
 $\blacksquare$
@@ -1383,18 +1383,18 @@ $\blacksquare$
 
 \begin{theorem}[Horizontal Composition Theorem]
   \label{thm:horizontal_composition_theorem}
-  For any protocols $\mathcal{P}, \mathcal{Q}$ with $\mathcal{P} \lhd \mathcal{Q}$
-  well defined and closed, and for any compatible corruption classes $\mathcal{C}, \mathcal{C'}$, we have:
+  For any protocols $\mathscr{P}, \mathscr{Q}$ with $\mathscr{P} \lhd \mathscr{Q}$
+  well defined and closed, and for any compatible corruption classes $\mathscr{C}, \mathscr{C'}$, we have:
   \begin{enumerate}
-    \item $\mathcal{Q} =_{\mathcal{C}} \mathcal{Q}' \implies \mathcal{P} \lhd \mathcal{Q} =_{\mathcal{C}'} \mathcal{P} \lhd \mathcal{Q}'$
-    \item $\mathcal{Q} \overset{\epsilon}{\approx}_{\mathcal{C}} \mathcal{Q}' \implies \mathcal{P} \lhd \mathcal{Q} \overset{\epsilon}{\approx}_{\mathcal{C}'} \mathcal{P} \lhd \mathcal{Q}'$
+    \item $\mathscr{Q} =_{\mathscr{C}} \mathscr{Q}' \implies \mathscr{P} \lhd \mathscr{Q} =_{\mathscr{C}'} \mathscr{P} \lhd \mathscr{Q}'$
+    \item $\mathscr{Q} \overset{\epsilon}{\approx}_{\mathscr{C}} \mathscr{Q}' \implies \mathscr{P} \lhd \mathscr{Q} \overset{\epsilon}{\approx}_{\mathscr{C}'} \mathscr{P} \lhd \mathscr{Q}'$
   \end{enumerate}
 
-  Furthermore, if $\mathcal{C}'$ is \emph{strictly} compatible with $\mathcal{C}$,
+  Furthermore, if $\mathscr{C}'$ is \emph{strictly} compatible with $\mathscr{C}$,
   we have:
   \begin{enumerate}
     \setcounter{enumi}{2}
-    \item $\mathcal{Q} \overset{\epsilon}{\leadsto}_{\mathcal{C}} \mathcal{Q}' \implies \mathcal{P} \lhd \mathcal{Q} \overset{\epsilon}{\leadsto}_{\mathcal{C}'} \mathcal{P} \lhd \mathcal{Q}'$
+    \item $\mathscr{Q} \overset{\epsilon}{\leadsto}_{\mathscr{C}} \mathscr{Q}' \implies \mathscr{P} \lhd \mathscr{Q} \overset{\epsilon}{\leadsto}_{\mathscr{C}'} \mathscr{P} \lhd \mathscr{Q}'$
   \end{enumerate}
 
   \txbf{Proof:} As one might expect,
@@ -1405,67 +1405,67 @@ $\blacksquare$
   that the protocols are closed, is that given compatible
   corruption models $C, C'$, there's a system $\tx{Stuff}$ such that
   $$
-  \tx{Inst}_{C'}(\mathcal{P} \lhd \mathcal{Q}) = \tx{Stuff} \circ \tx{Inst}_C(\mathcal{Q})
+  \tx{Inst}_{C'}(\mathscr{P} \lhd \mathscr{Q}) = \tx{Stuff} \circ \tx{Inst}_C(\mathscr{Q})
   $$
   This summary suffices to prove a couple statements already.
 
-  \txbf{1.} By assumption, for any $C' \in \mathcal{C}'$,
-  there exists a compatible $C \in \mathcal{C}$.
+  \txbf{1.} By assumption, for any $C' \in \mathscr{C}'$,
+  there exists a compatible $C \in \mathscr{C}$.
   In this case, we have:
   $$
-  \tx{Inst}_{C'}(\mathcal{P} \lhd \mathcal{Q}) = \tx{Sutff} \circ \tx{Inst}_C(\mathcal{Q})
+  \tx{Inst}_{C'}(\mathscr{P} \lhd \mathscr{Q}) = \tx{Sutff} \circ \tx{Inst}_C(\mathscr{Q})
   $$
-  If we then apply $\mathcal{Q} =_{\mathcal{C}} \mathcal{Q}'$,
+  If we then apply $\mathscr{Q} =_{\mathscr{C}} \mathscr{Q}'$,
   we get:
   $$
-  \tx{Stuff} \circ \tx{Inst}_C(\mathcal{Q}) = \tx{Stuff} \circ \tx{Inst}_C(\mathcal{Q}')
+  \tx{Stuff} \circ \tx{Inst}_C(\mathscr{Q}) = \tx{Stuff} \circ \tx{Inst}_C(\mathscr{Q}')
   $$
-  and then, applying breakdown in reverse, we end up with $\tx{Inst}_{C'}(\mathcal{P} \lhd \mathcal{Q}')$,
+  and then, applying breakdown in reverse, we end up with $\tx{Inst}_{C'}(\mathscr{P} \lhd \mathscr{Q}')$,
   completing our proof.
 
   \txbf{2.} We apply the same reasoning, with the difference that:
   $$
-  \tx{Stuff} \circ \tx{Inst}_C(\mathcal{Q}) \overset{\epsilon}{\approx} \tx{Stuff} \circ \tx{Inst}_C(\mathcal{Q}')
+  \tx{Stuff} \circ \tx{Inst}_C(\mathscr{Q}) \overset{\epsilon}{\approx} \tx{Stuff} \circ \tx{Inst}_C(\mathscr{Q}')
   $$
   rather than being strictly equal.
 
   \txbf{3.} At this point our crude summary of the breakdown theorem is not
   sufficient anymore.
   We start with the same reasoning.
-  For any $C' \in \mathcal{C}'$, there exists a \emph{strictly}
-  compatible $C \in \mathcal{C}$, and we have:
+  For any $C' \in \mathscr{C}'$, there exists a \emph{strictly}
+  compatible $C \in \mathscr{C}$, and we have:
   $$
-  \tx{Inst}_{C'}(\mathcal{P} \lhd \mathcal{Q}) = \tx{Stuff} \circ \tx{Inst}_C(\mathcal{Q})
+  \tx{Inst}_{C'}(\mathscr{P} \lhd \mathscr{Q}) = \tx{Stuff} \circ \tx{Inst}_C(\mathscr{Q})
   $$
-  then, we apply our assumption that $\mathcal{Q} \overset{\epsilon}{\leadsto}_{\mathcal{C}} \mathcal{Q}'$,
+  then, we apply our assumption that $\mathscr{Q} \overset{\epsilon}{\leadsto}_{\mathscr{C}} \mathscr{Q}'$,
   giving us:
   $$
-  \tx{Stuff} \circ \tx{Inst}_C(\mathcal{Q}) \overset{\epsilon}{\approx} \tx{Stuff} \circ (S \otimes 1(\ldots)) \circ \tx{Inst}_C(\mathcal{Q})
+  \tx{Stuff} \circ \tx{Inst}_C(\mathscr{Q}) \overset{\epsilon}{\approx} \tx{Stuff} \circ (S \otimes 1(\ldots)) \circ \tx{Inst}_C(\mathscr{Q})
   $$
   Our strategy will be to rearrange the right hand side to get
   $$
-  {(S' \otimes 1(\ldots)) \circ \tx{Inst}_{C'}(\mathcal{P} \lhd \mathcal{Q}')}
+  {(S' \otimes 1(\ldots)) \circ \tx{Inst}_{C'}(\mathscr{P} \lhd \mathscr{Q}')}
   $$
   We start by unrolling $\tx{Stuff}$, using strict compatability, to get:
   $$
   1(O)\circ
   \begin{pmatrix}
-    {\displaystyle \bigast}_{i \in [\mathcal{P}.n]} \tx{Routed}(\tx{Corrupt}'_{C'}(\mathcal{P}.P_i))
+    {\displaystyle \bigast}_{i \in [\mathscr{P}.n]} \tx{Routed}(\tx{Corrupt}'_{C'}(\mathscr{P}.P_i))
     \cr
     *\cr
-    \mathcal{R}_{\mathcal{P}}\cr
+    \mathcal{R}_{\mathscr{P}}\cr
     \otimes\cr
-    1(\tx{Leakage}, L_{\mathcal{Q}'})
+    1(\tx{Leakage}, L_{\mathscr{Q}'})
   \end{pmatrix}
   \circ
   \begin{pmatrix}
-    \mathcal{P}.F\cr
+    \mathscr{P}.F\cr
     \otimes\cr
     1(\tx{Out}(\mathcal{R}_q))\cr
     \otimes\cr
-    1(\mathcal{Q}'.\tx{Leakage})\cr
+    1(\mathscr{Q}'.\tx{Leakage})\cr
     \otimes\cr
-    \bigotimes_{i \in [\mathcal{Q}'.n]} 1_i\cr
+    \bigotimes_{i \in [\mathscr{Q}'.n]} 1_i\cr
   \end{pmatrix}
   \circ
   \begin{pmatrix}
@@ -1474,10 +1474,10 @@ $\blacksquare$
     1(O_{\bar{S}})
   \end{pmatrix}
   \circ
-  \tx{Inst}_C(\mathcal{Q}')
+  \tx{Inst}_C(\mathscr{Q}')
   $$
-  with $O_{\bar{S}} := \tx{Out}(\tx{Inst}_C(\mathcal{Q}')) / \tx{Out}(S)$,
-  and with each $1_i := 1(\tx{Out}(\tx{Inst}_C(\mathcal{Q}'.P_i)))$.
+  with $O_{\bar{S}} := \tx{Out}(\tx{Inst}_C(\mathscr{Q}')) / \tx{Out}(S)$,
+  and with each $1_i := 1(\tx{Out}(\tx{Inst}_C(\mathscr{Q}'.P_i)))$.
   we can apply interchange a few times to get:
   $$
   \footnotesize
@@ -1486,7 +1486,7 @@ $\blacksquare$
     \begin{pmatrix}
     {\displaystyle \bigast_{C'_i \neq \tx{H}}}
     \begin{pmatrix}
-      \tx{Routed}(\tx{Corrupt}'_{C'}(\mathcal{P}.P_i))\cr
+      \tx{Routed}(\tx{Corrupt}'_{C'}(\mathscr{P}.P_i))\cr
       \otimes\cr
       1(L_i)
     \end{pmatrix}\cr
@@ -1502,31 +1502,31 @@ $\blacksquare$
     \circ
     \begin{pmatrix}
     {\displaystyle \bigast_{C_i \neq \tx{H}}}
-    \tx{Routed}(\tx{Corrupt}_C(\mathcal{Q}'.P_i))
+    \tx{Routed}(\tx{Corrupt}_C(\mathscr{Q}'.P_i))
     \cr
     \otimes\cr
-    1(\tx{Out}(\mathcal{P}.F), \tx{Out}(\mathcal{Q}.F))
+    1(\tx{Out}(\mathscr{P}.F), \tx{Out}(\mathscr{Q}.F))
     \end{pmatrix}
     \cr
     *\cr
     {\displaystyle \bigast_{C'_i = \tx{H}}}
-    \tx{Routed}(\tx{Corrupt}_{C'}((\mathcal{P} \lhd \mathcal{Q}').P_i))\cr
+    \tx{Routed}(\tx{Corrupt}_{C'}((\mathscr{P} \lhd \mathscr{Q}').P_i))\cr
     *\cr
-    \mathcal{R}_{\mathcal{P}} \circ \mathcal{R}_{\mathcal{Q}'}\cr
+    \mathcal{R}_{\mathscr{P}} \circ \mathcal{R}_{\mathscr{Q}'}\cr
   \end{pmatrix}
   \circ
   \begin{pmatrix}
-    \mathcal{P}.F\cr
+    \mathscr{P}.F\cr
     \otimes\cr
-    \mathcal{Q}'.F
+    \mathscr{Q}'.F
   \end{pmatrix}
   $$
-  with $O_S := O_{\bar{S}} \cup \tx{Out}(\mathcal{P}.F)$ and $L_i$ as per the horizontal breakdown theorem.
+  with $O_S := O_{\bar{S}} \cup \tx{Out}(\mathscr{P}.F)$ and $L_i$ as per the horizontal breakdown theorem.
   The only functions that $S$ masks are the leakage, the malicious corruption
   functions, and the logs from semi-honest corruption.
   Semi-honest corruption does not use any outputs of $S$,
-  instead relying on the $\mathcal{Q}'.P_i$, accessible via $1(O_S)$.
-  In the case of malicious corruption, since $\tx{Corrupt}'_{C'}(\mathcal{P}.P_i)$
+  instead relying on the $\mathscr{Q}'.P_i$, accessible via $1(O_S)$.
+  In the case of malicious corruption, since $\tx{Corrupt}'_{C'}(\mathscr{P}.P_i)$
   omits the $\tx{Call}_{F_i}$ functions, the system also has no dependencies
   on the output of $S$.
   Since none of these corrupted players depend on $S$,
@@ -1544,7 +1544,7 @@ $\blacksquare$
     \begin{pmatrix}
     {\displaystyle \bigast_{C'_i \neq \tx{H}}}
     \begin{pmatrix}
-      \tx{Routed}(\tx{Corrupt}'_{C'}(\mathcal{P}.P_i))\cr
+      \tx{Routed}(\tx{Corrupt}'_{C'}(\mathscr{P}.P_i))\cr
       \otimes\cr
       1(L_i)
     \end{pmatrix}\cr
@@ -1554,23 +1554,23 @@ $\blacksquare$
     \circ
     \begin{pmatrix}
     {\displaystyle \bigast_{C_i \neq \tx{H}}}
-    \tx{Routed}(\tx{Corrupt}_C(\mathcal{Q}'.P_i))
+    \tx{Routed}(\tx{Corrupt}_C(\mathscr{Q}'.P_i))
     \cr
     \otimes\cr
-    1(\tx{Out}(\mathcal{P}.F), \tx{Out}(\mathcal{Q}.F))
+    1(\tx{Out}(\mathscr{P}.F), \tx{Out}(\mathscr{Q}.F))
     \end{pmatrix}
     \cr
     *\cr
     {\displaystyle \bigast_{C'_i = \tx{H}}}
-    \tx{Routed}(\tx{Corrupt}_{C'}((\mathcal{P} \lhd \mathcal{Q}').P_i))\cr
+    \tx{Routed}(\tx{Corrupt}_{C'}((\mathscr{P} \lhd \mathscr{Q}').P_i))\cr
     *\cr
-    \mathcal{R}_{\mathcal{P}} \circ \mathcal{R}_{\mathcal{Q}'}\cr
+    \mathcal{R}_{\mathscr{P}} \circ \mathcal{R}_{\mathscr{Q}'}\cr
   \end{pmatrix}
   \circ
   \begin{pmatrix}
-    \mathcal{P}.F\cr
+    \mathscr{P}.F\cr
     \otimes\cr
-    \mathcal{Q}'.F
+    \mathscr{Q}'.F
   \end{pmatrix}
   $$
   which becomes:
@@ -1578,14 +1578,14 @@ $\blacksquare$
   \begin{pmatrix}
     S\cr
     \otimes\cr
-    1(\tx{Out}(\tx{Inst}_{C'}(\mathcal{P} \lhd \mathcal{Q}')) / \tx{Out}(S))
+    1(\tx{Out}(\tx{Inst}_{C'}(\mathscr{P} \lhd \mathscr{Q}')) / \tx{Out}(S))
   \end{pmatrix}
   \circ
-  \tx{Inst}_{C'}(\mathcal{P} \lhd \mathcal{Q}')
+  \tx{Inst}_{C'}(\mathscr{P} \lhd \mathscr{Q}')
   $$
 
   From this chain of equalities we conclude that
-  $\mathcal{P} \lhd \mathcal{Q}' \overset{\epsilon}{\leadsto} \mathcal{P} \lhd \mathcal{Q}'$
+  $\mathscr{P} \lhd \mathscr{Q}' \overset{\epsilon}{\leadsto} \mathscr{P} \lhd \mathscr{Q}'$
 
   $\blacksquare$
 \end{theorem}
@@ -1593,23 +1593,23 @@ $\blacksquare$
 \subsection{Global Functionalities}
 
 \begin{definition}[Relatively Closed Protocols]
-  A protocol $\mathcal{P}$ is \emph{closed relative to} a game $G$
+  A protocol $\mathscr{P}$ is \emph{closed relative to} a game $G$
   if:
   \begin{itemize}
-    \item $\tx{In}(\mathcal{P}) = \emptyset$
-    \item $\tx{IdealIn}(\mathcal{P}) \subseteq \tx{Out}(G)$
+    \item $\tx{In}(\mathscr{P}) = \emptyset$
+    \item $\tx{IdealIn}(\mathscr{P}) \subseteq \tx{Out}(G)$
   \end{itemize} 
 
   $\square$
 \end{definition}
 \begin{definition}[Relative Instantiation]
-  Given a closed protocol $\mathcal{P}$ relative to $G$, we can define,
+  Given a closed protocol $\mathscr{P}$ relative to $G$, we can define,
   for any corruption model $C$,
   the relative instantiation:
   $$
-  \tx{Inst}_{C}^G(\mathcal{P}) :=
+  \tx{Inst}_{C}^G(\mathscr{P}) :=
   \begin{pmatrix}
-    \tx{Inst}_C(\mathcal{P})\cr
+    \tx{Inst}_C(\mathscr{P})\cr
     \otimes\cr
     1(\tx{Out}(G))
   \end{pmatrix}
@@ -1619,9 +1619,9 @@ $\blacksquare$
   We can also extend this to the case of simulated instantiation,
   defining, for any simulator $S$:
   $$
-  \tx{SimInst}_{S, C}^G(\mathcal{P}) :=
+  \tx{SimInst}_{S, C}^G(\mathscr{P}) :=
   \begin{pmatrix}
-    \tx{SimInst}_{S, C}(\mathcal{P})\cr
+    \tx{SimInst}_{S, C}(\mathscr{P})\cr
     \otimes\cr
     1(\tx{Out}(G))
   \end{pmatrix}
@@ -1632,23 +1632,23 @@ $\blacksquare$
 \end{definition}
 
 \begin{definition}[Relative Notions of Equality]
-  Given closed protocols $\mathcal{P}, \mathcal{Q}$ relative to $G$,
-  with the same shape, and a corruption class $\mathcal{C}$
+  Given closed protocols $\mathscr{P}, \mathscr{Q}$ relative to $G$,
+  with the same shape, and a corruption class $\mathscr{C}$
   for these protocols, we define:
   \begin{itemize}
-    \item $\mathcal{P} =^G_{\mathcal{C}} \mathcal{Q} \iff \forall C \in \mathcal{C}.\ \tx{Inst}^G_C(\mathcal{P}) = \tx{Inst}^G_C(\mathcal{Q})$
-    \item $\mathcal{P} \overset{\epsilon}{\approx}^G_{\mathcal{C}} \mathcal{Q}\iff \forall C \in \mathcal{C}.\ \tx{Inst}^G_C(\mathcal{P}) \overset{\epsilon}{\approx} \tx{Inst}^G_C(\mathcal{Q})$
-    \item $\mathcal{P} \overset{\epsilon}{\leadsto}^G_{\mathcal{C}} \mathcal{Q}\iff \forall C \in \mathcal{C}.\ \exists S.\ \tx{Inst}^G_C(\mathcal{P}) \overset{\epsilon}{\approx} \tx{SimInst}^G_{S,C}(\mathcal{Q})$
+    \item $\mathscr{P} =^G_{\mathscr{C}} \mathscr{Q} \iff \forall C \in \mathscr{C}.\ \tx{Inst}^G_C(\mathscr{P}) = \tx{Inst}^G_C(\mathscr{Q})$
+    \item $\mathscr{P} \overset{\epsilon}{\approx}^G_{\mathscr{C}} \mathscr{Q}\iff \forall C \in \mathscr{C}.\ \tx{Inst}^G_C(\mathscr{P}) \overset{\epsilon}{\approx} \tx{Inst}^G_C(\mathscr{Q})$
+    \item $\mathscr{P} \overset{\epsilon}{\leadsto}^G_{\mathscr{C}} \mathscr{Q}\iff \forall C \in \mathscr{C}.\ \exists S.\ \tx{Inst}^G_C(\mathscr{P}) \overset{\epsilon}{\approx} \tx{SimInst}^G_{S,C}(\mathscr{Q})$
   \end{itemize}
 
   $\square$
 \end{definition}
 
 \begin{theorem}[Relative Equality Hierarchy]
-  For any corruption class $\mathcal{C}$ and game $G$, we have:
+  For any corruption class $\mathscr{C}$ and game $G$, we have:
 \begin{enumerate}
-\item $\mathcal{P} =^G_{\mathcal{C}} \mathcal{Q} \implies \mathcal{P} \overset{0}{\approx}^G_\mathcal{C} \mathcal{Q}$.
-\item $\mathcal{P} \overset{\epsilon}{\approx}^G_{\mathcal{C}} \mathcal{Q} \implies \mathcal{P} \overset{\epsilon}{\leadsto}^G_\mathcal{C} \mathcal{Q}$.
+\item $\mathscr{P} =^G_{\mathscr{C}} \mathscr{Q} \implies \mathscr{P} \overset{0}{\approx}^G_\mathscr{C} \mathscr{Q}$.
+\item $\mathscr{P} \overset{\epsilon}{\approx}^G_{\mathscr{C}} \mathscr{Q} \implies \mathscr{P} \overset{\epsilon}{\leadsto}^G_\mathscr{C} \mathscr{Q}$.
 \end{enumerate}
 \txbf{Proof:}
 
@@ -1656,8 +1656,8 @@ $\blacksquare$
 for any systems $A, B$.
 
 \txbf{2.} In the proof of Theorem~\ref{thm:equality_hierarchy},
-we used the existence of a simulator $S$ such that $\tx{SimInst}_{S, C}(\mathcal{P}) = \tx{Inst}_C(\mathcal{P})$.
-This simulator will also satisfy $\tx{SimInst}^G_{S, C}(\mathcal{P}) = \tx{Inst}^G_C(\mathcal{P})$,
+we used the existence of a simulator $S$ such that $\tx{SimInst}_{S, C}(\mathscr{P}) = \tx{Inst}_C(\mathscr{P})$.
+This simulator will also satisfy $\tx{SimInst}^G_{S, C}(\mathscr{P}) = \tx{Inst}^G_C(\mathscr{P})$,
 and can thus be used directly to prove this relation.
 
 $\blacksquare$
@@ -1665,24 +1665,24 @@ $\blacksquare$
 
 \begin{theorem}[Transitivity of Relative Equality]
   \label{thm:trans_relative_equality}
-  For any protocols $\mathcal{L}$, $\mathcal{P}$, $\mathcal{Q}$
+  For any protocols $\mathscr{L}$, $\mathscr{P}$, $\mathscr{Q}$
   closed relative to a game $G$, and for any corruption class, we have:
   \begin{enumerate}
-    \item $\mathcal{L} =_{\mathcal{C}}^G \mathcal{P}, \mathcal{P} =_{\mathcal{C}}^G \mathcal{Q} \implies \mathcal{L} =_{\mathcal{C}}^G \mathcal{Q}$,
-    \item $\mathcal{L} \overset{\epsilon_1}{\approx}_{\mathcal{C}}^G \mathcal{P}, \mathcal{P} \overset{\epsilon_2}{\approx}_{\mathcal{C}}^G \mathcal{Q} \implies \mathcal{L} \overset{\epsilon_1 + \epsilon_2}{\approx}_{\mathcal{C}}^G \mathcal{Q}$,
-    \item $\mathcal{L} \overset{\epsilon_1}{\leadsto}_{\mathcal{C}}^G \mathcal{P}, \mathcal{P} \overset{\epsilon_2}{\leadsto}_{\mathcal{C}}^G \mathcal{Q} \implies \mathcal{L} \overset{\epsilon_1 + \epsilon_2}{\leadsto}_{\mathcal{C}}^G \mathcal{Q}$.
+    \item $\mathscr{L} =_{\mathscr{C}}^G \mathscr{P}, \mathscr{P} =_{\mathscr{C}}^G \mathscr{Q} \implies \mathscr{L} =_{\mathscr{C}}^G \mathscr{Q}$,
+    \item $\mathscr{L} \overset{\epsilon_1}{\approx}_{\mathscr{C}}^G \mathscr{P}, \mathscr{P} \overset{\epsilon_2}{\approx}_{\mathscr{C}}^G \mathscr{Q} \implies \mathscr{L} \overset{\epsilon_1 + \epsilon_2}{\approx}_{\mathscr{C}}^G \mathscr{Q}$,
+    \item $\mathscr{L} \overset{\epsilon_1}{\leadsto}_{\mathscr{C}}^G \mathscr{P}, \mathscr{P} \overset{\epsilon_2}{\leadsto}_{\mathscr{C}}^G \mathscr{Q} \implies \mathscr{L} \overset{\epsilon_1 + \epsilon_2}{\leadsto}_{\mathscr{C}}^G \mathscr{Q}$.
   \end{enumerate}
 
   \txbf{Proof:} Once again, the first two parts follow directly from Lemma~\ref{thm:system_trans},
-  by considering the systems $\tx{Inst}^G_C(\mathcal{L})$, $\tx{Inst}^G_C(\mathcal{P})$,
-  $\tx{Inst}^G_C(\mathcal{Q})$ for any $C \in \mathcal{C}$.
+  by considering the systems $\tx{Inst}^G_C(\mathscr{L})$, $\tx{Inst}^G_C(\mathscr{P})$,
+  $\tx{Inst}^G_C(\mathscr{Q})$ for any $C \in \mathscr{C}$.
 
-  For part 3, given any $C \in \mathcal{C}$, there exists $S_1, S_2$ such that:
+  For part 3, given any $C \in \mathscr{C}$, there exists $S_1, S_2$ such that:
   \begin{itemize}
-    \item $\tx{Inst}^G_C(\mathcal{L}) \overset{\epsilon_1}{\approx} \tx{SimInst}^G_{S_1, C}(\mathcal{P})$,
-    \item $\tx{Inst}^G_C(\mathcal{P}) \overset{\epsilon_2}{\approx} \tx{SimInst}^G_{S_2, C}(\mathcal{Q})$.
+    \item $\tx{Inst}^G_C(\mathscr{L}) \overset{\epsilon_1}{\approx} \tx{SimInst}^G_{S_1, C}(\mathscr{P})$,
+    \item $\tx{Inst}^G_C(\mathscr{P}) \overset{\epsilon_2}{\approx} \tx{SimInst}^G_{S_2, C}(\mathscr{Q})$.
   \end{itemize}
-  Next, observe that for any protocol $\mathcal{P}$, we can write:
+  Next, observe that for any protocol $\mathscr{P}$, we can write:
   $$
   \tx{SimInst}^G_C =
   \begin{pmatrix}
@@ -1691,72 +1691,72 @@ $\blacksquare$
     1(O)
   \end{pmatrix}
   \circ
-  \tx{Inst}^G_C(\mathcal{P})
+  \tx{Inst}^G_C(\mathscr{P})
   $$
-  where $O = \tx{Out}(\tx{Inst}_C(\mathcal{P})) / \tx{Out}(S) \cup \tx{Out}(G)$.
+  where $O = \tx{Out}(\tx{Inst}_C(\mathscr{P})) / \tx{Out}(S) \cup \tx{Out}(G)$.
 
   We then apply transitivity for systems and interchange get:
   $$
-  \tx{Inst}^G_C(\mathcal{L}) \overset{\epsilon_1 + \epsilon_2}{\approx}
+  \tx{Inst}^G_C(\mathscr{L}) \overset{\epsilon_1 + \epsilon_2}{\approx}
   \begin{pmatrix}
     S_1 \circ S_2\cr
     \otimes\cr
     1(O)
   \end{pmatrix}
   \circ
-  \tx{Inst}^G_C(\mathcal{Q})
+  \tx{Inst}^G_C(\mathscr{Q})
   $$
-  And the left side is simply $\tx{SimInst}^G_{(S_1 \circ S_2), C}(\mathcal{Q})$,
+  And the left side is simply $\tx{SimInst}^G_{(S_1 \circ S_2), C}(\mathscr{Q})$,
   concluding our proof.
 
   $\blacksquare$
 \end{theorem}
 
 \begin{theorem}[Global Malicious Completeness]
-  Let $\mathcal{P}$ and $\mathcal{Q}$ closed protocols relative to $G$ with the same shape.
-  Given any class of corruptions $\mathcal{C}$, let $\mathcal{C}'$ be a related class, containing
-  models in $\mathcal{C}$ with some
+  Let $\mathscr{P}$ and $\mathscr{Q}$ closed protocols relative to $G$ with the same shape.
+  Given any class of corruptions $\mathscr{C}$, let $\mathscr{C}'$ be a related class, containing
+  models in $\mathscr{C}$ with some
   malicious corruptions replaced with semi-honest corruptions.
   We then have:
   \begin{enumerate}
-    \item $\mathcal{P} =^G_{C} \mathcal{Q} \implies \mathcal{P} =^G_{C'} \mathcal{Q}$,
-    \item $\mathcal{P} \overset{\epsilon}{\approx}^G_{C} \mathcal{Q} \implies \mathcal{P} \overset{\epsilon}{\approx}^G_{C'} \mathcal{Q}$,
+    \item $\mathscr{P} =^G_{C} \mathscr{Q} \implies \mathscr{P} =^G_{C'} \mathscr{Q}$,
+    \item $\mathscr{P} \overset{\epsilon}{\approx}^G_{C} \mathscr{Q} \implies \mathscr{P} \overset{\epsilon}{\approx}^G_{C'} \mathscr{Q}$,
   \end{enumerate}
 
-  Furthermore, if for any $C \in \mathcal{C}$ and its related model $C' \in \mathcal{C}$,
-  there exists a simulator $S_{\tx{M}}$ such that $\tx{Inst}^G_C(\mathcal{Q}) = \tx{SimInst}^G_{S_{\tx{M}}, C'}(\mathcal{Q})$,
+  Furthermore, if for any $C \in \mathscr{C}$ and its related model $C' \in \mathscr{C}$,
+  there exists a simulator $S_{\tx{M}}$ such that $\tx{Inst}^G_C(\mathscr{Q}) = \tx{SimInst}^G_{S_{\tx{M}}, C'}(\mathscr{Q})$,
   then it additionally holds that:
   \begin{enumerate}
     \setcounter{enumi}{2}
-    \item $\mathcal{P} \overset{\epsilon}{\leadsto}^G_{\mathcal{C}} \mathcal{Q} \implies \mathcal{P} \overset{\epsilon}{\leadsto}^G_{\mathcal{C}'} \mathcal{Q}$
+    \item $\mathscr{P} \overset{\epsilon}{\leadsto}^G_{\mathscr{C}} \mathscr{Q} \implies \mathscr{P} \overset{\epsilon}{\leadsto}^G_{\mathscr{C}'} \mathscr{Q}$
   \end{enumerate}
 
   \txbf{Proof:} We proceed similarly to Theorem~\ref{thm:mal_complete} (malicious completeness).
-  In that theorem, the key observation was that for any $C' \in \mathcal{C}'$
-  and the related $C \in \mathcal{C}$, it holds that:
+  In that theorem, the key observation was that for any $C' \in \mathscr{C}'$
+  and the related $C \in \mathscr{C}$, it holds that:
   $$
-  \tx{Inst}_{C'}(\mathcal{P}) = \tx{SimInst}_{S_{\tx{SH}}, C}(\mathcal{P})
+  \tx{Inst}_{C'}(\mathscr{P}) = \tx{SimInst}_{S_{\tx{SH}}, C}(\mathscr{P})
   $$
-  (this observation also doesn't depend on $\mathcal{P}$ being fully closed,
+  (this observation also doesn't depend on $\mathscr{P}$ being fully closed,
   allowing us to use it here).
 
   Now, this clearly implies that:
   $$
-  \tx{Inst}_{C'}^G(\mathcal{P}) = \tx{SimInst}^G_{S_{\tx{SH}}, C}(\mathcal{P})
+  \tx{Inst}_{C'}^G(\mathscr{P}) = \tx{SimInst}^G_{S_{\tx{SH}}, C}(\mathscr{P})
   $$
   And then, using our observation from Theorem~\ref{thm:trans_relative_equality},
   we can write this as:
   $$
-  \tx{Inst}_{C'}^G(\mathcal{P}) =
+  \tx{Inst}_{C'}^G(\mathscr{P}) =
   \begin{pmatrix}
     S_{\tx{SH}}\cr
     \otimes\cr
     1(O)
   \end{pmatrix}
   \circ
-  \tx{Inst}^G_C(\mathcal{P})
+  \tx{Inst}^G_C(\mathscr{P})
   $$
-  where $O = \tx{Out}(\tx{Inst}_C(\mathcal{P})) / \tx{Out}(S) \cup \tx{Out}(G)$.
+  where $O = \tx{Out}(\tx{Inst}_C(\mathscr{P})) / \tx{Out}(S) \cup \tx{Out}(G)$.
 
   This immediately implies parts 1 and 2.
 
@@ -1774,7 +1774,7 @@ $\blacksquare$
     1(O)
   \end{pmatrix}
   \circ
-  \tx{Inst}^G_C(\mathcal{Q})
+  \tx{Inst}^G_C(\mathscr{Q})
   $$
   Then apply the assumption about being able to simulate malicious corruption to
   get:
@@ -1797,7 +1797,7 @@ $\blacksquare$
     1(O)
   \end{pmatrix}
   \circ
-  \tx{Inst}^G_{C'}(\mathcal{Q})
+  \tx{Inst}^G_{C'}(\mathscr{Q})
   $$
   which can then be rearranged with interchange to get:
   $$
@@ -1807,12 +1807,12 @@ $\blacksquare$
     1(O)
   \end{pmatrix}
   \circ
-  \tx{Inst}^G_{C'}(\mathcal{Q})
+  \tx{Inst}^G_{C'}(\mathscr{Q})
   $$
   And then if we apply the same observation about $\tx{SimInst}^G$, we realize
   that this is:
   $$
-  \tx{SimInst}^G_{(S_{\tx{SH}} \circ S \circ S_{\tx{M}}), C'}(\mathcal{Q})
+  \tx{SimInst}^G_{(S_{\tx{SH}} \circ S \circ S_{\tx{M}}), C'}(\mathscr{Q})
   $$
   concluding our proof.
 
@@ -1820,18 +1820,18 @@ $\blacksquare$
 \end{theorem}
 
 \begin{theorem}[Global Vertical Composition Theorem]
-  For any protocol $\mathcal{P}$ and game $F$, such that $\mathcal{P} \circ F$
-  is well defined and closed relative to $G$, and for any corruption class $\mathcal{C}$, we have:
+  For any protocol $\mathscr{P}$ and game $F$, such that $\mathscr{P} \circ F$
+  is well defined and closed relative to $G$, and for any corruption class $\mathscr{C}$, we have:
   \begin{enumerate}
-    \item $F = F' \implies \mathcal{P} \circ F =^G_{\mathcal{C}} \mathcal{P} \circ F'$
-    \item $F \overset{\epsilon}{\approx} F' \implies \mathcal{P} \circ F \overset{\epsilon}{\approx}^G_{\mathcal{C}} \mathcal{P} \circ F'$
+    \item $F = F' \implies \mathscr{P} \circ F =^G_{\mathscr{C}} \mathscr{P} \circ F'$
+    \item $F \overset{\epsilon}{\approx} F' \implies \mathscr{P} \circ F \overset{\epsilon}{\approx}^G_{\mathscr{C}} \mathscr{P} \circ F'$
   \end{enumerate}
 
   \txbf{Proof:} The proof of Theorem~\ref{thm:vertical_composition_theorem} will be the basis
   for what we do here.
   Using it, we can write:
   $$
-  \tx{Inst}^G_C(\mathcal{P} \circ F) =
+  \tx{Inst}^G_C(\mathscr{P} \circ F) =
   \begin{pmatrix}
     A \circ F\cr
     \otimes\cr
@@ -1847,37 +1847,37 @@ $\blacksquare$
 \end{theorem}
 
 \begin{theorem}[Global Concurrent Composition Theorem]
-  Let $\mathcal{P}, \mathcal{Q}$ be closed protocols relative to $G$, with $\mathcal{P} \otimes \mathcal{Q}$
-  well defined. For any compatible corruption classes $\mathcal{C}, \mathcal{C}'$
+  Let $\mathscr{P}, \mathscr{Q}$ be closed protocols relative to $G$, with $\mathscr{P} \otimes \mathscr{Q}$
+  well defined. For any compatible corruption classes $\mathscr{C}, \mathscr{C}'$
   it holds that:
   \begin{enumerate}
-    \item $\mathcal{Q} =^G_{\mathcal{C}} \mathcal{Q}' \implies \mathcal{P} \otimes \mathcal{Q} =^G_{\mathcal{C}'} \mathcal{P} \otimes \mathcal{Q}'$
-    \item $\mathcal{Q} \overset{\epsilon}{\approx}^G_{\mathcal{C}} \mathcal{Q}' \implies \mathcal{P} \otimes \mathcal{Q} \overset{\epsilon}{\approx}^G_{\mathcal{C}'} \mathcal{P} \otimes \mathcal{Q}'$
-    \item $\mathcal{Q} \overset{\epsilon}{\leadsto}^G_{\mathcal{C}} \mathcal{Q}' \implies \mathcal{P} \otimes \mathcal{Q} \overset{\epsilon}{\leadsto}^G_{\mathcal{C}'} \mathcal{P} \otimes \mathcal{Q}'$
+    \item $\mathscr{Q} =^G_{\mathscr{C}} \mathscr{Q}' \implies \mathscr{P} \otimes \mathscr{Q} =^G_{\mathscr{C}'} \mathscr{P} \otimes \mathscr{Q}'$
+    \item $\mathscr{Q} \overset{\epsilon}{\approx}^G_{\mathscr{C}} \mathscr{Q}' \implies \mathscr{P} \otimes \mathscr{Q} \overset{\epsilon}{\approx}^G_{\mathscr{C}'} \mathscr{P} \otimes \mathscr{Q}'$
+    \item $\mathscr{Q} \overset{\epsilon}{\leadsto}^G_{\mathscr{C}} \mathscr{Q}' \implies \mathscr{P} \otimes \mathscr{Q} \overset{\epsilon}{\leadsto}^G_{\mathscr{C}'} \mathscr{P} \otimes \mathscr{Q}'$
   \end{enumerate}
 
   \txbf{Proof:} We start by using Theorem~\ref{thm:concurrent_breakdown}, giving us:
   $$
-  \tx{Inst}^G_{C'}(\mathcal{P} \otimes \mathcal{Q})
+  \tx{Inst}^G_{C'}(\mathscr{P} \otimes \mathscr{Q})
   =
   \begin{pmatrix}
-    \tx{Inst}_{C'}(\mathcal{P})\cr
+    \tx{Inst}_{C'}(\mathscr{P})\cr
     \otimes\cr
-    \tx{Inst}_C(\mathcal{Q})\cr
+    \tx{Inst}_C(\mathscr{Q})\cr
     \otimes\cr
     1(\tx{Out}(G))
   \end{pmatrix}
   \circ G
   =
   \begin{pmatrix}
-    \tx{Inst}_{C'}(\mathcal{P})\cr
+    \tx{Inst}_{C'}(\mathscr{P})\cr
     \otimes\cr
-    1(\tx{Out}(\tx{Inst}_C(\mathcal{Q})))\cr
+    1(\tx{Out}(\tx{Inst}_C(\mathscr{Q})))\cr
     \otimes\cr
     1(\tx{Out}(G))
   \end{pmatrix}
   \circ
-  \tx{Inst}^G_C(\mathcal{Q})
+  \tx{Inst}^G_C(\mathscr{Q})
   $$
   We can then immediately derive parts 1 and 2.
 
@@ -1885,21 +1885,21 @@ $\blacksquare$
   $$
   \tx{Inst}^G_{C'} \overset{\epsilon}{\approx}
   \begin{pmatrix}
-    \tx{Inst}_{C'}(\mathcal{P})\cr
+    \tx{Inst}_{C'}(\mathscr{P})\cr
     \otimes\cr
-    1(\tx{Out}(\tx{Inst}_C(\mathcal{Q})))\cr
+    1(\tx{Out}(\tx{Inst}_C(\mathscr{Q})))\cr
     \otimes\cr
     1(\tx{Out}(G))
   \end{pmatrix}
   \circ
-  \tx{SimInst}^G_{S, C}(\mathcal{Q})
+  \tx{SimInst}^G_{S, C}(\mathscr{Q})
   $$
-  Then, we unroll $\tx{SimInst}^G_{S, C}(\mathcal{Q})$, to get:
+  Then, we unroll $\tx{SimInst}^G_{S, C}(\mathscr{Q})$, to get:
   $$
   \begin{pmatrix}
-    \tx{Inst}_{C'}(\mathcal{P})\cr
+    \tx{Inst}_{C'}(\mathscr{P})\cr
     \otimes\cr
-    1(\tx{Out}(\tx{Inst}_C(\mathcal{Q})))\cr
+    1(\tx{Out}(\tx{Inst}_C(\mathscr{Q})))\cr
     \otimes\cr
     1(\tx{Out}(G))
   \end{pmatrix}
@@ -1910,7 +1910,7 @@ $\blacksquare$
       \otimes\cr
       1(\ldots)\cr
     \end{pmatrix}
-    \circ \tx{Inst}_C(\mathcal{Q})\cr
+    \circ \tx{Inst}_C(\mathscr{Q})\cr
     \otimes\cr
     1(\tx{Out}(G))
   \end{pmatrix}
@@ -1928,16 +1928,16 @@ $\blacksquare$
     \end{pmatrix}
     \circ
     \begin{pmatrix}
-    \tx{Inst}_{C'}(\mathcal{P})\cr
+    \tx{Inst}_{C'}(\mathscr{P})\cr
     \otimes\cr
-    \tx{Inst}_C(\mathcal{Q})\cr
+    \tx{Inst}_C(\mathscr{Q})\cr
     \end{pmatrix}\cr
     \otimes\cr
     1(\tx{Out}(G))
   \end{pmatrix}
   \circ G
   $$
-  But this is just $\tx{SimInst}^G_{S', C'}(\mathcal{P} \otimes \mathcal{Q})$,
+  But this is just $\tx{SimInst}^G_{S', C'}(\mathscr{P} \otimes \mathscr{Q})$,
   for some simulator $S'$,
   applying concurrent breakdown in reverse.
 
@@ -1945,68 +1945,68 @@ $\blacksquare$
 \end{theorem}
 
 \begin{theorem}[Global Horizontal Composition Theorem]
-  For any protocols $\mathcal{P}, \mathcal{Q}$ closed relative to $G$, with $\mathcal{P} \lhd \mathcal{Q}$
-  well defined, and for any compatible corruption classes $\mathcal{C}, \mathcal{C'}$, we have:
+  For any protocols $\mathscr{P}, \mathscr{Q}$ closed relative to $G$, with $\mathscr{P} \lhd \mathscr{Q}$
+  well defined, and for any compatible corruption classes $\mathscr{C}, \mathscr{C'}$, we have:
   \begin{enumerate}
-    \item $\mathcal{Q} =^G_{\mathcal{C}} \mathcal{Q}' \implies \mathcal{P} \lhd \mathcal{Q} =^G_{\mathcal{C}'} \mathcal{P} \lhd \mathcal{Q}'$
-    \item $\mathcal{Q} \overset{\epsilon}{\approx}^G_{\mathcal{C}} \mathcal{Q}' \implies \mathcal{P} \lhd \mathcal{Q} \overset{\epsilon}{\approx}^G_{\mathcal{C}'} \mathcal{P} \lhd \mathcal{Q}'$
+    \item $\mathscr{Q} =^G_{\mathscr{C}} \mathscr{Q}' \implies \mathscr{P} \lhd \mathscr{Q} =^G_{\mathscr{C}'} \mathscr{P} \lhd \mathscr{Q}'$
+    \item $\mathscr{Q} \overset{\epsilon}{\approx}^G_{\mathscr{C}} \mathscr{Q}' \implies \mathscr{P} \lhd \mathscr{Q} \overset{\epsilon}{\approx}^G_{\mathscr{C}'} \mathscr{P} \lhd \mathscr{Q}'$
   \end{enumerate}
 
-  Furthermore, if $\mathcal{C}'$ is \emph{strictly} compatible with $\mathcal{C}$,
+  Furthermore, if $\mathscr{C}'$ is \emph{strictly} compatible with $\mathscr{C}$,
   we have:
   \begin{enumerate}
     \setcounter{enumi}{2}
-    \item $\mathcal{Q} \overset{\epsilon}{\leadsto}^G_{\mathcal{C}} \mathcal{Q}' \implies \mathcal{P} \lhd \mathcal{Q} \overset{\epsilon}{\leadsto}^G_{\mathcal{C}'} \mathcal{P} \lhd \mathcal{Q}'$
+    \item $\mathscr{Q} \overset{\epsilon}{\leadsto}^G_{\mathscr{C}} \mathscr{Q}' \implies \mathscr{P} \lhd \mathscr{Q} \overset{\epsilon}{\leadsto}^G_{\mathscr{C}'} \mathscr{P} \lhd \mathscr{Q}'$
   \end{enumerate}
 
   \txbf{Proof:} This proof is similar to that of Theorem~\ref{thm:horizontal_composition_theorem}.
-  By compatability, for any $C' \in \mathcal{C}'$, we have a compatible $C \in \mathcal{C}$.
+  By compatability, for any $C' \in \mathscr{C}'$, we have a compatible $C \in \mathscr{C}$.
 
   A crude summary of the horizontal breakdown theorem is that:
   $$
-  \tx{Inst}_{C'}(\mathcal{P} \lhd \mathcal{Q})
+  \tx{Inst}_{C'}(\mathscr{P} \lhd \mathscr{Q})
   = \tx{Stuff} \circ \begin{pmatrix}
-    \tx{Inst}_C(\mathcal{Q})\cr
+    \tx{Inst}_C(\mathscr{Q})\cr
     \otimes\cr
-    1(\tx{In}(\mathcal{P}.F))
+    1(\tx{In}(\mathscr{P}.F))
   \end{pmatrix}
   $$
-  Using the fact that being closed relative to $G$ means $\tx{In}(\mathcal{P}.F) \subseteq \tx{Out}(G)$,
+  Using the fact that being closed relative to $G$ means $\tx{In}(\mathscr{P}.F) \subseteq \tx{Out}(G)$,
   we get:
   $$
-  \tx{Inst}^G_{C'}(\mathcal{P} \lhd \mathcal{Q}) =
+  \tx{Inst}^G_{C'}(\mathscr{P} \lhd \mathscr{Q}) =
   \begin{pmatrix}
     \tx{Stuff}\cr
     \otimes\cr
     1(\tx{Out}(G))
   \end{pmatrix}
-  \circ \tx{Inst}^G_C(\mathcal{Q})
+  \circ \tx{Inst}^G_C(\mathscr{Q})
   $$
   Part 1 and 2 both follow immediately from this decomposition.
 
   For part 3, we dig a bit deeper into the proof of Theorem~\ref{thm:horizontal_composition_theorem}.
   In that proof, it was actually shown that:
   $$
-  \tx{Stuff} \circ \tx{SimInst}_{S, C}(\mathcal{Q}') = \tx{SimInst}_{S', C'}(\mathcal{P} \lhd \mathcal{Q}')
+  \tx{Stuff} \circ \tx{SimInst}_{S, C}(\mathscr{Q}') = \tx{SimInst}_{S', C'}(\mathscr{P} \lhd \mathscr{Q}')
   $$
   for some appropriate simulator $S'$.
 
   We can start to apply this, first by using our hypothesis:
   $$
-  \tx{Inst}^G_{C'}(\mathcal{P} \lhd \mathcal{Q}) =
+  \tx{Inst}^G_{C'}(\mathscr{P} \lhd \mathscr{Q}) =
   \begin{pmatrix}
     \tx{Stuff}\cr
     \otimes\cr
     1(\tx{Out}(G))
   \end{pmatrix}
-  \circ \tx{Inst}^G_C(\mathcal{Q})
+  \circ \tx{Inst}^G_C(\mathscr{Q})
   \overset{\epsilon}{\approx}
   \begin{pmatrix}
     \tx{Stuff}\cr
     \otimes\cr
     1(\tx{Out}(G))
   \end{pmatrix}
-  \circ \tx{SimInst}^G_C(\mathcal{Q}')
+  \circ \tx{SimInst}^G_C(\mathscr{Q}')
   $$
   Next, we unroll the right side, to get:
   $$
@@ -2017,7 +2017,7 @@ $\blacksquare$
   \end{pmatrix}
   \circ
   \begin{pmatrix}
-    \tx{SimInst}_{S, C}(\mathcal{Q}')\cr
+    \tx{SimInst}_{S, C}(\mathscr{Q}')\cr
     \otimes\cr
     1(\tx{Out}(G))
   \end{pmatrix}
@@ -2027,7 +2027,7 @@ $\blacksquare$
   Then, apply interchange, to get:
   $$
   \begin{pmatrix}
-    \tx{Stuff} \circ \tx{SimInst}_{S, C}(\mathcal{Q}')\cr
+    \tx{Stuff} \circ \tx{SimInst}_{S, C}(\mathscr{Q}')\cr
     \otimes\cr
     1(\tx{Out}(G))
   \end{pmatrix}
@@ -2037,14 +2037,14 @@ $\blacksquare$
   And finally, apply the fact we dug up above, to get:
   $$
   \begin{pmatrix}
-    \tx{SimInst}_{S', C'}(\mathcal{P} \lhd \mathcal{Q})\cr
+    \tx{SimInst}_{S', C'}(\mathscr{P} \lhd \mathscr{Q})\cr
     \otimes\cr
     1(\tx{Out}(G))
   \end{pmatrix}
   \circ
   G
   $$
-  which is none other than $\tx{SimInst}^G_{S', C'}(\mathcal{P} \lhd \mathcal{Q})$.
+  which is none other than $\tx{SimInst}^G_{S', C'}(\mathscr{P} \lhd \mathscr{Q})$.
 
   $\blacksquare$
 \end{theorem}
@@ -2052,25 +2052,25 @@ $\blacksquare$
 \subsection{Hopping Ideal Functionalities}
 
 \begin{lemma}[Deidealization Lemma]
-  Given a closed protocol $\mathcal{P}$ with an ideal functionality $F \otimes G$,
-  there exists protocols $\mathcal{P}'$ and $\mathcal{G}$
+  Given a closed protocol $\mathscr{P}$ with an ideal functionality $F \otimes G$,
+  there exists protocols $\mathscr{P}'$ and $\mathscr{G}$
   such that:
   $$
-  \mathcal{P} \equiv \mathcal{P}' \lhd \mathcal{G}
+  \mathscr{P} \equiv \mathscr{P}' \lhd \mathscr{G}
   $$
-  and $\mathcal{P}'$ has ideal functionality $F$.
+  and $\mathscr{P}'$ has ideal functionality $F$.
 
 
-  \txbf{Proof:} The players of $\mathcal{P}'$ are those of $\mathcal{P}$,
+  \txbf{Proof:} The players of $\mathscr{P}'$ are those of $\mathscr{P}$,
   except that each $P_i$'s call to a function $g \in \tx{Out}(G)$ is replaced with
   a renamed function $g_i$.
-  $\mathcal{G}$ will have one player for each player in $\mathcal{P}'$.
-  Each player $\mathcal{G}.P_i$ exports a function $g_i$ for each input
-  $g_i$ of $\mathcal{P}'.P_i$, which immediately calls $g \in \tx{Out}(G)$,
+  $\mathscr{G}$ will have one player for each player in $\mathscr{P}'$.
+  Each player $\mathscr{G}.P_i$ exports a function $g_i$ for each input
+  $g_i$ of $\mathscr{P}'.P_i$, which immediately calls $g \in \tx{Out}(G)$,
   and returns the result.
-  The leakage of $\mathcal{G}$ will simply be $\mathcal{P}.\tx{Leakage} \cap \tx{Out}(G)$.
-  From this definition, it's clear that $\mathcal{P}$ is literally equal
-  to $\mathcal{P}' \lhd \mathcal{G}$, as when the players in the latter
+  The leakage of $\mathscr{G}$ will simply be $\mathscr{P}.\tx{Leakage} \cap \tx{Out}(G)$.
+  From this definition, it's clear that $\mathscr{P}$ is literally equal
+  to $\mathscr{P}' \lhd \mathscr{G}$, as when the players in the latter
   are formed, the calls to the intermediate $g_i$ disappear,
   with each player calling $g \in \tx{Out}(G)$ directly
 
@@ -2078,25 +2078,25 @@ $\blacksquare$
 \end{lemma}
 
 \begin{lemma}[Embedding Lemma]
-  Given a protocol $\mathcal{P}$ closed relative to a game $G$,
-  there exists a protocol $\tx{Embed}_G(\mathcal{P})$ such that for any
+  Given a protocol $\mathscr{P}$ closed relative to a game $G$,
+  there exists a protocol $\tx{Embed}_G(\mathscr{P})$ such that for any
   corruption model $C$, we have:
   $$
-  \tx{Inst}^G_C(\mathcal{P}) = \tx{Inst}_C(\tx{Embed}_G(\mathcal{P}))
+  \tx{Inst}^G_C(\mathscr{P}) = \tx{Inst}_C(\tx{Embed}_G(\mathscr{P}))
   $$
 
   \txbf{Proof:}
-  This one is quite simple. $\tx{Embed}_G(\mathcal{P})$ has the same players
-  as $\mathcal{P}$, with the ideal functionality becoming:
+  This one is quite simple. $\tx{Embed}_G(\mathscr{P})$ has the same players
+  as $\mathscr{P}$, with the ideal functionality becoming:
   $$
   \begin{pmatrix}
-    \mathcal{P}.F\cr
+    \mathscr{P}.F\cr
     \otimes\cr
     1(\tx{Out}(G))
   \end{pmatrix}
   \circ G
   $$
-  and the leakage being $\mathcal{P}.\tx{Leakage} \cup \tx{Out}(G)$.
+  and the leakage being $\mathscr{P}.\tx{Leakage} \cup \tx{Out}(G)$.
   The two instantiations will then clearly be equal under any corruption model.
 
   $\blacksquare$
