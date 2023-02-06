@@ -411,6 +411,32 @@ The first property we prove is the one used as an example above.
     $\blacksquare$
 \end{lemma}
 
+This property is useful, since it lets us simply write $A \circ B \circ C$,
+without worrying about the order in which packages are composed.
 
+Another more technical property we want composition to satisfy is
+that if \emph{equality preservation}.
+If $B \equiv B'$, then it should be the case that $A \circ B \equiv A \circ B'$,
+or that $B \circ C \equiv B' \circ C$.
+If that weren't the case, then that would indicate that something is wrong
+with our definition of either equality or composition.
+The property we want for literal equality is that $A$ and $A'$ are completely
+interchangeable, and so once can always be replaced with the other, no matter
+the context, to the point that we can think of them as literally being the same
+package.
+
+Thankfully, it turns out that composition and literal equality do
+in fact get along.
+
+\begin{lemma}[Composition Preserves Equality]
+    Given any packages $A, B, B', C$ it holds that:
+    \begin{itemize}
+        \item $B \equiv B' \implies A \circ B \equiv A \circ B'$,
+        \item $B \equiv B' \implies B \circ C \equiv B' \circ C$,
+    \end{itemize}
+    provided these expressions are well defined.
+
+    \txbf{Proof:}
+\end{lemma}
 
 \subsection{Syntactical Conventions for Packages}
