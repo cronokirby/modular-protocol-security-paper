@@ -252,7 +252,7 @@ We've now developed enough tools to define packages.
         \item a set of \emph{input names} $\tx{In}(A)$, of size $m$,
         \item a permutation $\pi_{\tx{in}} : \tx{In}(A) \leftrightarrow [m]$,
         \item a set of \emph{output names} $\tx{In}(A)$, of size $n$,
-        \item a permutation $\pi_{\tx{out}} : \tx{Out}(A) \leftrightarrow [m]$,
+        \item a permutation $\pi_{\tx{out}} : [m] \leftrightarrow \tx{Out}(A)$,
         \item a set of parametrized functions $f_1, \ldots, f_n : \forall s. \stateful{s}^m \to \stateful{(S, s)}$,
         each of which has a distinct name $n_i \in \tx{Out}(A)$.
     \end{itemize}
@@ -480,5 +480,53 @@ in fact get along.
 
     $\blacksquare$
 \end{lemma}
+
+Now, we look at the other kind of composition for packages:
+tensoring.
+The intuitive idea is that tensoring allows us to run two
+packages ``in parallel''.
+The result of tensoring two packages is a new package with the functions
+in both packages, and we can interact with one package or the other at will.
+We'll discuss the semantics a bit more after the formal definition.
+
+\begin{definition}[Package Tensoring]
+    Given two packages $A$, $B$, with $\tx{Out}(A) \cap \tx{Out}(B) = \emptyset$,
+    we can define their tensoring $A \otimes B$ as a package characterized by:
+    \begin{itemize}
+        \item a state type $(A.S, B.S)$,
+        \item input names $\tx{In}(A) \cup \tx{In}(B)$,
+        \item output names $\tx{Out}(A) \cup \tx{Out}(B$),
+        \item an output name assignment defined by:
+        $$
+        \pi_{\tx{out}}(i) := \begin{cases}
+            A.\pi_{\tx{out}}(i) & i \leq A.n\cr
+            B.\pi_{\tx{out}}(i - A.n) & i > A.n
+        \end{cases}
+        $$
+        \item an input index assignment defined by:
+        $$
+        \pi_{\tx{in}}(n) := \begin{cases}
+            A.\pi_{\tx{in}}(n) &n \in \tx{In}(A)\cr
+            \tx{rank}_B(n) + A.m &n \in \tx{In}(B) / \tx{In}(A)\cr
+        \end{cases}
+        $$
+        where $\tx{rank}_B(n)$ returns the index of $n$ in the list
+        of names in $\tx{In}(B) / \tx{In}(A)$, sorted by $B.\pi_{\tx{in}}(n)$.
+    \end{itemize}
+
+    Then, for the functions, we have two cases.
+
+    For $i \in [1, \ldots, A.n]$, we have:
+    $$
+    f_i := (h_1, \ldots, h_m) \mapsto A.f_i[h_1, \ldots, h_{A.m}]
+    $$
+    Then, for $i \in [A.n + 1, \ldots, A.n + B.n]$, we have:
+    $$
+    f_i := (h_1, \ldots, h_m) \mapsto
+    B.f_i[h_{B.\pi_{\tx{in}}(\pi_{\tx{in}}^{-1}(j))}\mid j \in [m], \pi_{\tx{in}}^{-1}(j) \in \tx{In}(B)]
+    $$
+
+    $\square$
+\end{definition}
 
 \subsection{Syntactical Conventions for Packages}
