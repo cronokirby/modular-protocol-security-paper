@@ -291,6 +291,12 @@ of the machine, in order to supply you with an output,
 potentially modifying the state along the way.
 The input functions allow a package to interact with other packages itself.
 
+We'll often use $\tx{In}(A)$ or $\tx{Out}(A)$ to talk about the input
+and output functions of a package.
+As a bit of a short hand notation, we write $\tx{In}(A, B, \ldots)$
+for the union $\tx{In}(A) \cup \tx{In}(B) \cup \ldots$, and similarly
+for $\tx{Out}(\ldots)$.
+
 We describe this kind of interaction using the formal
 notion of package \emph{composition}.
 
@@ -337,10 +343,10 @@ what it means for two packages to be "the same".
     written $A \equiv B$, when:
     \begin{itemize}
         \item $A.S \cong B.S$,
-        \item $\tx{In}(A) = \tx{In}(B.S)$,
-        \item $\tx{Out}(A) = \tx{Out}(B.S)$,
+        \item $\tx{In}(A) = \tx{In}(B)$,
+        \item $\tx{Out}(A) = \tx{Out}(B)$,
         \item There exists a permutation $\pi : [n] \leftrightarrow [n]$ such that
-        $$\forall i \in [n].\ A.f_i = B.f_{\pi(i)}$$
+        $$\forall i \in [n].\ A.f_i = B.f_{\pi(i)} \land A.n_i = B.n_{\pi(i)}$$
     \end{itemize}
 
     $\square$
@@ -354,6 +360,8 @@ For the type of state, we consider an isomorphism directly,
 mainly so that $(A.S, (B.S, C.S))$ is considered to be the same state
 type as $((A.S, B.S), C.S)$, which might already be the case depending on
 how one defines equality for sets.
+The final condition also implies that $\pi_{\tx{in}}$ is the same
+for both packages.
 
 This notion of equality is very strong, especially because of the equality
 it imposes on the functions defined in each package.
@@ -436,7 +444,41 @@ in fact get along.
     \end{itemize}
     provided these expressions are well defined.
 
-    \txbf{Proof:}
+    \txbf{Proof:} In one case the state type is $(A.S, B.S)$
+    or $(A.S, B'.S)$, which are isomorphic if $B.S \cong B'.S$.
+    Similarly, in the other case, we have $(B.S, C.S)$ vs $(B'.S, C.S)$,
+    and the same observation holds.
+
+    Now, remember that $\tx{In}(X \circ Y) = \tx{In}(Y)$, and $\tx{Out}(X \circ Y) = \tx{Out}(X)$.
+    Thus, since both $\tx{In}(B) = \tx{In}(B')$ and $\tx{Out}(B) = \tx{Out}(B')$
+    hold, we conclude that $\tx{In}$ and $\tx{Out}$ match up in both cases.
+
+    The trickier part is the 4th condition for equality.
+
+    In the first case, the functions are of the form:
+    $$
+    A.\tx{f}_i[\varphi_A(B.f_1), \ldots]
+    $$
+    Now, $\varphi_A$ orders the functions in $B$ based only on their \emph{names}.
+    In particular, the ordering does not matter.
+    Since the functions in $B'$ are the same as $B$ up to their ordering,
+    including their names,
+    $\varphi_A$ will order them in the same way.
+    Thus, the functions in $A \circ B$ and $A \circ B'$.
+
+    In the second case, the functions are of the form:
+    $$
+    B.\tx{f}_i[\varphi_B(C.f_1), \ldots]
+    $$
+    Now, $\pi_{\tx{in}}$ is the same for both $B$ and $B'$, as we've remarked
+    before.
+    Thus, $\varphi_B$ and $\varphi_{B'}$ are the same.
+    Thus, the functions in $B \circ C$ are the same as $B \circ C'$,
+    up to reordering, as required.
+
+    Having noted all of these points, we can conclude our proof.
+
+    $\blacksquare$
 \end{lemma}
 
 \subsection{Syntactical Conventions for Packages}
