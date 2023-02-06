@@ -253,7 +253,8 @@ We've now developed enough tools to define packages.
         \item a permutation $\pi_{\tx{in}} : \tx{In}(A) \leftrightarrow [m]$,
         \item a set of \emph{output names} $\tx{In}(A)$, of size $n$,
         \item a permutation $\pi_{\tx{out}} : \tx{Out}(A) \leftrightarrow [m]$,
-        \item a set of parametrized functions $f_1, \ldots, f_n : \forall s. \stateful{s}^m \to \stateful{(S, s)}$.
+        \item a set of parametrized functions $f_1, \ldots, f_n : \forall s. \stateful{s}^m \to \stateful{(S, s)}$,
+        each of which has a distinct name $n_i \in \tx{Out}(A)$.
     \end{itemize}
 
     We also only consider a package to be defined \emph{up to} potentially
@@ -303,15 +304,17 @@ notion of package \emph{composition}.
         \item output names $\tx{Out}(A)$,
         \item $\pi_{\tx{in}} := B.\pi_{\tx{in}}$,
         \item $\pi_{\tx{out}} := A.\pi_{\tx{out}}$,
-        \item output functions $A.f_1[B.f_1, \ldots, B.f_{B.n}], \ldots$
+        \item output functions $A.f_1[\varphi(B.f_1), \ldots, \varphi(B.f_{B.n})], \ldots$
         of type $\forall s.\stateful{s}^{B.m} \to \stateful{(A.S, B.S)}$.
     \end{itemize}
 
     In more detail, each output function is of the form:
     $$
-    (h_1, \ldots, h_{B.m}) \mapsto A.f_i[B.f_1[h_1, \ldots], \ldots, B.f_{B.n}[h_1, \ldots]]
+    (h_1, \ldots, h_{B.m}) \mapsto A.f_i[\varphi_{A}(B.f_1)[h_1, \ldots], \ldots, \varphi_{A}(B.f_{B.n})[h_1, \ldots]]
     $$
-    with the same input functions $h_j$ being given
+    where $\varphi_{A}$ assigns each function $B.f_i$ to a slot in $[m]$
+    using $A.\pi_{\tx{in}}$ on the name of that function, $B.n_i$.
+    The same input functions $h_j$ being given
     to all the functions used by $A.f_i$.
 
     $\square$
@@ -379,26 +382,35 @@ The first property we prove is the one used as an example above.
 
     The functions in $B \circ C$ are of the form:
     $$
-    (h_1, \ldots) \mapsto B.f_i[C.f_1[h_1, \ldots], \ldots]
+    (h_1, \ldots) \mapsto B.f_i[\varphi_{B}(C.f_1)[h_1, \ldots], \ldots]
     $$
     And then the functions in $A \circ (B \circ C)$ are of the form:
     $$
-    (h_1, \ldots) \mapsto A.f_i[B.f_1[C.f_1[h_1, \ldots]], \ldots]
+    (h_1, \ldots) \mapsto A.f_i[\varphi_{A}(B.f_1)[\varphi_{B}(C.f_1)[h_1, \ldots]], \ldots]
     $$
 
     From the other side, the functions in $A \circ B$ are of the form:
     $$
-    (h_1, \ldots) \mapsto A.f_i[B.f_1[h_1, \ldots], \ldots]
+    (h_1, \ldots) \mapsto A.f_i[\varphi_{A}(B.f_1)[h_1, \ldots], \ldots]
     $$
     This makes the functions in $(A \circ B) \circ C$ of the form:
     $$
-    (h_1, \ldots) \mapsto A.f_i[B.f_1[C.f_1[h_1, \ldots]], \ldots]
+    (h_1, \ldots) \mapsto A.f_i[\varphi_{A}(B.f_1)[\varphi_{A \circ B}(C.f_1)[h_1, \ldots]], \ldots]
     $$
+
+    Now, the only difference is that we end up with $\varphi_{A \circ B}$
+    as our means of assigning the functions in $C$ to the slots
+    of $B$.
+    However, $\varphi_{X}$ only depends on $X.\pi_{\tx{in}}$,
+    and by definition $(A \circ B).\pi_{\tx{in}} = B.\pi_{\tx{in}}$,
+    so $\varphi_{A \circ B} = \varphi_B$.
 
     So, in both cases, we end up with the same functions, concluding
     our proof.
 
     $\blacksquare$
 \end{lemma}
+
+
 
 \subsection{Syntactical Conventions for Packages}
