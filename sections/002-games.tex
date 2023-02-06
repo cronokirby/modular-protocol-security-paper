@@ -503,27 +503,22 @@ We'll discuss the semantics a bit more after the formal definition.
             B.\pi_{\tx{out}}(i - A.n) & i > A.n
         \end{cases}
         $$
-        \item an input index assignment defined by:
-        $$
-        \pi_{\tx{in}}(n) := \begin{cases}
-            A.\pi_{\tx{in}}(n) &n \in \tx{In}(A)\cr
-            \tx{rank}_B(n) + A.m &n \in \tx{In}(B) / \tx{In}(A)\cr
-        \end{cases}
-        $$
-        where $\tx{rank}_B(n)$ returns the index of $n$ in the list
-        of names in $\tx{In}(B) / \tx{In}(A)$, sorted by $B.\pi_{\tx{in}}(n)$.
+        \item an input index assignment $\pi_{\tx{in}}(n)$ which
+        returns the index of $n$ in the list of names $\tx{In}$, sorted
+        in lexicographic order.
     \end{itemize}
 
     Then, for the functions, we have two cases.
 
     For $i \in [1, \ldots, A.n]$, we have:
     $$
-    f_i := (h_1, \ldots, h_m) \mapsto A.f_i[h_1, \ldots, h_{A.m}]
+    f_i := (h_1, \ldots, h_m) \mapsto
+    A.f_i[h_{\pi_\tx{in}(A.\pi_{\tx{in}}^{-1}(j))}\mid j \in [A.m]]
     $$
     Then, for $i \in [A.n + 1, \ldots, A.n + B.n]$, we have:
     $$
     f_i := (h_1, \ldots, h_m) \mapsto
-    B.f_i[h_{B.\pi_{\tx{in}}(\pi_{\tx{in}}^{-1}(j))}\mid j \in [m], \pi_{\tx{in}}^{-1}(j) \in \tx{In}(B)]
+    B.f_i[h_{\pi_\tx{in}(B.\pi_{\tx{in}}^{-1}(j))}\mid j \in [B.m]]
     $$
 
     $\square$
