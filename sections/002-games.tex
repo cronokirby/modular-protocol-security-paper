@@ -372,6 +372,33 @@ The first property we prove is the one used as an example above.
     $((A.S, B.S), C.S)$ on the right, and so the two states are isomorphic.
     All that's left is the final condition, talking about the equality
     of the functions defined in each package.
+
+    Now, for the equality of functions, we'll expand the functions
+    of the package on the left, and then on the right, before comparing
+    the results we get.
+
+    The functions in $B \circ C$ are of the form:
+    $$
+    (h_1, \ldots) \mapsto B.f_i[C.f_1[h_1, \ldots], \ldots]
+    $$
+    And then the functions in $A \circ (B \circ C)$ are of the form:
+    $$
+    (h_1, \ldots) \mapsto A.f_i[B.f_1[C.f_1[h_1, \ldots]], \ldots]
+    $$
+
+    From the other side, the functions in $A \circ B$ are of the form:
+    $$
+    (h_1, \ldots) \mapsto A.f_i[B.f_1[h_1, \ldots], \ldots]
+    $$
+    This makes the functions in $(A \circ B) \circ C$ of the form:
+    $$
+    (h_1, \ldots) \mapsto A.f_i[B.f_1[C.f_1[h_1, \ldots]], \ldots]
+    $$
+
+    So, in both cases, we end up with the same functions, concluding
+    our proof.
+
+    $\blacksquare$
 \end{lemma}
 
 \subsection{Syntactical Conventions for Packages}
