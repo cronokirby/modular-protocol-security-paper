@@ -1126,11 +1126,118 @@ This kind of technique is called ``game hopping'',
 and one of the strengths of state-separable proofs is making
 the application of the technique as simple and route as possible.
 
+Having defined these notions of equality for games,
+we now extend them to \emph{packages}.
+The natural way to do this is by trying to turn
+a package into a game, and then using the notions we've just developed.
+
+Let's look at a way to do this transformation.
+
+\begin{definition}[Completion]
+    Given a package $A$, a completion of $A$ is a game $\mathcal{C}$,
+    such that $\tx{Out}(\mathcal{C}) \supseteq \tx{In}(A)$.
+
+    We write:
+    $$
+    \tx{Compl}_{\mathcal{C}}(A) := \begin{pmatrix}
+        A\cr
+        \otimes\cr
+        1(\mathcal{C})
+    \end{pmatrix}
+    \circ \mathcal{C}
+    $$
+
+    $\square$
+\end{definition}
+
+So, a completion is one way of turning a package into a game.
+It does so by filling in all of the input functions,
+but it also leaks extra information forward.
+The reason behind this is so that an adversary is also able
+to see what's happening ``behind'' the package $A$.
+
+Before we extend our notions of equality to packages, we need
+to quickly extend our notion of \emph{shape} first.
+
+\begin{definition}[Package Shape]
+    Two packages $A$, $B$, are said to have the \emph{same shape}
+    if $\tx{Out}(A) = \tx{Out}(B)$, and $\tx{In}(A) = \tx{In}(B)$.
+
+    $\square$
+\end{definition}
+
+We're now ready to define equality and indistinguishability for packages.
+
+\begin{definition}[Package Equality and Indistinguishability]
+    Given two packages $A$, $B$ with the same shape, we say that:
+    \begin{enumerate}
+        \item $A$ is equal to $B$, written $A = B$, if for all completions
+        $\mathcal{C}$, we have $\tx{Compl}_{\mathcal{C}}(A) = \tx{Compl}_{\mathcal{C}}(B)$,
+        \item $A$ is indistinguishable up to $\epsilon$ with $B$, written $A \overset{\epsilon}{\approx} B$,
+        if for all \emph{efficient} completions $\mathcal{C}$, we have $\tx{Compl}_{\mathcal{C}}(A) \overset{\epsilon}{\approx} \tx{Compl}_{\mathcal{C}}(B)$.
+    \end{enumerate}
+
+    $\square$
+\end{definition}
+
+A completion turns a package into a game, so it's natural to compare
+packages by using completions.
+However, there's no ``canonical'' completion, so it's not clear
+which one to use to compare the packages.
+We get around this problem by simply using all of them.
+
+One way of looking at these notions of equality is that we
+have an adversary which completely surrounds a package $A$,
+seeing both the ``front'', via $\tx{Out}(A)$, and the ``back'',
+via $\tx{In}(A)$, and can distinguish the package from others by influencing
+either side.
+This is why it's important that the adversary can interact with $\mathcal{C}$
+directly, so that $\mathcal{A}$ and $\mathcal{C}$ effectively form
+one unified adversary.
+
+The basic properties of equality, like symmetry and transitivity,
+also hold for packages, given the definition in terms of games.
+
+\subsection{Some Properties of Equality}
+
 So far, we've seen three notions of equality:
 \begin{enumerate}
     \item Literal Equality ($\equiv$),
     \item Equality ($=$),
     \item Indistinguishability ($\overset{\epsilon}{\approx}$).
 \end{enumerate}
+We've considered them in isolation, but in fact there's
+a very natural link between the three:
+each of them is strictly stronger than the other.
+We capture this fact in the following theorem.
+
+\begin{lemma}[Equality Hierarchy]
+    For any packages $A$, $B$ with the same shape, it holds that:
+    \begin{enumerate}
+        \item $A \equiv B \implies A = B$,
+        \item $A = B \implies A \overset{0}{\approx} B$.
+    \end{enumerate}
+
+    \txbf{Proof:} For part one, if $A \equiv B$, then
+    $\mathcal{A} \circ \tx{Compl}_{\mathcal{C}}(A) \equiv \mathcal{A} \circ \tx{Compl}_{\mathcal{C}}(B)$, since
+    composition and tensoring preserve literal equality.
+    But, in that case, by definition of $\equiv$, the $\tx{run}$
+    functions must be equal in both cases, which means that:
+    $$
+    \varepsilon(\mathcal{A} \circ \tx{Compl}_{\mathcal{C}}(A), \mathcal{A} \circ \tx{Compl}_{\mathcal{C}}(B)) = 0
+    $$
+    which is what we needed to prove.
+
+    For part 2, note that if for \emph{every} adversary $\mathcal{A}$
+    and completion $\mathcal{C}$,
+    we have:
+    $$
+    \varepsilon_{\mathcal{A}}(\tx{Compl}_{\mathcal{C}}(A), \tx{Compl}_{\mathcal{C}}(B)) = 0
+    $$
+    then, in particular, this relation holds for every \emph{efficient} adversary
+    and completion as well, which is what we needed to prove.
+
+    $\blacksquare$
+\end{lemma}
 
 \subsection{Syntactical Conventions for Packages}
