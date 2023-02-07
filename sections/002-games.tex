@@ -1484,12 +1484,27 @@ Next, we prove the same kind of theorem about composition.
 
     \txbf{4.} Same as above, except our assumption gives us:
     $$
-    \tx{Compl}_{\mathcal{C}'}(B) \overset{\epsilon}{=}
+    \tx{Compl}_{\mathcal{C}'}(B) \overset{\epsilon}{\approx}
     \tx{Compl}_{\mathcal{C}'}(B')
     $$
     and then transitivity can be applied to reach our result once again.
 
     $\blacksquare$
 \end{lemma}
+
+These lemmas form the conceptual crux of how proofs in the state-separable
+style work.
+If you want to prove that two large packages
+are indistinguishable, you do so by a series of observations,
+each of which breaks down the package as a composition
+of many smaller packages.
+Sometimes you'll be able to use theorems you've already proved,
+or problemsa assumed to be hard, in order to argue
+that small pieces are indistinguishable, and thus apply
+the lemmas we've just demonstrated in order
+to lift that indistinguishability to the large composition.
+By applying a series of such hops, you eventually
+produce a reduction of the security of this large package
+to that of several smaller packages.
 
 \subsection{Syntactical Conventions for Packages}
