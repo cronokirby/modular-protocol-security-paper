@@ -651,4 +651,36 @@ Like with composition, tensoring is also associative.
     $\blacksquare$
 \end{lemma}
 
+Like with composition, associativity lets us forget about the way we
+group multiple tensorings together, letting us simply write $A \otimes B \otimes C$.
+
+Tensoring also satisfies an additional property compared to composition.
+Because tensoring just provides the functions of both packages,
+it shouldn't actually matter which order we tensor packages together,
+since the resulting functions are the same.
+
+\begin{lemma}[Tensoring is Commutative]
+    For any packages $A$, $B$, it holds that:
+    $$
+    A \otimes B \equiv B \otimes A
+    $$
+    provided these expressions are well defined.
+
+    \txbf{Proof:} The state on the left is $(A.S, B.S)$, and $(B.S, A.S)$
+    on the right.
+    These states are isomorphic, as we've seen before.
+
+    Similarly, since $\cup$ is commutative, $\tx{In}$ and $\tx{Out}$
+    will match on both sides.
+
+    The inputs to each of the functions depend only on the set
+    of names of the input functions, which are identical for both sides.
+    The ordering is different though, but it suffices
+    to swap $f_i$ with $f_{i + A.n}$ to make the ordering the same.
+
+    Thus, we conclude that the two packages are the same.
+
+    $\blacksquare$
+\end{lemma}
+
 \subsection{Syntactical Conventions for Packages}
