@@ -1050,7 +1050,7 @@ hard problems, by restricting the resources of the adversary.
     written $G \overset{\epsilon}{\approx} H$, if for all \emph{efficient}
     adversaries $\mathcal{A}$, we have:
     $$
-    \varepsilon_{\mathcal{A}}(G, H) \leq \epsilon(\mathcal{A}, G, H)
+    \varepsilon_{\mathcal{A}}(G, H) \leq \epsilon
     $$
 
     $\square$
@@ -1060,10 +1060,6 @@ This definition only considers efficient adversaries to allow for
 hard problems to exist, and also allows a bit of a ``gap'',
 letting the adversary have some success at distinguishing
 the two games.
-Note that $\epsilon$ is actually a \emph{function} of $\mathcal{A}$,
-$G$, and $H$.
-This might seem a bit odd at first, but it actually captures
-the most common kind of bound: the one we get from reduction.
 
 When we say that distinguishing a pair of games $G_0, G_1$ reduces
 to distinguishing a pair of games $H_0, H_1$, we mean that
@@ -1080,16 +1076,27 @@ This statement is interesting because if $\varepsilon_{\mathcal{B}}$
 is ``small'', then $\varepsilon_{\mathcal{A}}$ will also be ``small''.
 So, $G_b$ is hard assuming $H_b$ is.
 
-This statement is actually talking about the existence of a function $\epsilon$
-mapping $(\mathcal{A}, G_0, G_1)$ to $\varepsilon_{\mathcal{B}}(H_0, H_1)$.
-Thus, we can write
-$G_0 \overset{H_b}{\approx} G_1$, as an abuse of notation,
-letting $H_b$ here denote this implicit function $\epsilon$,
-mapping adversaries $\mathcal{A}$ for $G_b$ to adversaries
-$\mathcal{B}$ for $H_b$.
+The way we'd translate that in a statement about $\varepsilon$ is by saying
+that:
+$$
+\varepsilon_{\mathcal{A}}(G_0, G_1) \leq \underset{\tx{efficient } \mathcal{B}}{\tx{sup}} \varepsilon_{\mathcal{B}}(H_0, H_1)
+$$
+or, in shorthand:
+$$
+G_0 \overset{H_b}{\approx} G_1
+$$
+Now, the reduction statement above implies this one,
+since if the advantage $\mathcal{A}$ is bounded above by the advantage
+of some $\mathcal{B}$, then it is certainly bounded above by the one with
+the highest advantage.
+Using the supremum also has the advantage of summarizing the reduction
+property into a single real number.
+If a problem is actually hard, the supremum should be small too,
+since there shouldn't 
+be any $\mathcal{B}$ with a large advantage.
 
-These epsilon functions can also be added together, which we'll
-use to define an analogous notion of transitivity.
+We can also add these advantages together, as this following
+lemma shows.
 
 \begin{lemma}[Transitivity of Indistinguishability]
     Given games $G$, $H$, $I$ satisfying:
@@ -1102,7 +1109,7 @@ use to define an analogous notion of transitivity.
     $$
     In more detail, for all efficient adversaries $\mathcal{A}$, we have:
     $$
-    \varepsilon_{\mathcal{A}}(G, I) \leq \epsilon_1(\mathcal{A}, G, H) + \epsilon_2(\mathcal{A}, H, I)
+    \varepsilon_{\mathcal{A}}(G, I) \leq \epsilon_1 + \epsilon_2
     $$
 
     \txbf{Proof:} Since $\varepsilon_{\mathcal{A}}$ is a metric, it
@@ -1238,6 +1245,120 @@ We capture this fact in the following theorem.
     and completion as well, which is what we needed to prove.
 
     $\blacksquare$
+\end{lemma}
+
+This hierarchy is quite useful, since we can prove precise
+equality relations between packages,
+but then ultimately use them in game hopping,
+where only $\approx$ matters.
+The hierarchy also lets us basically forget about $\equiv$,
+since whenever we would've used it, we can just use $=$ instead,
+which is applicable to many more packages.
+
+The main properties we need to prove to wrap up our formal discussion
+of packages is to show that the composition operations we've
+defined respect equality and indistinguishability.
+This is very important, since it lets us reason about large
+packages by arguing that small components are equal or indistinguishable,
+and will form the crux of most proofs.
+
+We start with tensoring, since the proof is simpler.
+
+\begin{lemma}[Tensoring Respects Equality]
+    Given packages $A$, $B$, $B'$, it holds that:
+    \begin{enumerate}
+        \item $B = B' \implies A \otimes B = A \otimes B'$,
+        \item $B \overset{\epsilon}{\approx} B' \implies A \otimes B \overset{\epsilon}{\approx} A \otimes B'$.
+    \end{enumerate}
+    provided that these expressions are well defined,
+    and, for part 2, that $A$ is efficient.
+
+    \txbf{Proof:}
+
+    \txbf{1.}
+    Let $\mathcal{C}$ be some completion for $A \otimes B$.
+    We have:
+    $$
+    \tx{Compl}_{\mathcal{C}}(A \otimes B)
+    =
+    \begin{pmatrix}
+        A\cr
+        \otimes\cr
+        B\cr
+        \otimes\cr
+        1(\mathcal{C})
+    \end{pmatrix}
+    \circ \mathcal{C}
+    $$
+    Now, we apply interchange to write this as:
+    $$
+    \begin{pmatrix}
+        A\cr
+        \otimes\cr
+        1(B)\cr
+        \otimes\cr
+        1(\mathcal{C})
+    \end{pmatrix}
+    \circ
+    \begin{pmatrix}
+        B\cr
+        \otimes\cr
+        1(\mathcal{C})
+    \end{pmatrix}
+    \circ \mathcal{C}
+    = W \circ \tx{Compl}_{\mathcal{C}}(B)
+    $$
+    for some package $\mathcal{W}$.
+    For any adversary $\mathcal{A}$, we have:
+    $$
+    \varepsilon_{\mathcal{A}}(\tx{Compl}_{\mathcal{C}}(B), \tx{Compl}_{\mathcal{C}}(B')) = 0
+    $$
+    In particular, for any adversary $\mathcal{A}'$ against $\tx{Compl}_{\mathcal{C}}(A \otimes B)$,
+    we can apply this observation to $\mathcal{A}' \circ W$, giving us:
+    $$
+    \varepsilon_{\mathcal{A}'}(W \circ \tx{Compl}_{\mathcal{C}}(B), W \circ \tx{Compl}_{\mathcal{C}}(B')) = 0
+    $$
+    Since this observation holds for any $\mathcal{A}'$, we infer that:
+    $$
+    W \circ \tx{Compl}_{\mathcal{C}}(B) =
+    W \circ \tx{Compl}_{\mathcal{C}}(B')
+    $$
+    Then, applying transitivity, we conclude that:
+    $$
+    \tx{Compl}_{\mathcal{C}}(A \otimes B) =
+    \tx{Compl}_{\mathcal{C}}(A \otimes B')
+    $$
+
+    \txbf{2.} We apply the observation we had above, which is that:
+    $$
+    \tx{Compl}_{C}(A \otimes B) = W \circ \tx{Compl}_C(B)
+    $$
+    (and similarly for $B'$). 
+    Now, by assumption
+    for any efficient adversary $\mathcal{A}$, we have:
+    $$
+    \varepsilon_{\mathcal{A}}(\tx{Compl}_{\mathcal{C}}(B), \tx{Compl}_{\mathcal{C}}(B')) \leq \epsilon
+    $$
+    In particular, we can apply this to $\mathcal{A}' \circ W$, for any
+    adversary $\mathcal{A}'$ against $A \otimes B$,
+    since $W$ is efficient, by virtue of $A$ being efficient.
+    This gives us:
+    $$
+    \varepsilon_{\mathcal{A}'}(W \circ \tx{Compl}_{\mathcal{C}}(B), W \circ \tx{Compl}_{\mathcal{C}}(B')) \leq \epsilon
+    $$
+    This means that:
+    $$
+    W \circ \tx{Compl}_{\mathcal{C}}(B) \overset{\epsilon}{=} W \circ \tx{Compl}_{\mathcal{C}}(B')
+    $$
+    We then use transitivity to conclude that:
+    $$
+    A \otimes B \overset{\epsilon}{=} A \otimes B'
+    $$
+
+    $\blacksquare$
+\end{lemma}
+
+\begin{lemma}[Composition Respects Equality]
 \end{lemma}
 
 \subsection{Syntactical Conventions for Packages}
