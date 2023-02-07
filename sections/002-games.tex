@@ -806,7 +806,9 @@ is related to how tensoring and composition interact with each other.
     \tx{lift}_2(C.f_i[h_{(A \otimes C).\pi_\tx{in}(C.\pi_{\tx{in}}^{-1}(j))}\mid j \in [C.m]])\cr
     \end{aligned}
     $$
-    then, after composing with $B \otimes D$, we get:
+    then, after composing with $B \otimes D$, using our assumption
+    that $A$ uses only functions from $B$, and $C$ only functions from $D$,
+    we get:
     $$
     \begin{aligned}
     &(h_1, \ldots) \mapsto
@@ -857,5 +859,57 @@ is related to how tensoring and composition interact with each other.
 
     $\blacksquare$
 \end{lemma}
+
+This proof marks the last very technical proof using the formal definition
+of packages.
+We've now developed almost all of the machinery we need to start
+reasoning about packages syntactically, using the fundamental
+operations and properties we've just defined.
+
+We do need one more gadget though, which allows us to easily
+thread functions around.
+
+\begin{definition}[Identity Packages]
+    Given a set of names $N$, we can define the identity package
+    $1(N)$ as a package characterized by:
+    \begin{enumerate}
+        \item A state $S := \emptyset$,
+        \item $\tx{In} = N$,
+        \item $\tx{Out} = N$,
+        \item $\pi_{\tx{in}} = \pi_{\tx{out}}^{-1}$, based on a lexicographical
+        ordering of $N$,
+        \item Functions $f_1, \ldots, f_{|N|}$ defined via:
+        $$
+        f_i := (h_1, \ldots, h_m) \mapsto h_i
+        $$
+    \end{enumerate}
+
+    $\square$
+\end{definition}
+
+In other words, the identity package $1(N)$ simply uses some functions,
+and provides them without any changes whatsoever.
+This means that $1(\tx{Out}(A)) \circ A \equiv A$,
+and $B \circ 1(\tx{In}(B)) = B$, which is why we call this an identity
+package.
+
+On its own, this might not seem all that useful, but it becomes essential
+when combined with tensoring, allowing us to define packages such as:
+$$
+\begin{pmatrix}
+    A\cr
+    \otimes\cr
+    1(\tx{Out}(B))
+\end{pmatrix}
+\circ B
+$$
+Here, $B$ is used both by $A$, but its functions are also forwarded further.
+This kind of arrangement is very useful when defining packages.
+
+We also have a few pieces of shorthand that are useful for identity packages.
+We write $1(A, B, \ldots)$ for $1(A \cup B \cup \ldots)$,
+and we also sometimes abuse notation to write
+$1(P)$ where $P$ is a package, to mean $1(\tx{Out}(P))$,
+since forwarding the entire output of a package is a very common operation.
 
 \subsection{Syntactical Conventions for Packages}
