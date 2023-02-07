@@ -177,7 +177,7 @@ In this example, $s$ is a quantified type variable.
 Formally, we can see $\tx{id}$ as a function parametrized by a type,
 with $\tx{id}_S$ being a concrete function, after having chosen this type.
 
-\subsection{Packages}
+\subsection{Defining Packages}
 
 Our next goal is to define the central object of state-separable proofs:
 the \emph{package}.
@@ -911,5 +911,226 @@ We write $1(A, B, \ldots)$ for $1(A \cup B \cup \ldots)$,
 and we also sometimes abuse notation to write
 $1(P)$ where $P$ is a package, to mean $1(\tx{Out}(P))$,
 since forwarding the entire output of a package is a very common operation.
+
+\subsection{Indistinguishability and Reductions}
+
+The goal of this subsection is to define more useful notions of equality.
+Literal equality is far too strict, since it will not allow
+for many modifications which yield packages that are \emph{effectively}
+the same.
+Furthermore, in many situations, we want to consider packages
+that are hard to tell apart with limited computational resources;
+such ``hard problems'' are the basis of many cryptographic schemes.
+Furthermore, we want to relate the hardness of distinguishing
+one pair of packages to the hardness of distinguishing another pair:
+this is the notion of \emph{reduction}.
+
+First, we need to extend our notion of \emph{efficiency}
+from functions to packages.
+
+\begin{definition}[Efficient Packages]
+    A package $P$ is said to be \emph{efficient} if all of its
+    functions are efficient.
+
+    In turn, a parametrized function $f$ is \emph{efficient}
+    if for any efficient functions $h_1, \ldots$, the instantiation
+    $f[h_1, \ldots]$ is also efficient.
+
+    $\square$
+\end{definition}
+
+This is a very natural definition of efficiency,
+and one can verify that efficiency is preserved under both
+tensoring and composition.
+
+The next notion we define is that of the \emph{game}.
+\begin{definition}[Game]
+    A game $G$ is a package with $\tx{In}(G) = \emptyset$.
+
+    $\square$
+\end{definition}
+
+This is a very simply distinction, but it's important,
+because when a package has no input functions, then one can interact
+with it as a complete machine already, there's nothing that needs
+to be plugged in before the machine can actually ``run''.
+
+The next fundamental notion we define is that of the \emph{adversary}.
+Intuitively, adversaries are trying to distinguish games with the same
+interface apart.
+A ``hard'' problem can be characterized by a pair of games that
+no efficient adversary can tell apart.
+
+\begin{definition}[Adversaries]
+    An adversary $\mathcal{A}$ for a package $P$, is a package
+    with no state, $\tx{In}(\mathcal{A}) = \tx{Out}(P)$, and $\tx{Out}(\mathcal{A}) = \{\tx{run}\}$,
+    where $\tx{run} : \randf{\bullet}{\bin}$.
+
+    $\square$
+\end{definition}
+
+We'll use adversaries to define some notions of indistinguishability
+for games first, but we already define adversaries as being for \emph{packages},
+to be ready for when we extended these notions later.
+
+We can think of an adversary as playing a ``game'' of distinguishing
+between two packages.
+The goal of an adversary is to separate the two packages,
+by returning $0$ in one case, and $1$ in the other.
+The success of an adversary will be measured by how often it's able
+to distinguish the two packages.
+
+Another point of view is that an adversary $\mathcal{A}$ is actually
+a mapping from games with a given interface to \emph{functions}
+of type $\randf{\bullet}{\bin}$.
+Each game we feed to the adversary yields a different function.
+This is particularly convenient because we've already developed
+notions of equality and distance for functions, and we can use
+this mapping to lift the notions to packages as well.
+
+This leads to our next definition:
+\begin{definition}[Adversarial Distance]
+    Given two games $G$, $H$ with $\tx{Out}(G) = \tx{Out}(H)$, and
+    an adversary $\mathcal{A}$ for $G$ or $H$, we define their adversarial
+    distance relative to $\mathcal{A}$ as:
+    $$
+    \varepsilon_{\mathcal{A}}(G, H) := \varepsilon(\mathcal{A} \circ G, \mathcal{A} \circ H)
+    $$
+    Here we abuse notation a bit to let $\mathcal{A} \circ X$ denote the
+    \emph{function} we get by calling $\tx{run}$.
+
+    $\square$
+\end{definition}
+
+As the name suggests, this relation also forms a distance metric.
+
+Like with functions, this also leads to a natural notion of equality
+for games. But first, to avoid having to say $\tx{Out}(G) = \tx{Out}(H)$ many times,
+we define the following shorthand:
+\begin{definition}[Game Shape]
+    Two games $G$,$H$ are said to have the \emph{same shape} if
+    $\tx{Out}(G) = \tx{Out}(H)$.
+
+    $\square$
+\end{definition}
+
+We can then continue with our definition of equality.
+
+\begin{definition}[Game Equality]
+    Given two games $G$ and $H$ with the same shape, we say
+    that $G$ and $H$ are \emph{equal}, written $G = H$,
+    if for all adversaries $\mathcal{A}$, we have:
+    $$
+    \varepsilon_{\mathcal{A}}(G, H) = 0
+    $$
+
+    $\square$
+\end{definition}
+Note that we consider all adversaries, even potentially unbounded ones.
+Because adversarial distance is a metric, we also immediately
+conclude that this relation is a valid equality relation.
+
+We've intentionally used the $=$ symbol here, because we think that
+this is the most natural notion of equality for games.
+It allows for inessential differences to be ignored,
+such as two ways of sampling from the same distribution,
+but it's also not too loose of a notion either, since we consider
+\emph{unbounded} adversaries.
+Any tangible difference in distributions can be sniffed out by
+such a powerful adversary.
+
+We do nonetheless want to develop a looser notion of equality,
+which can both allow for a small possibility of success
+in distinguishing two games, as well as the possibility of genuinely
+hard problems, by restricting the resources of the adversary.
+
+\begin{definition}[Game Indistinguishability]
+    Given two games $G$ and $H$ with the same shape,
+    we say that $G$ and $H$ are indistinguishable up to $\epsilon$,
+    written $G \overset{\epsilon}{\approx} H$, if for all \emph{efficient}
+    adversaries $\mathcal{A}$, we have:
+    $$
+    \varepsilon_{\mathcal{A}}(G, H) \leq \epsilon(\mathcal{A}, G, H)
+    $$
+
+    $\square$
+\end{definition}
+
+This definition only considers efficient adversaries to allow for
+hard problems to exist, and also allows a bit of a ``gap'',
+letting the adversary have some success at distinguishing
+the two games.
+Note that $\epsilon$ is actually a \emph{function} of $\mathcal{A}$,
+$G$, and $H$.
+This might seem a bit odd at first, but it actually captures
+the most common kind of bound: the one we get from reduction.
+
+When we say that distinguishing a pair of games $G_0, G_1$ reduces
+to distinguishing a pair of games $H_0, H_1$, we mean that
+$G_b$ is at least as hard as $H_b$, in the sense that
+any attack against $G_b$ can be converted to an attack against $H_b$,
+with some reasonable relationship on the success probability.
+
+More formally, a reduction is a statement of the form:
+``for all (efficient) adversaries $\mathcal{A}$
+against $G_b$, there exists an (efficient) adversary $\mathcal{B}$
+against $H_b$, such that $\varepsilon_{\mathcal{A}}(G_0, G_1)$
+is at most $\varepsilon_{\mathcal{B}}(H_0, H_1)$''.
+This statement is interesting because if $\varepsilon_{\mathcal{B}}$
+is ``small'', then $\varepsilon_{\mathcal{A}}$ will also be ``small''.
+So, $G_b$ is hard assuming $H_b$ is.
+
+This statement is actually talking about the existence of a function $\epsilon$
+mapping $(\mathcal{A}, G_0, G_1)$ to $\varepsilon_{\mathcal{B}}(H_0, H_1)$.
+Thus, we can write
+$G_0 \overset{H_b}{\approx} G_1$, as an abuse of notation,
+letting $H_b$ here denote this implicit function $\epsilon$,
+mapping adversaries $\mathcal{A}$ for $G_b$ to adversaries
+$\mathcal{B}$ for $H_b$.
+
+These epsilon functions can also be added together, which we'll
+use to define an analogous notion of transitivity.
+
+\begin{lemma}[Transitivity of Indistinguishability]
+    Given games $G$, $H$, $I$ satisfying:
+    $$
+    G \overset{\epsilon_1}{\approx} H, \quad H \overset{\epsilon_2}{\approx} I
+    $$
+    it holds that:
+    $$
+    G \overset{\epsilon_1 + \epsilon_2}{\approx} I
+    $$
+    In more detail, for all efficient adversaries $\mathcal{A}$, we have:
+    $$
+    \varepsilon_{\mathcal{A}}(G, I) \leq \epsilon_1(\mathcal{A}, G, H) + \epsilon_2(\mathcal{A}, H, I)
+    $$
+
+    \txbf{Proof:} Since $\varepsilon_{\mathcal{A}}$ is a metric, it
+    satisfies the triangle inequality, so we have:
+    $$
+    \varepsilon_{\mathcal{A}}(G, I) \leq \varepsilon_{\mathcal{A}}(G, H) + \varepsilon_{\mathcal{A}}(H, I)
+    $$
+    Then, we just need to apply our assumptions to get the upper bound we 
+    need to prove.
+
+    $\blacksquare$
+\end{lemma}
+
+This notion of transitivity is very useful, since it lets us argue
+that two different games are equal by appealing to several successive
+differences.
+For example, some system might use both encrytion and signing,
+and we can appeal to the hardness of both problems, one at a time,
+to argue that the system is secure.
+This kind of technique is called ``game hopping'',
+and one of the strengths of state-separable proofs is making
+the application of the technique as simple and route as possible.
+
+So far, we've seen three notions of equality:
+\begin{enumerate}
+    \item Literal Equality ($\equiv$),
+    \item Equality ($=$),
+    \item Indistinguishability ($\overset{\epsilon}{\approx}$).
+\end{enumerate}
 
 \subsection{Syntactical Conventions for Packages}
