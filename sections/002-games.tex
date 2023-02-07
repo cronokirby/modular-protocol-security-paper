@@ -1142,7 +1142,8 @@ Let's look at a way to do this transformation.
 
 \begin{definition}[Completion]
     Given a package $A$, a completion of $A$ is a game $\mathcal{C}$,
-    such that $\tx{Out}(\mathcal{C}) \supseteq \tx{In}(A)$.
+    such that $\tx{Out}(\mathcal{C}) \supseteq \tx{In}(A)$,
+    and $\tx{Out}(\mathcal{C}) \cap \tx{Out}(A) = \emptyset$.
 
     We write:
     $$
@@ -1162,6 +1163,10 @@ It does so by filling in all of the input functions,
 but it also leaks extra information forward.
 The reason behind this is so that an adversary is also able
 to see what's happening ``behind'' the package $A$.
+Note that for completions, the names of the extra
+functions, those in $\tx{Out}(\mathcal{C}) / \tx{In}(A)$
+are very inessential, and should be considered
+as being distinct from any other name used by a real package.
 
 Before we extend our notions of equality to packages, we need
 to quickly extend our notion of \emph{shape} first.
@@ -1265,6 +1270,7 @@ and will form the crux of most proofs.
 We start with tensoring, since the proof is simpler.
 
 \begin{lemma}[Tensoring Respects Equality]
+    \label{thm:pack_tensoring_respect}
     Given packages $A$, $B$, $B'$, it holds that:
     \begin{enumerate}
         \item $B = B' \implies A \otimes B = A \otimes B'$,
@@ -1358,7 +1364,132 @@ We start with tensoring, since the proof is simpler.
     $\blacksquare$
 \end{lemma}
 
+Next, we prove the same kind of theorem about composition.
+
 \begin{lemma}[Composition Respects Equality]
+    Given packages $A$, $B$, $B'$, $C$, it holds that:
+    \begin{enumerate}
+        \item $B = B' \implies A \circ B = A \circ B'$,
+        \item $B \overset{\epsilon}{\approx} B' \implies A \circ B \overset{\epsilon}{\approx} A \circ B'$,
+        \item $B = B' \implies B \circ C = B' \circ C$,
+        \item $B \overset{\epsilon}{\approx} B' \implies B \circ C \overset{\epsilon}{\approx} B \circ C$,
+    \end{enumerate}
+    provided that these expressions are well defined, and for parts 2 and 4,
+    that $A$ and $C$ are efficient, respectively.
+
+    \txbf{Proof:}
+
+    \txbf{1.} For any completion $\mathcal{C}$, we can write:
+    $$
+    \tx{Compl}_{\mathcal{C}}(A \circ B) =
+    \begin{pmatrix}
+        A \circ B\cr
+        \otimes\cr
+        1(\mathcal{C})
+    \end{pmatrix}
+    \circ \mathcal{C}
+    =
+    \begin{pmatrix}
+        A\cr
+        \otimes\cr
+        1(\mathcal{C})
+    \end{pmatrix}
+    \circ
+    \begin{pmatrix}
+        B\cr
+        \otimes\cr
+        1(\mathcal{C})
+    \end{pmatrix}
+    \circ \mathcal{C}
+    $$
+    by applying interchange.
+    We can write this as:
+    $$
+    W \circ \tx{Compl}_{\mathcal{C}}(B)
+    $$
+    for some package $W$ depending on $A$ and $\tx{Out}(\mathcal{C})$.
+
+    Then, we apply a similar logic as in our proof of Lemma~\ref{thm:pack_tensoring_respect}.
+    For any adversary $\mathcal{A}$, we have:
+    $$
+    \varepsilon_{\mathcal{A}}(\tx{Compl}_{\mathcal{C}}, \tx{Compl}_{\mathcal{C}}(B')) = 0
+    $$
+    Thus, for any $\mathcal{A}'$ against $A \circ B$, we apply the above
+    to $\mathcal{A}' \circ W$, getting:
+    $$
+    \varepsilon_{\mathcal{A}'}(W \circ \tx{Compl}_{\mathcal{C}}(B), W \circ \tx{Compl}_{\mathcal{C}}(B')) = 0
+    $$
+    In other words, we have:
+    $$
+    W \circ \tx{Compl}_{\mathcal{C}}(B) = W \circ \tx{Compl}_{C}(B')
+    $$
+    We can then apply transitivity to conclude that $A \circ B = A \circ B'$.
+
+    \txbf{2.} We start with the same observation, that:
+    $$
+    \tx{Compl}_{\mathcal{C}}(A \circ B) = W \circ \tx{Compl}_{\mathcal{C}}(B)
+    $$
+    for some package $W$.
+    By applying our assumption to $\mathcal{A}' \circ W$ for any adversary
+    $\mathcal{A}'$ against $A \circ B$, we see that:
+    $$
+    \varepsilon_{\mathcal{A}'}(W \circ \tx{Compl}_{\mathcal{C}}(B), W \circ \tx{Compl}_{\mathcal{C}}(B')) \leq \epsilon
+    $$
+    In other words,
+    $$
+    W \circ \tx{Compl}_{\mathcal{C}}(B) \overset{\epsilon}{\approx} W \circ \tx{Compl}_{C}(B')
+    $$
+    and then apply transitivity to reach our conclusion.
+
+    \txbf{3.} For any completion $\mathcal{C}$, we can write:
+    $$
+    \tx{Compl}_{\mathcal{C}}(B \circ C) =
+    \begin{pmatrix}
+        B \circ C\cr
+        \otimes\cr
+        1(\mathcal{C})
+    \end{pmatrix}
+    \circ \mathcal{C}
+    =
+    \begin{pmatrix}
+        B\cr
+        \otimes\cr
+        1(\mathcal{C})
+    \end{pmatrix}
+    \circ
+    \begin{pmatrix}
+        1(B) \circ C\cr
+        \otimes\cr
+        1(\mathcal{C})
+    \end{pmatrix}
+    \circ \mathcal{C}
+    $$
+    We can then see $C$ as part of a new completion, writing:
+    $$
+    \begin{pmatrix}
+        B\cr
+        \otimes\cr
+        1(\mathcal{C}')
+    \end{pmatrix}
+    \circ \mathcal{C}'
+    = \tx{Compl}_{\mathcal{C}'}(B)
+    $$
+    But, by assumption, we have:
+    $$
+    \tx{Compl}_{\mathcal{C}'}(B) = 
+    \tx{Compl}_{\mathcal{C}'}(B')
+    $$
+    We then apply our initial observation in reverse, along with transitivity,
+    to reach our conclusion.
+
+    \txbf{4.} Same as above, except our assumption gives us:
+    $$
+    \tx{Compl}_{\mathcal{C}'}(B) \overset{\epsilon}{=}
+    \tx{Compl}_{\mathcal{C}'}(B')
+    $$
+    and then transitivity can be applied to reach our result once again.
+
+    $\blacksquare$
 \end{lemma}
 
 \subsection{Syntactical Conventions for Packages}
