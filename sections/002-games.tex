@@ -216,6 +216,26 @@ It's useful to have a bit of typing to separate the state from the rest
 of the input and output, since it allows us to avoid defining
 inessential padding details inside the formalism itself.
 
+We'll also want a notion of equality for these functions.
+
+\begin{definition}[Stateful Function Equality]
+    Two stateful functions $f : \stateful{S}$ and $f : \stateful{S'}$
+    are equal, written $f = f'$, if there exists an isomorphism
+    $\varphi : S \cong S'$, such that:
+    $$
+    f = (s, i) \mapsto (s', o) \gets f'(\varphi(s), i);\ (\varphi^{-1}(s'), o)
+    $$
+
+    $\square$
+\end{definition}
+
+Basically, the states don't have to be literally the same, as long
+as they're isomorphic, and the natural way of making the two types
+match up produces equal functions.
+One can verify that this forms a valid equality relation.
+Note that this reduces to the standard notion of equality of functions
+by considering appropriate binary encodings of the two states.
+
 We also need to consider functions parametrized by other functions.
 Intuitively, this arises when one function calls another.
 For example, consider:
@@ -310,11 +330,11 @@ notion of package \emph{composition}.
         \item output names $\tx{Out}(A)$,
         \item $\pi_{\tx{in}} := B.\pi_{\tx{in}}$,
         \item $\pi_{\tx{out}} := A.\pi_{\tx{out}}$,
-        \item output functions $A.f_1[\varphi(B.f_1), \ldots, \varphi(B.f_{B.n})], \ldots$
-        of type $\forall s.\stateful{s}^{B.m} \to \stateful{(A.S, B.S)}$.
+        \item output functions $A.f_1[\varphi(B.f_1), \ldots, \varphi(B.f_{B.n})], \ldots$.
     \end{itemize}
 
-    In more detail, each output function is of the form:
+    In more detail, these functions have type $\forall s.\stateful{s}^{B.m} \to \stateful{((A.S, B.S), s)}$,
+    and are of the form:
     $$
     (h_1, \ldots, h_{B.m}) \mapsto A.f_i[\varphi_{A}(B.f_1)[h_1, \ldots], \ldots, \varphi_{A}(B.f_{B.n})[h_1, \ldots]]
     $$
@@ -500,7 +520,7 @@ We'll discuss the semantics a bit more after the formal definition.
         $$
         \pi_{\tx{out}}(i) := \begin{cases}
             A.\pi_{\tx{out}}(i) & i \leq A.n\cr
-            B.\pi_{\tx{out}}(i - A.n) & i > A.n
+            A.n + B.\pi_{\tx{out}}(i - A.n) & i > A.n
         \end{cases}
         $$
         \item an input index assignment $\pi_{\tx{in}}(n)$ which
@@ -509,19 +529,89 @@ We'll discuss the semantics a bit more after the formal definition.
     \end{itemize}
 
     Then, for the functions, we have two cases.
+    We use a common helper function:
+    $$
+    \begin{aligned}
+    &\tx{lift}_1(f) := (((s_1, s_2), s), i) \mapsto (s'_1, o) \gets f(s_1, i); (((s'_1, s_2), s), o)\cr
+    &\tx{lift}_2(f) := (((s_1, s_2), s), i) \mapsto (s'_2, o) \gets f(s_2, i); (((s_1, s'_2), s), o)
+    \end{aligned}
+    $$
+    for $i \in {1, 2}$, which uses the right side of the state, to lift
+    a function operating on one side to operate on the whole state.
 
     For $i \in [1, \ldots, A.n]$, we have:
     $$
     f_i := (h_1, \ldots, h_m) \mapsto
-    A.f_i[h_{\pi_\tx{in}(A.\pi_{\tx{in}}^{-1}(j))}\mid j \in [A.m]]
+    \tx{lift}_1(A.f_i[h_{\pi_\tx{in}(A.\pi_{\tx{in}}^{-1}(j))}\mid j \in [A.m]])
     $$
     Then, for $i \in [A.n + 1, \ldots, A.n + B.n]$, we have:
     $$
     f_i := (h_1, \ldots, h_m) \mapsto
-    B.f_i[h_{\pi_\tx{in}(B.\pi_{\tx{in}}^{-1}(j))}\mid j \in [B.m]]
+    \tx{lift}_2(B.f_i[h_{\pi_\tx{in}(B.\pi_{\tx{in}}^{-1}(j))}\mid j \in [B.m]])
     $$
 
     $\square$
 \end{definition}
+
+The state of $A \otimes B$ is just the state of both packages,
+and $A \otimes B$ also takes in the inputs of both packages,
+which may overlap, and produces the output functions of both packages.
+We require that these output functions do not overlap, to make
+it clear which function belongs to which ``side'' of the package.
+
+Defining the output functions requires a little bit of technical juggling.
+One detail is that we start with functions expecting to receive
+just their state, but need to augment them to receive both states,
+and then place the result on the corresponding side.
+Another technical detail of our formalism shows up here as well,
+since $A.f_i$ and $B.f_i$ are paramterized functions, which pick up
+an extra state term $s$ after being instantiated with their inputs,
+and so $\tx{lift}_i$ needs to also carry this term around.
+We also choose to arrange the output functions by $A$ first,
+and then $B$, but the order we've chosen is arbitrary.
+
+Now, the trickier details relate to the input functions.
+The basic issue is that we need to change the functions so that
+they technically accept all the input functions of $A \otimes B$,
+but ignore the ones irrelevant to either $A$ or $B$.
+We do this by choosing an ``arbitrary'' permutation for $\pi_{\tx{in}}$,
+and then pass in the right inputs to $A$ or $B$ by using
+their input permutations backwards, allowing us to look up the name
+associated with a given index,
+which we then use to figure out the right index according to $\pi_{\tx{in}}$.
+
+We choose $\pi_{\tx{in}}$ to be the lexicographic ordering,
+because it's a consistent ordering which does not depend
+on either $A$ or $B$, and also doesn't care about the order in which
+packages are composed.
+This technically introduces a new assumption about names, since we
+haven't assumed anything about what a name is yet.
+However, assuming that names can be sorted alphabetically is not
+a very strong one.
+
+Continuing our analogy of machines, we can see the tensoring of $A \otimes B$
+as having two independent machines, side-by-side, that one can interact
+with at will.
+The state of one machine doesn't interfere with the state of the other,
+although both machines might be connected to some common machine ``behind''
+them, through composition.
+
+Like with composition, tensoring is also associative.
+
+\begin{lemma}[Tensoring is Associative]
+    For any packages $A$, $B$, $C$, it holds that:
+    $$
+    A \otimes (B \otimes C) \equiv (A \otimes B) \otimes C
+    $$
+    provided these expressions are well defined.
+
+    \txbf{Proof:} The state types are $(A.S, (B.S, C.S))$
+    and $((A.S, B.S), C.S)$, which are isomorphic.
+
+    The input names are $\tx{In}(A) \cup \tx{In}(B) \cup \tx{In}(C)$
+    on both sides,
+    and the output names are $\tx{Out}(A) \cup \tx{Out}(B) \cup \tx{Out}(C)$
+    for both sides as well.
+\end{lemma}
 
 \subsection{Syntactical Conventions for Packages}
