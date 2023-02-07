@@ -426,12 +426,16 @@ The first property we prove is the one used as an example above.
     (h_1, \ldots) \mapsto A.f_i[\varphi_{A}(B.f_1)[\varphi_{A \circ B}(C.f_1)[h_1, \ldots]], \ldots]
     $$
 
-    Now, the only difference is that we end up with $\varphi_{A \circ B}$
+    The main difference is that we end up with $\varphi_{A \circ B}$
     as our means of assigning the functions in $C$ to the slots
     of $B$.
     However, $\varphi_{X}$ only depends on $X.\pi_{\tx{in}}$,
     and by definition $(A \circ B).\pi_{\tx{in}} = B.\pi_{\tx{in}}$,
     so $\varphi_{A \circ B} = \varphi_B$.
+
+    Another smaller difference is that the resulting stateful functions
+    have different, but isomorphic states, which is allowed
+    by stateful function equality.
 
     So, in both cases, we end up with the same functions, concluding
     our proof.
@@ -612,6 +616,39 @@ Like with composition, tensoring is also associative.
     on both sides,
     and the output names are $\tx{Out}(A) \cup \tx{Out}(B) \cup \tx{Out}(C)$
     for both sides as well.
+
+    Next, we get to the crux of the proof, which looks at the functions.
+
+    First, some observations about $\tx{lift}_{i}(\tx{lift}_j(f))$.
+    These compositions can always be written in terms of a tuple with
+    3 elements:
+    $$
+    \tx{lift}'_j(f) := (((s_1, s_2, s_3), s), i) \mapsto (s_j, o) \gets f(s_j, i);\ (((s_1, s_2, s_3), s), o)
+    $$
+    The relation between them is that:
+    $$
+    \begin{aligned}
+    &\tx{lift}_1(\tx{lift}_1(f)) = \tx{lift}'_1(f)\cr
+    &\tx{lift}_1(\tx{lift}_2(f)) = \tx{lift}'_2(f)\cr
+    &\tx{lift}_2(\tx{lift}_1(f)) = \tx{lift}'_2(f)\cr
+    &\tx{lift}_2(\tx{lift}_2(f)) = \tx{lift}'_3(f)\cr
+    \end{aligned}
+    $$
+    So, in both $A \otimes (B \otimes C)$, and $(A \otimes B) \otimes C$, the functions will be of one of three forms:
+    \begin{enumerate}
+        \item $\tx{lift}_1(A.f_i[\ldots])$,
+        \item $\tx{lift}_2(B.f_i[\ldots])$,
+        \item $\tx{lift}_3(C.f_i[\ldots])$.
+    \end{enumerate}
+
+    The order of the functions will actually be the same in both cases.
+
+    The only remaining difference, potentially, is the instantiation.
+    But, our definition ensures that the instantiation depends only on the names
+    of the functions, but these are the same in both cases,
+    so we conclude that the functions are equal.
+
+    $\blacksquare$
 \end{lemma}
 
 \subsection{Syntactical Conventions for Packages}
