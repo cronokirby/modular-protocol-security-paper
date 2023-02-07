@@ -399,9 +399,9 @@ $\blacksquare$
 
 \begin{lemma}[Interchange Lemma]
 \label{thm:interchange_system}
-Given systems $A, B, C, D$ such that $A \circ B$ and $C \circ D$ are well defined,
-$A * C$ and $B * D$ are well defined,
-and neither $A$ nor $C$ overlap with $B$ or $D$, i.e.
+Given systems $A, B, C, D$ such that $\tx{In}(A) \cap \tx{Out}(D) = \emptyset$,
+and $\tx{In}(C) \cap \tx{Out}(B) = \emptyset$,
+and neither $A$ nor $C$ overlap with $B$ or $D$,
 the following relation holds:
 $$
 \begin{pmatrix} 
@@ -422,6 +422,7 @@ D\cr
   (C \circ D)\cr
 \end{matrix} 
 $$
+provided these expressions are well defined.
 
 \txbf{Proof:} $\tx{InChan}$, $\tx{OutChan}$, and $\tx{In}$ are equal for
 both of these systems, by associativity of $\cup$.

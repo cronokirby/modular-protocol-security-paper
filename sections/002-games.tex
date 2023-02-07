@@ -603,7 +603,7 @@ them, through composition.
 Like with composition, tensoring is also associative.
 
 \begin{lemma}[Tensoring is Associative]
-    For any packages $A$, $B$, $C$, it holds that:
+    Given packages $A$, $B$, $C$, it holds that:
     $$
     A \otimes (B \otimes C) \equiv (A \otimes B) \otimes C
     $$
@@ -660,7 +660,7 @@ it shouldn't actually matter which order we tensor packages together,
 since the resulting functions are the same.
 
 \begin{lemma}[Tensoring is Commutative]
-    For any packages $A$, $B$, it holds that:
+    Given packages $A$, $B$, it holds that:
     $$
     A \otimes B \equiv B \otimes A
     $$
@@ -679,6 +679,181 @@ since the resulting functions are the same.
     to swap $f_i$ with $f_{i + A.n}$ to make the ordering the same.
 
     Thus, we conclude that the two packages are the same.
+
+    $\blacksquare$
+\end{lemma}
+
+So far, we've treated composition and tensoring as two separate operations,
+but very often we want to use them together.
+Very often we want to be able to decompose a large package
+into smaller components, using tensoring and composition.
+Then we'll rearrange these components around to make proving
+certain properties easier.
+
+One key observation making this kind of rearrangement easier
+is related to how tensoring and composition interact with each other.
+
+\begin{lemma}[Interchange Lemma]
+    Given packages $A$,$B$, $C$, $D$, such that
+    $\tx{In}(A) \cap \tx{Out}(D) = \emptyset$ and $\tx{In}(C) \cap \tx{Out}(B) = \emptyset$
+    $$
+    \begin{pmatrix}
+        A\cr
+        \otimes\cr
+        C\cr
+    \end{pmatrix}
+    \circ
+    \begin{pmatrix}
+        B\cr
+        \otimes\cr
+        D\cr
+    \end{pmatrix}
+    \equiv
+    \begin{matrix}
+        (A \circ B)\cr
+        \otimes\cr
+        (C \circ D)\cr
+    \end{matrix}
+    $$
+
+    \txbf{Proof:} The state on the left is $((A.S, C.S), (B.S, D.S))$,
+    while the state on the right is $((A.S, B.S), (C.S, D.S))$.
+    These states are isomorphic, of course.
+
+    Now, let's look at $\tx{In}$ and $\tx{Out}$.
+    On the left, we have:
+    $$
+    \tx{In}\left(
+    \begin{pmatrix}
+        A\cr
+        \otimes\cr
+        C\cr
+    \end{pmatrix}
+    \circ
+    \begin{pmatrix}
+        B\cr
+        \otimes\cr
+        D\cr
+    \end{pmatrix}
+    \right)
+    =
+    \tx{In}
+    \begin{pmatrix}
+        B\cr
+        \otimes\cr
+        D\cr
+    \end{pmatrix}
+    = \tx{In}(B) \cup \tx{In}(D)
+    $$
+    On the right, we have:
+    $$
+    \tx{In}
+    \begin{pmatrix}
+        (A \circ B)\cr
+        \otimes\cr
+        (C \circ D)\cr
+    \end{pmatrix}
+    =
+    \tx{In}(A \circ B) \cup \tx{In}(C \circ D)
+    = \tx{In}(B) \cup \tx{In}(D)
+    $$
+
+    For $\tx{Out}$, on the left we have:
+    $$
+    \tx{Out}\left(
+    \begin{pmatrix}
+        A\cr
+        \otimes\cr
+        C\cr
+    \end{pmatrix}
+    \circ
+    \begin{pmatrix}
+        B\cr
+        \otimes\cr
+        D\cr
+    \end{pmatrix}
+    \right)
+    =
+    \tx{Out}
+    \begin{pmatrix}
+        A\cr
+        \otimes\cr
+        C\cr
+    \end{pmatrix}
+    = \tx{Out}(A) \cup \tx{Out}(c)
+    $$
+    On the right, we have:
+    $$
+    \tx{Out}
+    \begin{pmatrix}
+        (A \circ B)\cr
+        \otimes\cr
+        (C \circ D)\cr
+    \end{pmatrix}
+    =
+    \tx{Out}(A \circ B) \cup \tx{Out}(C \circ D)
+    = \tx{Out}(A) \cup \tx{Out}(C)
+    $$
+
+    Now, we look at the functions.
+
+    On the left, we start with functions of the form:
+    $$
+    \begin{aligned}
+    &(h_1, \ldots) \mapsto
+    \tx{lift}_1(A.f_i[h_{(A \otimes C).\pi_\tx{in}(A.\pi_{\tx{in}}^{-1}(j))}\mid j \in [A.m]])\cr
+    &(h_1, \ldots) \mapsto
+    \tx{lift}_2(C.f_i[h_{(A \otimes C).\pi_\tx{in}(C.\pi_{\tx{in}}^{-1}(j))}\mid j \in [C.m]])\cr
+    \end{aligned}
+    $$
+    then, after composing with $B \otimes D$, we get:
+    $$
+    \begin{aligned}
+    &(h_1, \ldots) \mapsto
+    \tx{lift}_1(A.f_i[\tx{lift}_1(\varphi_{A}(B.f_1)[h_{(B \otimes D).\pi_\tx{in}(B.\pi_{\tx{in}}^{-1}(j))}\mid j \in [B.m]]), \ldots])\cr
+    &(h_1, \ldots) \mapsto
+    \tx{lift}_2(C.f_i[\tx{lift}_2(\varphi_{C}(D.f_1)[h_{(B \otimes D).\pi_\tx{in}(B.\pi_{\tx{in}}^{-1}(j))}\mid j \in [D.m]]), \ldots])\cr
+    \end{aligned}
+    $$
+    This is because in $A \otimes C$, the order parameters are instantiated
+    depends only on the names of the function, and so the order
+    will correspond with that of $\varphi_A$ or $\varphi_C$, respectively.
+
+    From the right, the functions will be of the forms:
+    $$
+    \begin{aligned}
+    &(h_1, \ldots) \mapsto \tx{lift}_1(A.f_i[\varphi_A(B.f_1)[h_{\pi_\tx{in}((A \circ B).\pi_{\tx{in}}^{-1}(j))}\mid j \in [(A \circ B).m]]])\cr
+    &(h_1, \ldots) \mapsto \tx{lift}_2(C.f_i[\varphi_C(D.f_1)[h_{\pi_\tx{in}((C \circ D).\pi_{\tx{in}}^{-1}(j))}\mid j \in [(C \circ D).m]]])\cr
+    \end{aligned}
+    $$
+    Now, $(A \circ B).m = B.m$, and ditto for $C \circ D$.
+    Furthermore, the $\pi_{\tx{in}}$ used here is the same as $(B \otimes D).\pi_{\tx{in}}$,
+    since the function only depends on $\tx{In}(B) \cup \tx{In}(D)$.
+
+    The remaining difference is about
+    $$
+    (A \otimes C).\tx{lift}_i(f[(B \otimes D).\tx{lift}_i(g)])
+    \stackrel{?}{=}
+    ((A \otimes C) \circ (B \otimes D)).\tx{lift}_i(f[g])
+    $$
+
+    Expanding the right hand side, for $i = 1$, we get:
+    $$
+    (((s_A, s_B, s_C, s_D), s), i) \mapsto (s_A, s_B, o) \gets f[g](((s_A, s_B), s), i);\ (((s_A, s_B, s_C, s_D), s), o)
+    $$
+    An equivalent way of writing this would be:
+    $$
+    \begin{aligned}
+    &((((s_A, (s_B, s_D)), s_C), s), i) \mapsto\cr
+    &\quad ((s_A, (s_B, s_D)), o) \gets f[\tx{lift}_1(g)](((s_A, (s_B, s_D)), s), i)\cr
+    &\quad ((((s_A, (s_B, s_D)), s_C), s), o)
+    \end{aligned}
+    $$
+    But this is just $\tx{lift}_1(f[\tx{lift}_1(g)])$.
+    A similar argument works for $i = 2$ as well.
+
+    Having eliminated all differences between the functions for the packages
+    we're comparing, we conclude our proof.
 
     $\blacksquare$
 \end{lemma}
