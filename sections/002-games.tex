@@ -1508,3 +1508,122 @@ produce a reduction of the security of this large package
 to that of several smaller packages.
 
 \subsection{Syntactical Conventions for Packages}
+
+In the previous subsections, we developed a formal model of
+how packages work.
+In practice, packages are described using a kind of pseudocode,
+which correspond with these formal objects, and some of the rules are relaxed
+in practice.
+In this subsection we give some examples of how this pseudocode
+works.
+Note that the details here aren't essential, and one could imagine
+using a different kind of pseudocode instead.
+
+We start with an example package, containg various syntactical constructs,
+which we'll then explain in more detail.
+
+\package{P}{
+    &\draw{k}{\bin^{\lambda}}\cr
+    &b \gets \bot\cr
+    &\txbf{view } l \gets \tx{List}.\tx{new}()\cr
+    \cr
+    &\begin{aligned}
+    &\pfn{A}{x}\cr
+    \pind{1} \txbf{assert } b \neq \bot\cr
+    \pind{1} \txbf{return } \tx{Inc}(x)\cr
+    &\cr
+    &\pfn{B}{}\cr
+    \pind{1} b \gets \txt{true}\cr
+    \pind{1} x \gets 2\cr
+    \pind{1} \pif{b = \txt{false}}\cr
+    \pind{2} x \gets x - 1\cr
+    \pind{1} \pelse\cr
+    \pind{2} x \gets \tx{Inc}(x)\cr
+    \pind{1} \preturn{x}\cr
+    \end{aligned}
+    \begin{aligned}
+        &\pfn{Inc}{x}\cr
+        \pind{1} \txbf{return } x + 1\cr
+        \cr
+        &\pfn{$(1)C$}{}\cr
+        \pind{1} \draw{x}{[10]}\cr
+        \pind{1} \pwhile{x > 0}\cr
+        \pind{2} x \gets x - 1\cr
+        \cr
+        \cr
+        \cr
+        \cr
+        \cr
+    \end{aligned}
+}
+
+So, the basic idea is that a package is usually described
+by a box like this, with the name of the package---$P$, in this case---at
+the top of the box.
+A package has some initialization code,
+along with exported functions.
+In this case, the exported functions are $A$, $B$, $C$,
+$\tx{Inc}$, and $\tx{l}$.
+
+The meaning of $\txbf{view}$ is that the value is exported
+in a read only fashion.
+So, there's a function $l$ which copies the list $l$
+and then returns it.
+The caller can modify their copy, but this has no effect on the original
+list.
+
+Now, one slight deviation from the formal specification is that
+we allow a package to call functions that it exports internally,
+like we do for $\tx{Inc}$.
+The semantics of this are that the code of $\tx{Inc}$ are inlined
+at the call site.
+So, in this case, every place where $\tx{Inc}(x)$ is used
+can be replaced with just $x + 1$.
+
+We also have standard control flow constructs, like $\txbf{if}$,
+$\txbf{else}$, $\txbf{while}$, $\txbf{for}$, $\txbf{return}$, etc.
+Functions don't have to return a value,
+in which case we assume they return some pre-defined dummy
+value, like $\bullet$.
+
+Another construct we have is $\txbf{assert}$.
+This should be seen as immediately returning a special value
+indicating that an assertion failed, if the condition is indeed
+false.
+This is useful to restrict when a function can be called.
+One very common such restriction is on the number of times
+a function can be called.
+Since we wrote $(1)C$, we're indicating that this function
+can only be called once.
+This is shorthand for having a variable keep track of the number
+of calls, and an assertion checking that this count is low
+enough.
+
+Another slight deviation from the formal specification is the use
+of initialization code.
+Formally, a package just exports functions,
+it doesn't have any code running before those functions do.
+One way to add initialization is to have a special function,
+say $\txt{Init}$ which must be called before any other of the functions.
+The initialization code could then be placed there.
+
+We also don't particularly care about the names and variables
+of variables and functions, as long as it's clear which packages
+are using what functions.
+If it's not ambiguous, we could refer to one of the functions
+in $P$ as just $A$,
+but we may want to explicitly write down $P.A$, to disambiguate this
+function from another, say $Q.A$.
+We might also tensor multiple versions of $P$ together,
+calling one function $A_1$, and the other $A_2$, for example.
+Another common way to disambiguate names is
+to use $\txbf{super}.A$, to refer to calling an input function $A$.
+
+Sometimes, we'll also compare two packages for equality,
+with one package exporting more functions than the other.
+This is usually shorthand for writing $1(\ldots) \circ P = Q$,
+ignoring some of the functions provided by one of the packages.
+
+We stress that these rules are merely conventions,
+and are intended to provide a means of clearly expressing
+what a package is doing, while also not being excessively verbose.
