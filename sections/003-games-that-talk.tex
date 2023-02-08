@@ -461,8 +461,18 @@ later, like we did with packages.
 
 \subsection{Composing Systems}
 
+Now, we move on to define the various ways to compose systems together.
+Naturally, we can compose systems together like we did for packages
+by having one system call the functions provided by another,
+or having two systems used together independently,
+but we also want to compose systems so that they can communicate
+with each other using channels.
+
+It's this kind of composition, allowing for communication across
+channels, that we define first, and call \emph{tensoring}.
+
 \begin{definition}[System Tensoring]
-Given two systems, $A$ and $B$, with \(\text{Out}(A) \cap \text{Out}(B) = \emptyset\), we can define their tensor product $A * B$,
+Given two systems, $A$ and $B$, with \(\text{Out}(A) \cap \text{Out}(B) = \emptyset\), we can define their tensoring $A * B$,
 which is any system $A * B$ satisfying:
 \begin{itemize}
   \item $\tx{NoChan}(A * B) = \tx{NoChan}(A) \otimes \tx{NoChan}(B)$,
@@ -491,7 +501,16 @@ $$
 \end{pmatrix}
 $$
 
-This implies the following lemma.
+The intuition for this definition is that tensoring is like $\otimes$
+for packages, except that now the systems can interact by exchanging
+messages.
+This interaction only happens through the fact that they
+share a common $\tx{Channels}$ package, which well then store
+the messages sent by one system, so that the other can receive them,
+and vice versa.
+
+We can also gain some confidence in the quality of this definition
+by proving that it's both associative and commutative.
 
 \begin{lemma}
 System tensoring is associative, i.e. $A * (B * C) \equiv (A * B) * C$.
@@ -509,12 +528,37 @@ System tensoring is commutative, i.e. $A * B \equiv B * A$
 $\blacksquare$
 \end{lemma}
 
+We've also made our lives quite easy, by defining literal
+equality in terms of $\tx{NoChan}$, so we can lean
+heavily on the work we did in proving that package tensoring
+is associative and commutative.
+
+In many situations, we'll have systems that don't actually share
+any channels, and we'll want to compose them as well, while
+benefitting from some nicer properties.
+
+We define this situation formally.
+
 \begin{definition}[Overlapping Systems]
 Two systems $A$ and $B$ overlap if $\text{Chan}(A) \cap \text{Chan}(B) \neq \emptyset$.
 
 In the case of non-overlapping systems, we write $A \otimes B$ instead of $A * B$,
 insisting on the fact that they don't communicate.
+
+$\square$
 \end{definition}
+
+One very common way this situation arises is if a system doesn't
+use any channels at all.
+For example, we might write $A \otimes 1(\ldots)$,
+since $1(\ldots)$ can be considered as a system with no use of channels,
+and so won't overlap with $A$.
+This is why we can see $*$ as the natural generalization of $\otimes$
+for systems, because it literally becomes $\otimes$ when used
+for systems that do not use channels.
+
+Next, we define the analogue of package composition for systems,
+which allows one system to use the functions provided by the other.
 
 \begin{definition}[System Composition]
 Given two systems, $A$ and $B$, we can define their (horizontal) composition
@@ -540,6 +584,16 @@ With these in place, we define the composition as any system $A \circ B$ such th
 $\square$
 \end{definition}
 
+It's very important that the systems do not overlap.
+Our intention with system composition is that the two systems
+interact only via the functions that one system provides to the other,
+and not via any channels.
+This is like the machine analogy we had earlier,
+where machines within a row communicate across channels,
+but are only connected via functions to the rows behind them.
+
+As one might expect, this definition of composition is also associative. 
+
 \begin{lemma}
 System composition is associative, i.e. $A \circ (B \circ C) \equiv (A \circ B) \circ C$.
 
@@ -547,6 +601,15 @@ System composition is associative, i.e. $A \circ (B \circ C) \equiv (A \circ B) 
 
 $\blacksquare$
 \end{lemma}
+
+We've now defined tensoring and system composition,
+and are in the same position as with packages, in that we need
+some way of characterizing how these operations behave together,
+so that we can do the various manipulations we need inside proofs.
+
+Thankfully, Lemma~\ref{thm:package_interchange} (interchange) generalizes
+to systems as well, allowing us to reason in the same way
+as we can for packages.
 
 \begin{lemma}[Interchange Lemma]
 \label{thm:interchange_system}
@@ -669,12 +732,18 @@ $$
 $\blacksquare$
 \end{lemma}
 
-\begin{definition}[System Games]
-Analogously to games, we define a \emph{system game} as a system $S$
-with $\tx{In}(S) = \emptyset$.
+This lemma plays the same critical role as it did for packages,
+and we'll be applying it quite often throughout the rest
+of this work, starting even from the next subsection.
 
-$\square$
-\end{definition}
+\subsection{System Equality and Indistinguishability}
+
+Next, we define some looser notions of equality for systems,
+like those we defined for packages,
+and then show that the various operations we've defined
+respect thse notions of equality, with one exception.
+
+First, we define the standard notion of equality we'll be using.
 
 \begin{definition}[System Equality]
   We say that two systems $A$, $B$ with the same shape are equal, written $A = B$,
@@ -685,6 +754,17 @@ $\square$
 
   $\square$
 \end{definition}
+
+This is the natural definition of equality, since $\tx{SysPack}$
+tries and capture the actual semantics of a system.
+This, comparing two systems using $\tx{SysPack}$ allows
+us to compare the behavior of the two systems,
+disregarding inessential details, and actually
+looking at how the use of channels affects their behavior.
+
+If we can compare systems for equality using $\tx{SysPack}$,
+we should also be able to compare them for indistinguishability
+in the same way.
 
 \begin{definition}[System Indistinguishability]
   We say that two systems $A$, $B$ with the same shape are indistinguishable up to $\epsilon$,
@@ -697,6 +777,16 @@ $\square$
   $\square$
 \end{definition}
 
+This allows for small differences that a bounded adversary can't notice
+to pop up, and this is the notion of equality that we'll
+target most often in proofs.
+
+We've seen three notions of equality so far, but we haven't commented
+that much on how well behaved they are.
+Thankfully, they all satisfy all the properties we'd
+expect from an equality relation, including transitivity,
+which we prove here explicitly.
+
 \begin{lemma}[Transitivity of System Equality]
   \label{thm:system_trans}
   Given systems $A, B, C$, we have:
@@ -707,9 +797,9 @@ $\square$
   \end{enumerate}
   provided these expressions are well-defined.
 
-  \txbf{Proof:} This follows immediately from the fact that equality and Indistinguishability
-  for \emph{packages} satisfy similar relations, and the notions for systems are
-  defined in terms of the package $\tx{SysPack}(\ldots)$.
+  \txbf{Proof:} This follows immediately from the fact that equality and indistinguishability
+  for \emph{packages} satisfy these relations, and the notions for systems are
+  defined in terms of $\tx{NoChan}$ or $\tx{SysPack}$.
 
   $\blacksquare$
 \end{lemma}
