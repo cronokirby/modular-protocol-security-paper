@@ -1,4 +1,43 @@
-\section{Protocols and Composition}
+\section{Protocols}
+
+The goal of this section will be to define \emph{protocols},
+along with ways to compose and compare protocols.
+Intuitively, a protocol is a kind of algorithm involving several
+players, cooperating together to achieve a desired goal.
+The protocol specifies how each player should behave.
+
+The first way of composing protocols we look at is concurrent composition,
+which lets us run two protocols involving separate players in parallel,
+with on interaction between them.
+The second way of composing protocols is more interesting.
+We can have one protocol invoke another as a subprotocol,
+with each player in the first playing the role of several players
+in the latter.
+These two operations are useful in tandemn, allowing
+us to decompose large protocols into smaller ones,
+allowing for modular reasoning.
+
+When it comes to the equality of protocols,
+the preferred notion is that of simulation,
+which we'll explain in more detail later.
+For now, the basic idea is that simulation
+turns attacks on one protocol into attacks on the other.
+Beyond just simulation, we also define two stronger
+notions of equality,
+which allow describing the fact that two protocols behave exactly the same,
+or almost the same, even without simulation.
+
+This section follows the basic roadmap we've used for both packages
+and systems.
+We first define what protocols are formally, as well as the ways
+in which they compose.
+We then define notions of corruption, and then define the semantics
+of protocols, based on which participants in the protocol
+are corrupted.
+Finally, we define notions of equality for protocols,
+and explore the ways in which these notions are preserved under composition.
+
+\subsection{Defining Protocols and Composition}
 
 \begin{definition}[Protocols]
 A \emph{protocol} $\mathscr{P}$ consists of:
@@ -326,7 +365,7 @@ we conclude that concurrenty composition is commutative.
 $\blacksquare$
 \end{lemma}
 
-\subsection{Corruption and Simulation}
+\subsection{Corruption}
 
 \begin{definition}[``Honest'' Corruption]
 Given a system $P$,
