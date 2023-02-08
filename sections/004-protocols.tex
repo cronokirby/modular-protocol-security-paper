@@ -115,6 +115,19 @@ then that means that this players must completely take over
 the role of the player in the sub-protocol,
 and we want this relationship to be clear.
 
+We can also define a notion of \emph{efficient} protocols.
+
+\begin{definition}[Efficient Protocol]
+  A protocol $\mathscr{P}$ is said to be \emph{efficient},
+  if every player is an efficient system, and its ideal functionality
+  is an efficient package.
+
+  $\square$
+\end{definition}
+
+From now on, we only consider efficient protocols, unless otherwise
+specified.
+
 Similar to how we often talk about games, rather than just packages,
 we'll often want to talk about protocols without any dependencies.
 
@@ -492,6 +505,28 @@ security.
 
 \subsection{Corruption}
 
+The goal of this section is to formally define the semantics
+of protocol.
+We've defined a protocol so far in terms of isolated players,
+with strong hints as to how the players will interact,
+but we haven't actually defined how to compose these players
+together to form an actual system.
+The idea is that if we know which players are corrupted,
+and in what way, we can then compile the protocol
+into a system that an adversary can interact with.
+They will be able to use the corrupted and honest
+players to drive the execution of the protocol,
+in an attempt to distinguish it from other protocols.
+
+An important consideration as we define various kinds of corruption
+is that if two players are equal, then the way the corrupted
+players behave should also be equal.
+We've encountered this kind of equality preservation before,
+and it's a property we'll keep an eye out for in this subsection as well.
+
+The first kind of corruption we consider is that of a party which
+isn't actually corrupted.
+
 \begin{definition}[``Honest'' Corruption]
 Given a system $P$,
 we define the ``honest'' corruption of $P$
@@ -503,6 +538,15 @@ This is clearly equality preserving, by tautology.
 
 $\square$
 \end{definition}
+
+This is nonetheless a useful definition to have, since we don't
+have to treat the honest players as being completely separate
+from the dishonest players, but rather just corrupted in a different way.
+
+Next, we look at semi-honest corruption.
+The intuition here is that such a corrupted party will still
+follow the protocol's execution, but the adversary 
+gains additional visibility into the execution of that player.
 
 \begin{definition}[Semi-Honest Corruption]
 Given a system $P$, we can define
@@ -537,6 +581,29 @@ then $\tx{NoChan}(P) = \tx{NoChan}(P')$, and so their logs will be the same.
 
 $\square$
 \end{definition}
+The use of different logs is very useful, since it makes manipulating
+the log easier, avoiding the need to parse the log to separate
+out events by function.
+
+One important detail is that the log also contains entries
+for when the player itself is activated through one of its input functions.
+This will be useful when reasing about how protocol composition behaves,
+because the input events in one players log can become the output function
+events in the log of a player calling that subprotocol.
+
+Note that, unlike other definitions of semi-honest corruption,
+we do not provide access to the randomness sampled by a player,
+at least not directly.
+The reason for doing this is ultimately that defining corruption
+in that way is very difficult to do while preserving equality.
+There are many equivalent ways to write a given player
+which result in different sampling patterns.
+In practice, we don't think this is a strong limitation,
+because we can also see all of the output functions and
+channels used by the player, so significant randomness can still
+be observed.
+
+Now, onto malicious corruption:
 
 \begin{definition}[Malicious Corruption]
 Given a system $P$ with:
@@ -572,6 +639,18 @@ all of which are the same for any $P' \equiv P$.
 $\square$
 \end{definition}
 
+The intuitive idea behind malicious corruption is that this party
+can deviate arbitarily from the protcol.
+The adversary corrupting this party can call any function this
+party is allowed to call, and use any channel this party uses.
+
+An interesting property of the kinds of corruption is that
+each form of corruption is stronger than the other.
+A semi-honest party provides more information than an honest
+party, and a malicious party doesn't even need to follow
+the protocol anymore.
+We can capture this hierarchy formally.
+
 \begin{lemma}[Simulating Corruptions]
   \label{thm:simulatingcorruption}
   We can simulate corruptions using strong forms of corruption.
@@ -603,8 +682,18 @@ using malicious corruption.
 $\blacksquare$
 \end{lemma}
 
-Sometimes, it's useful to be able to talk about corruptions in general,
-in which case we write $\text{Corrupt}_\kappa(P)$,
+We'll be using this lemma later, where it will help us show
+that in some situations, it suffices to consider only malicious
+corruption, which can simplify many proofs.
+
+Next, we'll be defining what it means to actually execute
+a protocol with some players being corrupted.
+The first notion we'll need to develop is that of a \emph{corruption model},
+which is just a way of specifying which players in a protocol are corrupted,
+and how.
+
+Before that, we need a little syntax to talk about corruptions in general,
+and so define the shorthand $\text{Corrupt}_\kappa(P)$,
 for $\kappa \in \{\tx{H}, \tx{SH}, \tx{M}\}$.
 
 \begin{definition}[Corruption Models]
@@ -630,6 +719,18 @@ Some common classes are:
   \item The class of malicious corruptions, where all but one player is malicious.
   \item The class of malicious corruptions, where all but one player is semi-honest.
 \end{itemize}
+
+The notion of class is very useful, and is what we usually end up proving
+things about.
+For example, we prove that two protocols are the same under a given
+class of corruptions.
+That proof will involve looking at each model inside the class,
+as we'll see later.
+
+Now, let's define what the semantics of a protocol are under
+a given corruption model.
+These semantics should define how an adversary can run and interact
+with a protocol, having corrupted some of the parties.
 
 \begin{definition}[Instantiation]
   Given a protocol $\mathscr{P}$ with $\tx{In}(\mathscr{P}) = \emptyset$, and a corruption model $C$, we can
@@ -672,6 +773,30 @@ $$
 $\square$
 \end{definition}
 
+The basic idea is that the adversary can call the functions
+provided by any player, along with the leakage exposed
+by the ideal functionality.
+This provides a very asynchronous notion of execution,
+where the adversary is able to run different parts of the protocol
+at will.
+There isn't even a clear ``entry point''.
+Each player might have multiple functions that are provided,
+and the adversary is able to start with whichever one they want.
+
+The use of the router allows the adversary to control the flow
+of messages in the protocol, deciding when a message should be delivered.
+In this model, the adversary can't reorder messages, but one can
+model protocols in which this happens either via a functionality,
+or by having each message delivered on a separate channel.
+
+Our next steps will be exploring how instantiation behaves
+for composed protocols, so that we can extract some insights
+that we can use when proving properties of the various
+notions of equality we define later.
+
+We start this exploration by looking at a few convenient properties
+of our routing transformation.
+
 \begin{lemma}[Properties of $\tx{Routed}$]
   \label{thm:routed}
   For any systems $A, B$, we have:
@@ -693,19 +818,40 @@ of these equations hold.
 $\blacksquare$
 \end{lemma}
 
+This will be very useful for our proofs soon enough.
+
+Eventually, we'll want to prove things like ``if $\mathscr{Q}$
+behaves the same as $\mathscr{Q}'$, then $\mathscr{P} \lhd \mathscr{Q}$
+behaves the same as $\mathscr{P} \lhd \mathscr{Q}'$''.
+Whenever we talk about behavior, we need to define a corruption model,
+so that we can actually instantiate the protocol.
+There is a slight issue here, in that a corruption
+model is specific to one protocol.
+A corruption model might say how $\mathscr{Q}$'s players should be
+corrupted, but how does this then apply to
+$\mathscr{P} \lhd \mathscr{Q}$?
+Thankfully, for the ways of composing protocols we've defined,
+there are natural notions of corruption which make sense in such
+a situation.
+If $\mathscr{Q}$ is corrupted in a certain way, then that
+implies that certain corruptions need to happen
+to have $\mathscr{P} \lhd \mathscr{Q}$ make sense as well.
+
+We define this more formally, through the notion of \emph{compatible}
+corruptions.
 
 \begin{definition}[Compatible Corruptions]
   \label{def:compatc}
   Given protocols $\mathscr{P}, \mathscr{Q}$, and a corruption model
   $C$ for $\mathscr{Q}$, we can define a notion of a \emph{compatible}
-  corruption model $C'$ for $\mathscr{P} \otimes \mathscr{Q}$ or $\mathscr{P} \circ \mathscr{Q}$,
+  corruption model $C'$ for $\mathscr{P} \otimes \mathscr{Q}$ or $\mathscr{P} \lhd \mathscr{Q}$,
   provided these expressions are well defined.
 
   A corruption model $C'$ for $\mathscr{P} \otimes \mathscr{Q}$.
   is compatible with $C$ when every corruption of a player
   in $\mathscr{Q}$ is $\geq$ that of the corresponding corruption in $C$.
 
-  We say that a corruption model $C'$ for $\mathscr{P} \circ \mathscr{Q}$ is compatible with
+  We say that a corruption model $C'$ for $\mathscr{P} \lhd \mathscr{Q}$ is compatible with
 a corruption model $C$ for $\mathscr{Q}$ if for every
 $\mathscr{Q}.P_j$ used by $\mathscr{P}.P_i$, the corruption
 level of $\mathscr{Q}.P_j$ in $\mathscr{C}'$ is $\geq$ the corruption level of $\mathscr{P}.P_i$
@@ -720,6 +866,30 @@ in $\mathscr{C}$.
 
   $\square$
 \end{definition}
+
+For tensoring, compatability is quite simple, we just need the players
+that belong to $\mathscr{P}$'s ``side'' of the protocol
+to be corrupted in the same way, or worse.
+For composition, the idea is that for a player in a subprotocol
+to be corrupted, then the player using it in the main protocol
+needs to be at least as corrupt.
+For technical reasons, we'll also be needing
+this notion of \emph{strict} compatibility.
+This avoids situations where a player $P$ uses two players $Q_1$,
+and $Q_2$, but only $Q_2$ is malicious.
+In that case, we'd require $P$ to be malicious for compatibility,
+but if $Q_1$ is honest, the corruption of $P$
+might be too strong now for certain properties to hold.
+If this doesn't quite make sense now, hopefully it will
+be clearer when reading the proofs that make use of this strict
+property.
+
+As a first use of this notion of compatability, we make
+a fundamental observation about instantiating the concurrent composition
+of protocols.
+This is elevated to a theorem, because this breakdown observation
+will be used as the crux of all of our equality related theorems about concurrent
+composition.
 
 \begin{theorem}[Concurrent Breakdown]
   \label{thm:concurrent_breakdown}
@@ -781,6 +951,17 @@ $$
 $\blacksquare$
 
 \end{theorem}
+
+This is an extremely useful theorem, since it breaks down
+the instantiation of the tensor product into another tensor product
+of systems.
+This observation is the cornerstone of proving the properties
+that concurrent composition satisfies with respect to equality
+and simulation.
+
+Now, we tackle horizontal composition.
+Unfortunately, the statement we have here is not quite as elegant
+as that of concurrent composition.
 
 \begin{theorem}[Horizontal Breakdown]
   \label{thm:horizontal_breakdown}
@@ -1145,6 +1326,25 @@ concluding our proof.
 $\blacksquare$
 
 \end{theorem}
+
+If you squint at this theorem, it's basically saying
+that
+$$
+\tx{Inst}_{C'}(\mathscr{P} \lhd \mathscr{Q})
+= \tx{Stuff} \circ \tx{Inst}_C(\mathscr{Q})
+$$
+while also allowing the inputs to $\mathscr{P}.F$ to flow in.
+This is the core observation we need for later.
+If we look at the decomposition more closely,
+the front is almost like
+the $\tx{Inst}(\mathscr{P})$, except that more information
+needs to flow through, since the adversary
+also gets leakage information and routing control from $\mathscr{Q}$.
+Furthermore, the interaction with $\mathscr{Q}$ is mediated
+via the $S_i$, which exist because compatibility
+only requires that the corruption in $\mathscr{Q}$ is at least as strong,
+so these $S_i$ are there to weaken what the players in $\mathscr{P}$
+have access to.
 
 \subsection{Equality and Simulation}
 

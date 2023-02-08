@@ -412,6 +412,21 @@ $$
 This package will have the same input and output functions as the system $S$,
 but with the usage of channels replaced with actual semantics.
 
+At this point, we can also define a notion of efficiency for systems.
+
+\begin{definition}[Efficient Systems]
+  A system $S$ is said to be \emph{efficient} if $\tx{NoChan}(S)$
+  is an efficient package.
+
+  $\square$
+\end{definition}
+
+Note that we use $\tx{NoChan}$ rather than $\tx{SysPack}$,
+because this captures the fact that a system only needs to be efficient
+provided that sending and receiving on channels responds efficiently.
+Unless otherwise specified, we only consider \emph{efficient} systems
+from here on.
+
 Our next steps will be defining the basic operations we can use
 to compose systems, along with some notions of equality we
 can use to compare systems.
