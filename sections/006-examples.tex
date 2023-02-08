@@ -1,8 +1,15 @@
 \section{Examples}
 
+In this section, we provide a couple example proofs in the framework,
+to illustrate how it works, and some of the advantages it provides.
+The two examples we provide are that of constructing a private
+channel from one that leaks all messages sent on it,
+and that of sampling an unbiased random value using
+the ubiquitous paradigm of ``commit reveal''.
+
 \subsection{Constructing Private Channels}
 
-In this section, we consider the problem of constructing a \emph{private}
+In this subsection, we consider the problem of constructing a \emph{private}
 channel from a \emph{public} channel.
 A public channel leaks all messages sent over it to an adversary,
 whereas a private channel leaks a minimal amount of information:
@@ -642,7 +649,7 @@ $\blacksquare$
 
 \subsection{Drawing a Random Value}
 
-The basic goal of this section is to develop a protocol for securely
+The basic goal of this subsection is to develop a protocol for securely
 choosing a common random value.
 This process should such that no party can bias the resulting value.
 We will follow the common paradigm of ``commit-reveal'', where the parties
