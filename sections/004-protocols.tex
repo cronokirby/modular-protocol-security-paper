@@ -1348,6 +1348,28 @@ have access to.
 
 \subsection{Equality and Simulation}
 
+In this subsection, we finally get to the various notions
+of equality and simulation we've been foreshadowing.
+To skip ahead a bit, we define three main notions here, which
+are about claims that:
+\begin{enumerate}
+  \item two protocols behave identically,
+  \item two protocols behave indistinguishably,
+  \item one protocol is simulated by another.
+\end{enumerate}
+After defining these notions, we also show that all the kinds
+of protocol composition we've defined respect these notions,
+and satisfy a form of transitivty.
+This allows us to make such claims about a large protocol,
+by decomposing it into smaller protocols, and then making
+several hops, appealing to claims about these smaller protocols.
+This is analogous to the strategy that the state-separable proof
+paradigm takes to proving things about game.
+Indeed, this analogy is the principal motivation for this framework.
+
+Like with packages and systems, two even compare two protocols,
+they need to have the same shape.
+
 \begin{definition}[Shape]
   \label{def:shape}
   We say that two protocols $\mathscr{P}, \mathscr{Q}$ have the same \emph{shape}
@@ -1363,13 +1385,20 @@ have access to.
   $\square$
 \end{definition}
 
+The reason we use the $\mathscr{Q}'$ equivalent to $\mathscr{Q}$
+is just so that we can get the order of players to be the same
+as in $\mathscr{P}$.
+
+The first notion of equality we capture is about arguing
+that two protocols have the same behavior under a class of corruptions.
+
 \begin{definition}[Semantic Equality]
   We say that two closed protocols $\mathscr{P}$ and $\mathscr{Q}$,
   with the same shape,
   are equal under a class of corruptions $\mathscr{C}$,
   written as $\mathscr{P} =_{\mathscr{C}} \mathscr{Q}$, when we have:
   $$
-  \forall C \in \mathscr{C}.\quad \tx{Inst}_C(\mathscr{P}) = \tx{Inst}_C(\mathscr{Q'})
+  \forall C \in \mathscr{C}.\quad \tx{Inst}_C(\mathscr{P}) = \tx{Inst}_C(\mathscr{Q}')
   $$
   as systems, with $\mathscr{Q}' \equiv \mathscr{Q}$ as per 
   Definition~\ref{def:shape}.
@@ -1377,6 +1406,14 @@ have access to.
   $\square$
 
 \end{definition}
+
+For closed protocols, this is a more natural notion of equality
+than $\equiv$, since it allows for behaviors
+that are effectively identical, while not technically the same.
+
+This notion is too strict for many protocols, which make
+use of hard problems.
+In this case, we want to appeal to indistinguishability instead.
 
 \begin{definition}[Indistinguishability]
   We say that two closed protocols $\mathscr{P}$ and $\mathscr{Q}$,
@@ -1384,7 +1421,7 @@ have access to.
   are \emph{indistinguishable} up to $\epsilon$ under a class of corruptions $\mathscr{C}$,
   written as $\mathscr{P} \overset{\epsilon}{\approx}_{\mathscr{C}} \mathscr{Q}$, when we have:
   $$
-  \forall C \in \mathscr{C}.\quad \tx{Inst}_C(\mathscr{P}) \overset{\epsilon}{\approx} \tx{Inst}_C(\mathscr{Q'})
+  \forall C \in \mathscr{C}.\quad \tx{Inst}_C(\mathscr{P}) \overset{\epsilon}{\approx} \tx{Inst}_C(\mathscr{Q}')
   $$
   as systems, with $\mathscr{Q}' \equiv \mathscr{Q}$ as per 
   Definition~\ref{def:shape}.
@@ -1392,6 +1429,31 @@ have access to.
   $\square$
 
 \end{definition}
+
+Like with systems and packages, this notion allows for
+small differences, and restricts the adversary to only
+have a limited amount of computation, allowing for hard
+problems to exist, and be used inside the protocol.
+
+The notions we've seen so far are natural extensions of the ones
+we've defined for packages and systems.
+This next notion, on the other hand, is novel.
+This is the notion of \emph{simulation},
+and is the typical kind of security claim made about protocols.
+Simulation allows for many more protocols to be compared,
+because it allows for a simulator $S$ to interface
+between the adversary and one of the protocols.
+The intuition here is that the simulator translates
+attacks made on one protocol to attacks made on another.
+If a protocol is simulated by a protocol under which
+no attack is possible, then we can conclude that no
+attack is possible against the concrete protocol,
+since that would immediately translate into an attack against
+the secure one.
+
+To get to this notion of simulation, we first need to formally
+define what a simulator is, and what it means to instatiate
+a protocol with that simulator.
 
 \begin{definition}[Simulated Instantiation]
   A simulator $S$ for a closed protocol $\mathscr{P}$ under a corruption
@@ -1417,6 +1479,20 @@ have access to.
   $\square$
 \end{definition}
 
+Basically, the simulator $S$ is allowed to touch all of the
+``adversarial'' parts of the instantiation.
+This is basically everything except the honest parts
+of the protocol.
+This includes the input functions for semi-honest parties,
+but not their logs.
+We can think of this simulator as translating attacks, as mentioned above.
+We can also think of the simulator as trying to ``trick''
+the adversary into thinking it's interacting
+with one protocol, whereas in fact it's interacting with another.
+
+This leads to a kind of notion of equality, called
+\emph{simulation}.
+
 \begin{definition}[Simulatability]
   Given closed protocols $\mathscr{P}, \mathscr{Q}$ with the same shape,
   we say that $\mathscr{P}$ is \emph{simulatable} up to $\epsilon$ by $\mathscr{Q}$
@@ -1431,6 +1507,17 @@ have access to.
 
   $\square$
 \end{definition}
+
+Note that this is not a symmetric notion.
+There's a clear directionality to claims of simulation,
+as indicated by the choice of notation.
+One important technical detail is that the simulator can
+depend on the specific corruption model.
+In many cases, we even provide an explicit case-by-case proof,
+using different simulator strategies for each kind of corruption.
+
+As one might expect, these notions of equality and simulation
+form a nice hierarchy, which we can formalize as follows.
 
 \begin{theorem}[Equality Hierarchy]
   \label{thm:equality_hierarchy}
@@ -1472,6 +1559,16 @@ We can simply take $S = 1(\ldots)$ for the right set.
 
 $\blacksquare$
 \end{theorem}
+
+The fact that equality implies indistinguishability is unsurprising,
+since we've seen that hold already for packages and systems.
+For simulation, the key to the proof was that you can
+define a simulator that doesn't do anything, in which
+case indistinguishability and simulation are effectively the same.
+
+For these equality notions to be useful, we also want some kind of transitivity,
+so that we can decompose proofs into smaller hops.
+Thankfully, we also have analogous notions of transitivity.
 
 \begin{theorem}[Transitivity of Equality]
   \label{thm:prot_trans}
@@ -1527,6 +1624,18 @@ $\blacksquare$
 
   $\blacksquare$
 \end{theorem}
+
+The crux of the proof was that simulators compose together,
+which allows simulation to become transitive.
+As we've seen for packages and systems, transitivity is
+a critical part of what makes proofs more modular.
+
+From the definitions we've seen so far, it's necessary
+to consider both semi-honest and malicious corruption,
+if the class happens to include them.
+It turns out that for $=$ and $\approx$, we can always
+disregard semi-honest corruption in favor of malicious corruption,
+and in some cases we can also do this for simulation as well.
 
 \begin{theorem}[Malicious Completeness]
   \label{thm:mal_complete}
@@ -1621,6 +1730,33 @@ $\blacksquare$
   $\blacksquare$
 \end{theorem}
 
+For simulation, unfortunately we get stuck in the proof without the additional
+assumptional.
+The fundamental issue is that malicious corruption helps both
+the adversary and the simulator.
+The simulator might make use of the extra powers they get
+from malicious corruption, which are then no longer available
+to them in the semi-honest case.
+One particular power is the ability to change the input being
+provided, as noted in
+\cite{EPRINT:HazLin10a}, which provides
+some example protocols secure under malicious, but not semi-honest corruption.
+The condition we've added might seem a bit odd, being able to simulate
+semi-honest corruption from malicious corruption,
+but it does actually show up somewhat often
+For example, if a protocol just consists of calling part of an ideal
+functionality, then semi-honest and malicious corruption
+are the same, as we'll see later.
+
+The next step will be to show how the various notions of composition
+we've defined interact with these notions of equality and simulation.
+Thankfully, all of the ways of composing protocols
+respect both equality and simulation in the natural ways,
+allowing the use of modular proofs like the ones we can create
+for packages.
+
+First, we look at composing protocols with functionalities.
+
 \begin{theorem}[Vertical Composition Theorem]
   \label{thm:vertical_composition_theorem}
   For any protocol $\mathscr{P}$ and game $G$, such that $\mathscr{P} \circ G$
@@ -1634,11 +1770,23 @@ $\blacksquare$
 for some system $A$.
 Part 1 follows immediately from this, since $\circ$ is equality respecting.
 
-Part 2 follows by applying Lemma~\ref{thm:systemreduction},
+Part 2 follows by applying Lemma~\ref{lemma:systemcomposition},
 which entails that for any system $S$, we have $S \circ G \overset{\epsilon}{\approx} S \circ G'$.
 
 $\blacksquare$
 \end{theorem}
+
+This property is quite useful, since it allows separating out part
+of a functionality, and then appealing to the indistinguishability
+of two games, to argue that one protocol simulates another.
+This allows a kind of bridging between gamed based proofs
+and protocols, allowing us to make
+use of indistinguishability proofs for games to aid
+in proving properties of protocols.
+
+Next, we look at composing protocols concurrently.
+We'll need to use the notion of compatability for corruption
+classes that we've defined before.
 
 \begin{theorem}[Concurrent Composition Theorem]
   Let $\mathscr{P}, \mathscr{Q}$ be protocols, with $\mathscr{P} \otimes \mathscr{Q}$
@@ -1744,6 +1892,17 @@ since all of it is.
 
 $\blacksquare$
 \end{theorem}
+
+Critically, the use of the concurrent breakdown theorem was
+essential in proving this theorem.
+Basically, all the hard work had already been done,
+and we just need to apply some of the notions we've developed
+for systems to finish the details of the proof.
+
+Finally, we can look horizontal composition of protocols.
+Like with the breakdown theorems, this one is a tad more complicated,
+and is where we need to deploy the notion of \emph{strict}
+compatability we developed earlier.
 
 \begin{theorem}[Horizontal Composition Theorem]
   \label{thm:horizontal_composition_theorem}
@@ -1953,6 +2112,39 @@ $\blacksquare$
 
   $\blacksquare$
 \end{theorem}
+
+The reason we needed strict compatability was that we needed
+to move the simulator $S$ for $\mathscr{Q}$, to instead
+become a simulator for $\mathscr{P}$.
+When we have strictly compatible corruption, there are no barriers
+to doing this, since $S$ is able to get all the information
+it needs about $\mathscr{Q}$ via $\mathscr{P} \lhd \mathscr{Q}$.
+However, if we don't have strict compatibility,
+we might run into the issue that $S$ requires a stronger kind
+of corruption than $\mathscr{P}$ ends up using,
+and so we wont be able to move $S$ to the left hand side,
+as we did here.
+This is why we demand strict compatability.
+In practice, this condition shouldn't be very demanding,
+because in many cases the number of parties is the same for both protocols,
+or we're focusing on a complete corruption class, like ``up to $n - 1$ corruptions''.
+
+At this point, we've defined the crux of our modular framework for protocols.
+We've defined the common notion of simulation, which is usually
+the kind of statement we want to prove.
+Furthermore, we've shown that the various means of composing
+protocols respect this simulation.
+So, if one small part of a protocol is simulated by another,
+then we can argue that a larger protocol making use of the component
+will be simulated by replacing this component.
+This allows reasoning about large protocols via small components,
+and makes composing isolated protocols into larger systems
+in a secure way much easier.
+Furthermore, the framework we've defined so far
+also integrates nicely with games, since ideal functionalities
+are simply packages.
+We can even use notions of indistinguishability for these functionalities
+to argue that the protocols that use them simulate one another.
 
 \subsection{Global Functionalities}
 
