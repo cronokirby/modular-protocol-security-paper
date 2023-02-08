@@ -804,6 +804,17 @@ which we prove here explicitly.
   $\blacksquare$
 \end{lemma}
 
+Next, we need to prove whether or not our various operations respect
+these notions of equality, like we did for packages.
+This is very useful, since it allows using the characteristic
+modular proofs that we have for packages in the context of systems.
+We can break down a large package into smaller components,
+and then appeal to the indistinguishability of those small
+components alone, in order to make an argument about the system
+as a whole.
+
+The first operation we target is composition.
+
 \begin{lemma}[Composition Compatability]
   \label{lemma:system_composition}
   Given systems $A$, $B$, $B'$, we have:
@@ -876,6 +887,12 @@ which we prove here explicitly.
 
   $\blacksquare$
 \end{lemma}
+
+This proof is made relatively simple by being able to 
+appeal to the work we already did in proving the analogous property
+for packages.
+
+Next, we look at strict tensoring, for systems that do not overlap.
 
 \begin{lemma}[Strict Tensoring Compatability]
   Given systems $A$, $B$, $B'$, we have:
@@ -950,3 +967,18 @@ which we prove here explicitly.
 
   $\blacksquare$
 \end{lemma}
+
+The assumption that the systems do not overlap is in fact essential,
+because this lemma \emph{does not} hold for tensoring in general.
+
+Here's some intuition for a counter example.
+The idea is that you can insert a back door into a package
+by having a channel which is never sent on.
+The back door is triggered if the package can successfully receive
+from this channel.
+If the use of this back door allows distinguishing two packages,
+then in isolation they will be equal, since it's not
+possible to trigger a message being sent to open the back door.
+However, when composed with another package,
+that package might be able to unlock the door by sending a message,
+and thus the composed system can be distinguishable again.
