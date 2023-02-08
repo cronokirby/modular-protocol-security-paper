@@ -39,12 +39,23 @@ and explore the ways in which these notions are preserved under composition.
 
 \subsection{Defining Protocols and Composition}
 
+We start by definition protocols.
+All of the work we expended in defining systems was ultimately
+to describe protocols,
+so naturally we'll be using systems again here.
+The basic idea is that each player is described by a system,
+and also that the players have access to a package,
+representing the ideal functionality of the protocol,
+if any.
+Rather than considering ``real'' and ``ideal'' world protocols,
+we only ever consider protocols in the hybrid model.
+
 \begin{definition}[Protocols]
 A \emph{protocol} $\mathscr{P}$ consists of:
 \begin{itemize}
-\item Systems $P_1, \ldots, P_n$, called \emph{players}
-\item An asynchronous package $F$, called the \emph{ideal functionality}
-\item A set $\tx{Leakage} \subseteq \tx{Out}(F)$, called the leakage
+\item Systems $P_1, \ldots, P_n$, called \emph{players},
+\item An asynchronous package $F$, called the \emph{ideal functionality},
+\item A set $\tx{Leakage} \subseteq \tx{Out}(F)$, called the \emph{leakage}.
 \end{itemize}
 
 Furthermore, we also impose requirements on the channels and functions
@@ -71,19 +82,41 @@ We can also define a few convenient notations related to the interface of a base
 protocol.
 
 Let $\text{Out}_i(\mathscr{P}) := \text{Out}(P_i)$, and let $\text{In}_i(\mathscr{P}) := \text{In}(P_i) / \text{Out}(F)$.
-We then define $\text{Out}(\mathscr{P}) := \bigcup_{i \in [n]} \text{Out}_i(\mathscr{P})$
-and $\text{In}(\mathscr{P}) := \bigcup_{i \in [n]} \text{In}_i(\mathscr{P})$.
-Let $\tx{IdealIn}_i(\mathscr{P}) := \tx{In}(P_i) \cap \tx{Out}(F)$.
-
-Finally, we define
-$$
-\begin{aligned}
-&\text{IdealIn}(\mathscr{P}) := \text{In}(F)\cr
-\end{aligned}
-$$
+We then define:
+\begin{itemize}
+  \item $\text{Out}(\mathscr{P}) := \bigcup_{i \in [n]} \text{Out}_i(\mathscr{P})$,
+  \item $\text{In}(\mathscr{P}) := \bigcup_{i \in [n]} \text{In}_i(\mathscr{P})$,
+  \item $\tx{IdealIn}_i(\mathscr{P}) := \tx{In}(P_i) \cap \tx{Out}(F)$,
+  \item $\text{IdealIn}(\mathscr{P}) := \text{In}(F)$.
+\end{itemize}
 
 $\square$
 \end{definition}
+
+The ideal functionality can be asynchronous, which lets
+us model things like channels with certain properties
+inside of the functionality itself.
+For convenience, we also allow multiple players
+to use the same functions from the ideal functionality.
+We explicitly define a leakage set, which will be 
+more important later.
+For now, we can think of it as part of the ideal functionality
+that adversaries attacking the protocol will be able to interact with
+directly.
+The functions that the protocol can depend on are either
+provided by other protocols, or other functionalities,
+which is why we defined $\tx{In}$ and $\tx{IdealIn}$ that way.
+
+The condition that the protocol dependencies be distinct
+will make more sense later, when we define protocol composition,
+but for now, the basic idea is that if one player uses
+the functions provided by a player in a sub-protocol,
+then that means that this players must completely take over
+the role of the player in the sub-protocol,
+and we want this relationship to be clear.
+
+Similar to how we often talk about games, rather than just packages,
+we'll often want to talk about protocols without any dependencies.
 
 \begin{definition}[Closed Protocol]
   We say that a protocol $\mathscr{P}$ is \emph{closed} if
@@ -92,13 +125,19 @@ $\square$
   $\square$
 \end{definition}
 
+When we eventually get to defining notions of equality and simulation
+for protocols, these will be targetting \emph{closed} protocols,
+whose semantics are well defined, since no dependencies are left unfulfilled.
+
+We can, however, define a very strong notion of equality right now.
+
 \begin{definition}[Literal Equality]
 Given two protocols $\mathscr{P}$ and $\mathscr{Q}$, we say that
 they are \emph{literally equal}, written as $\mathscr{P} \equiv \mathscr{Q}$
 when:
 \begin{itemize}
 \item $\mathscr{P}.n = \mathscr{Q}.n$
-\item There exists a permuation $\pi : [n] \leftrightarrow [n]$ such that
+\item There exists a permutation $\pi : [n] \leftrightarrow [n]$ such that
 $
 {\forall i \in [n].\enspace \mathscr{P}.P_i \equiv \mathscr{Q}.P_{\pi(i)}}
 $
@@ -109,8 +148,25 @@ $
 $\square$
 \end{definition}
 
+So, the functionalities need to be the same,
+and the players need to be \emph{literally} equal,
+up to potential reordering.
+We use literal equality because we're most likely
+comparing systems with plenty of open channels,
+and we want each player to behave the same regardless of what
+the rest of the protocol is doing.
+
+Like with literal equality for packages and systems, the main purpose
+of this notion is to talk about the fundamental properties
+of the composition operations.
+
+Now, we get to our first notion of composition.
+Protocols can depend on other protocols, but also other functionalities.
+One natural kind of composition is to fill this demand,
+by composing a protocol with another functionality.
+
 \begin{definition}[Vertical Composition]
-Given an protocol $\mathscr{P}$ and a package $G$, satisfying
+Given a protocol $\mathscr{P}$ and a package $G$, satisfying
 $\text{IdealIn}(\mathscr{P}) \subseteq \text{Out}(G)$,
 we can define the protocol $\mathscr{P} \circ G$.
 
@@ -119,6 +175,16 @@ but its ideal functionality $F$ becomes $F \circ G$.
 
 $\square$
 \end{definition}
+
+This is more useful than it might seem at first.
+We can use this kind of composition to separate out components
+of the ideal functionality, which can then allow us to appeal
+to theorems we've already proved about games to argue
+about protocols.
+This kind of composition can be seen as providing a
+sort of ``bridge'' between the world of games and the world of protocols.
+
+This composition is also well behaved, satisfying associativity.
 
 \begin{claim}[Vertical Composition is Associative]
 For any protocol $\mathscr{P}$, and packages $G, H$, such that their composition
@@ -129,8 +195,16 @@ $$
 
 \txbf{Proof:} This follows from the definition of vertical composition
 and the associativity of $\circ$ for packages.
+
 $\blacksquare$
 \end{claim}
+
+The next kind of composition we look at allows a protocol
+to use another as a kind of subprotocol.
+The idea is that each player in one protocol plays the role
+of one or several players in the subprotocol.
+The definition is somewhat involved, so we provide some more motivation
+later.
 
 \begin{definition}[Horizontal Composition]
 Given two protocols $\mathscr{P}, \mathscr{Q}$,
@@ -210,6 +284,21 @@ since $\mathscr{P}$ does.
 $\square$
 
 \end{definition}
+
+The second part of the definition is in fact a proof that the definition
+produces a valid protocol.
+The conditions guarantee that the two protocols are isolated
+from each other, beyond the fact that the players in $\mathscr{P}$
+are able to control the players in $\mathscr{Q}$ via the functions they provide.
+The protocols don't share any channels, or an ideal functionality.
+The end result is a protocol in which each player
+is ``emulating'' the behavior of the players in the subprotocol,
+and where even though the channels are now shared, it's clear
+whether a message is intended for the main protocol,
+or for a specific player in the subprotocol.
+
+Horizontal composition is also well behaved.
+For example, it satisfies associativity.
 
 \begin{lemma}
 Horizontal composition is associative, i.e.
@@ -304,6 +393,13 @@ Which is non other than the players in $\mathscr{P} \lhd (\mathscr{Q} \lhd \math
 $\blacksquare$
 \end{lemma}
 
+Next, we define another fundamental way to compose protocols:
+concurrent composition.
+The idea here is that this allows two protocols to run side
+by side, without any interaction.
+The resulting protocol will have two independent sets of players,
+each running their own protocol together.
+
 \begin{definition}[Concurrent Composition]
 Given two protocols $\mathscr{P}, \mathscr{Q}$,
 we can define their concurrent composition---or tensor product---
@@ -341,11 +437,22 @@ by the same reasoning.
 $\square$
 \end{definition}
 
-\todo{The reason why we allow for $F = G$ is so that you can have like the same $1$}
+One detail which might seem odd at first is that we allow
+for $\mathscr{P}.F = \mathscr{Q}.F$, handling that case a bit separately.
+This is useful because it allows accomodating a common situation
+where both protocols have a functionality of the form $1(S)$,
+for some set, and we want to allow them to be composed,
+to then later write $(\mathscr{P} \otimes \mathscr{Q}) \circ G$,
+for some package $G$.
+Having a shared functionality between concurrent protocols
+is something we do want to be possible, so handling
+this edge case is necessary.
+
+This notion of composition is also well behaved, as we now prove.
 
 \begin{lemma}
-Concurrent composition is associative and commutative.
-I.e. $\mathscr{P} \otimes (\mathscr{Q} \otimes \mathscr{R}) \equiv (\mathscr{P} \otimes \mathscr{Q}) \otimes \mathscr{R}$,
+Concurrent composition is associative and commutative,
+i.e. $\mathscr{P} \otimes (\mathscr{Q} \otimes \mathscr{R}) \equiv (\mathscr{P} \otimes \mathscr{Q}) \otimes \mathscr{R}$,
 and $\mathscr{P} \otimes \mathscr{Q} \equiv \mathscr{Q} \otimes \mathscr{P}$ for
 all protocols $\mathscr{P}, \mathscr{Q}, \mathscr{R}$ where these expressions
 are well defined.
@@ -364,6 +471,24 @@ we conclude that concurrenty composition is commutative.
 
 $\blacksquare$
 \end{lemma}
+
+The utility of concurrent composition and horizontal composition
+is enhanced even more when combined together.
+As an example, consider the common situation where a
+protocol involves several tasks executed in sequence.
+One way of writing this would be:
+$$
+\mathscr{O} \lhd
+\begin{pmatrix}
+  \mathscr{Q}_1\cr
+  \otimes\cr
+  \mathscr{Q}_2
+\end{pmatrix}
+$$
+where $\mathscr{Q}_i$ are subprotocols for each task,
+and $\mathscr{O}$ is an orchestration protocol running the tasks in sequence.
+This decomposition allows a more fine-grained analysis of the protocol's
+security.
 
 \subsection{Corruption}
 
