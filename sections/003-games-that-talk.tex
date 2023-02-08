@@ -1,9 +1,35 @@
 \section{Systems}
 
+The goal of this section is to extend the notion of packages
+to that of \emph{systems}.
+Intuitively, systems are like packages, except that they can send
+messages to other systems via channels.
+This is very useful, since it lets us model the kind of interaction
+we need to describe protocols.
+
+Continuing with the machine analogy, we can see packages like machines,
+arranged into rows, with each row using output functions
+provided by the row behind it.
+Systems have the same setup, except that now all the machines within
+a given row have the ability to communicate with each other via channels.
+
 \subsection{Asynchronous Packages}
 
-While the intuition of yield statements is simple, defining
-them precisely is a bit more tricky.
+Before we get to channels, we first need to define a notion
+of packages that have \emph{asynchronous} functions.
+This becomes necessary to have channels, since we need to be
+able to handle the case where a system is receiving a message along
+channel, and is waiting for that message to arrive.
+A natural way to model this is an asynchronous process,
+where a system can \emph{yield} control back to the caller,
+indicating that it isn't able to provide an answer yet,
+because it's waiting on something else to happen first.
+
+While the intuition of yielding control is simple, defining
+it precisely is a bit more tricky.
+Ultimately, the definition we provide isn't very elegant,
+but we think it's a very straightforward approach
+providing a clear meaning to yield statements.
 
 \begin{definition}[Yield Statements]
 \label{def:yield}
@@ -109,6 +135,7 @@ caller as to whether or not the return value was \emph{yielded}
 or \emph{returned}, syntactically the caller often ignores this,
 simply doing $x \gets F(\ldots)$, meaning that they simply use
 return value $x$, discarding the tag.
+We describe a bit of syntax for this shorthand.
 
 \begin{syntax}[Empty Yields]
 In many cases, no value is yielded, or returned back, which we can write as:
@@ -125,7 +152,17 @@ $\square$
 \end{syntax}
 
 Unless otherwise specified, we only consider empty yields from now on.
+In other contexts, being able to yield intermediate values
+can be useful, but for modelling channels, we only need
+empty yields.
 
+Very often, a package just wants to run another asynchronous
+process to completion.
+It's not enough to simply loop until the process completes,
+because this might cause an infinite loop, as some external
+intervention might be necessary to cause the process to make progress.
+Instead, we want to poll the process, and yield ourselves
+if the process is not yet ready.
 We define these semantics via the $\textbf{await}$ statement.
 
 \begin{syntax}[Await Statements]
@@ -146,7 +183,13 @@ its final value, but we do yield to our caller whenever our function yield, but 
 $\square$
 \end{syntax}
 
-Sometimes we want to await several values at once, returning the first
+In practice, $\txbf{await}$ is the most common way that asynchronous functions
+will be called.
+Most systems will await other functions directly, and maybe only
+adversaries will care about being able to see the underlying polling
+process.
+
+However, sometimes we want to await several values at once, returning the first
 one which completes. To that end, we define the $\textbf{select}$ statement.
 
 \begin{syntax}[Select Statements]
@@ -188,9 +231,41 @@ This is so that if one of the function is immediately ready, we never yield.
 $\square$
 \end{syntax}
 
+This kind of situation can arise quite often when defining protocols,
+where you might be waiting on a message from any one of several parties.
+Using a select statement lets a package wait for the first message
+that happens to arrive.
+
+Another variant of waiting occurs when we want to wait for some
+\emph{condition} to be true.
+For example, we could set up a lock over a shared value,
+and we might need to wait for the lock to be free, so we can modify
+the value.
+We model this kind of situation with a \txbf{wait} statement.
+
+\begin{definition}[Wait Statement]
+  \label{syn:wait}
+  We define the semantics of $\txbf{wait } \langle \tx{cond} \rangle$
+  as equivalent to:
+  $$
+  \begin{aligned}
+  &\pwhile{\neg \langle\tx{cond}\rangle}\cr
+  \pind{1} \pyield{}\cr
+  \end{aligned}
+  $$
+  $\square$
+\end{definition}
+
+So, we simply keep yielding until the condition is true.
+This is simple, but surprisingly useful.
+
+We've defined the various asynchronous gadgets we'll be needing,
+so the natural next step is to define a kind of package which
+uses these gadgets.
+
 \begin{definition}[Asynchronous Packages]
   An \emph{asynchronous} package $P$ is a package which uses the additional
-  syntax from Definition~\ref{def:yield} and Syntax~\ref{syn:await},~\ref{syn:select}.
+  syntax from Definition~\ref{def:yield} and Syntax~\ref{syn:await},~\ref{syn:select},~\ref{syn:wait}.
 
   $\square$
 \end{definition}
@@ -199,8 +274,6 @@ Note that our syntax sugar definitions means that whenever one of the constructs
 such as yield and what not are used, they are immediately replaced with their underlying
 semantics. Thus, an asynchronous package \emph{literally} is a package which 
 does not use any of those syntactical constructs.
-
-$\tx{In/Out}$ are well defined \todo{elaborate}.
 Naturally, the definitions of $\circ$ and $\otimes$ for packages also
 generalize directly to asynchronous packages.
 
