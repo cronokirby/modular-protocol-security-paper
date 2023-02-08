@@ -2148,6 +2148,32 @@ to argue that the protocols that use them simulate one another.
 
 \subsection{Global Functionalities}
 
+Next, we redo a bit of what we've developed so far, this time
+with the goal of incorporating \emph{global functionalities}.
+The basic example one should have in mind throughout this section
+is that of a hash function, treated as a \emph{global random oracle}.
+This hash can be used by various protocols, but yet it should
+be treated as one common random oracle throughout all of the protocols.
+We need a notion of simulation which can account for this reality.
+Basically, we want to say that one protocol simulates another,
+even in the presence of a shared random oracle,
+and this notion of simulation should have the nice composability properties
+that we've come to expect.
+
+This development does involve rehashing some of the work
+we've done in the previous subsection.
+We could have avoided some of the repetition here,
+but we feel like having a separate subsection provides more clarity,
+especially since in many cases a global functionality isn't being used.
+
+First, when a protocol depends on a global functionality,
+this is because it isn't closed.
+This dependency will be from the fact that its ideal functionality
+still has some dependencies on the global functionality.
+
+We can formalize this kind of ``closed but for the global functionality''
+notion.
+
 \begin{definition}[Relatively Closed Protocols]
   A protocol $\mathscr{P}$ is \emph{closed relative to} a game $G$
   if:
@@ -2158,6 +2184,10 @@ to argue that the protocols that use them simulate one another.
 
   $\square$
 \end{definition}
+
+As one might expect, we now define notions of instantiation
+and equality for such relatively closed protocols.
+
 \begin{definition}[Relative Instantiation]
   Given a closed protocol $\mathscr{P}$ relative to $G$, we can define,
   for any corruption model $C$,
@@ -2187,6 +2217,16 @@ to argue that the protocols that use them simulate one another.
   $\square$
 \end{definition}
 
+One key aspect of relative instantiation is that the adversary
+is always able to interact with $G$ completely.
+Going back to our example of the hash function,
+this would also be the case.
+The adversary is able to call the global random oracle at will.
+This complete access is key to composability.
+
+We can now use relative instantiation to define the same notions
+of equality that we did for standard protocols and regular instantiation.
+
 \begin{definition}[Relative Notions of Equality]
   Given closed protocols $\mathscr{P}, \mathscr{Q}$ relative to $G$,
   with the same shape, and a corruption class $\mathscr{C}$
@@ -2199,6 +2239,11 @@ to argue that the protocols that use them simulate one another.
 
   $\square$
 \end{definition}
+
+These are all the same, except for the replacement of instantiation
+with relative instantiation with respect to $G$.
+As one might expect, the same kind of equality hierarchy also holds
+here as well.
 
 \begin{theorem}[Relative Equality Hierarchy]
   For any corruption class $\mathscr{C}$ and game $G$, we have:
@@ -2218,6 +2263,9 @@ and can thus be used directly to prove this relation.
 
 $\blacksquare$
 \end{theorem}
+
+Furthermore, these notions of equality are transitive in the exact same way
+as before.
 
 \begin{theorem}[Transitivity of Relative Equality]
   \label{thm:trans_relative_equality}
@@ -2267,6 +2315,11 @@ $\blacksquare$
 
   $\blacksquare$
 \end{theorem}
+
+In many cases, we want to avoid proving semi-honest security
+explicitly, if we can get away with just proving malicious security.
+Thankfully, the same observation we made for standalone protocols
+also applies to ones that use a global functionality.
 
 \begin{theorem}[Global Malicious Completeness]
   Let $\mathscr{P}$ and $\mathscr{Q}$ closed protocols relative to $G$ with the same shape.
@@ -2374,6 +2427,17 @@ $\blacksquare$
 
   $\blacksquare$
 \end{theorem}
+
+As we've foreshadowed, our next task will be to prove
+that the various notions of composition we have
+respect the relative notions of equality we've developed.
+Thankfully, our restriction that the adversary
+can access the entirety of the global functionality makes
+these theorems easy to prove.
+Since we've already seen these theorems before, in the standalone
+context, we won't provide much commentary.
+The proofs are usually based on the proofs in the previous subsection
+as well.
 
 \begin{theorem}[Global Vertical Composition Theorem]
   For any protocol $\mathscr{P}$ and game $F$, such that $\mathscr{P} \circ F$
@@ -2604,6 +2668,13 @@ $\blacksquare$
 
   $\blacksquare$
 \end{theorem}
+
+So, the three big theorems we proved in the standalone context
+also hold in the global context.
+We could have saved some repetition by just doing everyting in the global
+context, but since we expect most proofs to be done standalone,
+we felt that it was clearer to present that in more detail,
+and then present the global generalizations more rapidly.
 
 \subsection{Hopping Ideal Functionalities}
 
