@@ -277,13 +277,44 @@ does not use any of those syntactical constructs.
 Naturally, the definitions of $\circ$ and $\otimes$ for packages also
 generalize directly to asynchronous packages.
 
-\subsection{Channels and System Composition}
+\subsection{Defining Systems}
 
+Our next goal is to define systems, by first defining channels,
+and then giving them meaning in terms of asynchronous packages.
+We'll then define various composition operations for systems,
+and show that they satisfy similar properties to those of packages.
+
+Our first task is defining channels.
+We start by just defining some syntax for using channels,
+and defer defining the precise meaning of this syntax until later. 
+
+\begin{syntax}[Channels]
+  Using channels involves two syntactic constructs:
+  \begin{enumerate}
+    \item $m \Rightarrow P$, for sending a message $m$ on a channel $P$,
+    \item $m \Leftarrow P$, for receiving a message $m$ on a channel $P$,
+    \item $n \gets \txbf{test } P$, for checking how many messages are on a channel $P$.
+  \end{enumerate}
+
+  $\square$
+\end{syntax}
+
+Like with functions, channels have distinct names.
+The two fundamental operations are sending messages, and receiving messages.
+We also add an operation for testing how many messages are waiting on a channel.
+This is useful to allow a package to change its behavior based on whether
+or not a channel is empty, in which case $\txbf{test } P$ will return $0$.
+We consider testing to be a kind of operation that a system
+can do on the channels it's allowed to receive on.
+
+Next, we need to give packages the ability to use these channels.
+We call these, \emph{systems}.
 
 \begin{definition}[Systems]
 A \emph{system} is a package which uses channels.
 
 We denote by $\text{InChan(S)}$ the set of channels the system receives on,
+or uses $\txbf{test}$ on,
 and $\text{OutChan(S)}$ the set of channels the system sends on,
 and define
 $$
@@ -295,17 +326,32 @@ Additionally we require that $\text{OutChan}(S) \cap \text{InChan}(S) = \emptyse
 $\square$
 \end{definition}
 
-We also define shorthands $\tx{Chan}(A, B, \ldots) = \tx{Chan}(A) \cup \tx{Chan}(B) \cup \ldots$.
-\todo{expand}.
+We also define shorthands $\tx{Chan}(A, B, \ldots) = \tx{Chan}(A) \cup \tx{Chan}(B) \cup \ldots$,
+and similarly for $\tx{InChan}$ and $\tx{OutChan}$.
+The set of channels can be seen as another part of the interface
+of a system.
+A package has input and output functions, while a system additionally
+has input and output channels.
+Like with packages, this set is often implicit, based on whatever
+channels the system happens to use syntactically.
+We can also consider a system to be ``using'' channels that don't
+actually appear in the body of a package as well.
+
+So far, we've defined what systems are, but we haven't formally
+defined what their semantics actually are,
+although we might already have some intuition, at this stage.
+The simplest way of defining the semantics of a system
+is to compile it down into an asynchronous package,
+which we developed a well defined meaning for.
 
 \begin{definition}
 We can compile systems to not use channels.
-We denote by $\text{NoChan}(S)$ the package corresponding to
+We denote by $\text{NoChan}(S)$ the asynchronous package corresponding to
 a system $S$, with the use of channels replaced with function calls.
 
 Channels define three new syntactic constructions, for sending and receiving
 along a channel, along with testing how many messages are in a channel.
-We replace these with function calls as follows:
+We replace these with external function calls as follows:
 
 
 Sending, with $m \Rightarrow P$ becomes:
@@ -331,6 +377,11 @@ that that we have a separate function for each channel.
 $\square$
 \end{definition}
 
+This definition makes reference to external functions,
+so we need to define a package providing these functions.
+We do so in Game~\ref{game:Channels},
+via the $\tx{Channels}$ package.
+
 \begin{game}{game:Channels}{Channels}
 \package{Channels($\{A_1, \ldots, A_n\}$)}{
 &q[A_i] \gets \text{FifoQueue.New()}\cr
@@ -348,7 +399,9 @@ $\square$
 }
 \end{game}
 
-One consequence of this definition with separate functions for each channel
+Basically, this game has a queue for each channel, and then provides
+the functions need to send, receive, and test that channel.
+One consequence of defining separate functions for each channel
 is that $\text{Channels}(S) \otimes \text{Channels}(R) = \text{Channels}(S \cup R)$.
 
 Armed with the syntax sugar for channels, and the $\tx{Channels}$ game,
@@ -359,8 +412,17 @@ $$
 This package will have the same input and output functions as the system $S$,
 but with the usage of channels replaced with actual semantics.
 
-This allows us to lift our standard equality relations on packages onto
-\emph{systems}.
+Our next steps will be defining the basic operations we can use
+to compose systems, along with some notions of equality we
+can use to compare systems.
+The first notion of equality we want to define is the strongest
+one, \emph{literal equality}, 
+which we'll use to define fundamental properties of our composition
+operations, like associativity, commutativity, and so on.
+
+First, we need to define a notion of \emph{shape}, like we did
+for packages, since our various equality relations will
+require the systems to have the same shape.
 
 \begin{definition}
   Given systems $A, B$, we say that they have the same \emph{shape} if
@@ -374,6 +436,11 @@ This allows us to lift our standard equality relations on packages onto
   $\square$
 \end{definition}
 
+This is what you might expect, the functions and channels need to all
+match for two systems to be considered to have the same shape.
+
+Next, we can define the most basic notion of equality for systems.
+
 \begin{definition}[Literal System Equality]
   Given systems $A$, $B$ with the same shape, we say that they are \emph{literally} equal, written $A \equiv B$ if
   $$
@@ -382,6 +449,17 @@ This allows us to lift our standard equality relations on packages onto
 
   $\square$
 \end{definition}
+
+This is a very strong notion of equality, which doesn't take
+into account the semantics of channels in practice.
+Basically, it requires that regardless of what messages the channels
+might start out with, or even what the semantics of channels are,
+that the behavior is identical.
+This is good enough for fundamental properties of our composition
+operations, but we'll move on to a looser notion for standard equality
+later, like we did with packages.
+
+\subsection{Composing Systems}
 
 \begin{definition}[System Tensoring]
 Given two systems, $A$ and $B$, with \(\text{Out}(A) \cap \text{Out}(B) = \emptyset\), we can define their tensor product $A * B$,
