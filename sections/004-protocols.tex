@@ -2678,6 +2678,16 @@ and then present the global generalizations more rapidly.
 
 \subsection{Hopping Ideal Functionalities}
 
+One difference between the framework we've developed and other
+frameworks is that we always make statements about protocols.
+Protocols are equal to each other, or simulate one another, etc.
+In UC security, statements are usually between protocols and ideal functionalities.
+One says that a protocol is simulated by a \emph{functionality},
+and not another protocol.
+
+Sometimes we want to be able to make this kind of statement as well,
+and the following lemma can help us with that.
+
 \begin{lemma}[Deidealization Lemma]
   Given a closed protocol $\mathscr{P}$ with an ideal functionality $F \otimes G$,
   there exists protocols $\mathscr{P}'$ and $\mathscr{G}$
@@ -2704,6 +2714,39 @@ and then present the global generalizations more rapidly.
   $\blacksquare$
 \end{lemma}
 
+The idea is that if we're using some ideal functionality inside
+of a protocol, we can actually write this as using
+a \emph{subprotocol}, where that subprotocol is the one using
+the ideal functionality.
+This subprotocol will be a kind of ``dummy protocol'',
+which just immediately forwards inputs to the functionality.
+This allows us to capture the kind of ``a protocol is simulated by functionality''
+statement that one might want to make.
+We would prove that a protocol simulates the \emph{dummy protocol}
+associated with a given functionality.
+Then, whenever that functionality is used inside of a protocol,
+we can appeal to the deidealization lemma to argue that we can
+replace the functionality with the concrete protocol.
+
+An example might help with this.
+Let's say we have a functionality $G$.
+It's dummy protocol is, say, $\mathscr{G}$.
+We might succeed in proving that
+$\mathscr{Q} \leadsto \mathscr{G}$---ignoring corruption classes and the epsilon---
+for a concrete protocol $\mathscr{Q}$.
+Then, if we have a protocol $\mathscr{P} \circ G$,
+by deidealization, we can write this as:
+$\mathscr{P}' \lhd \mathscr{G}$, and then we use the fact that composition
+respects simulation to conclude that
+$$
+\mathscr{P}' \lhd \mathscr{Q} \leadsto 
+\mathscr{P}' \lhd \mathscr{G} = \mathscr{P} \circ G
+$$
+allowing us to replace a functionality with a concrete protocol.
+
+Another similar idea allows us to turn global instantiation
+into normal instantiation, by just embedding in the global functionality.
+
 \begin{lemma}[Embedding Lemma]
   Given a protocol $\mathscr{P}$ closed relative to a game $G$,
   there exists a protocol $\tx{Embed}_G(\mathscr{P})$ such that for any
@@ -2729,4 +2772,15 @@ and then present the global generalizations more rapidly.
   $\blacksquare$
 \end{lemma}
 
-\subsection{Some Syntactical Conventions}
+The utility here is that we can prove a bunch of things in the
+global model,
+and then choose to actually instantiate the functionality
+with a local version of it at some concrete point.
+We might even then appeal to deidealization to replace the functionality
+with a real protocol.
+For example, some protocols proven secure in the global random oracle
+model could be composed together,
+and then the global random oracle could be replaced
+by a local one, shared by all the protocols,
+and then we could even replace this local random oracle with a
+protocol to actually sample randomness.
