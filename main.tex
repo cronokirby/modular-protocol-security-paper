@@ -9,7 +9,21 @@
 \maketitle
 
 \begin{abstract}
-    We do things with UC security.
+
+Universally composable (UC) security \cite{EPRINT:Canetti00}
+is the most widely used framework for analyzing the security of cryptographic
+protocols.
+Many variants and simplifications of the framework have been proposed and developed,
+nonetheless, many practicioners find UC proofs to be both difficult
+to construct and understand.
+We remedy this situation by proposing a new framework for protocol security.
+We believe that our framework provides that are both
+easier to write, but also more rigorous, and easier to understand.
+Our framework is highly \emph{modular}, allowing the decomposition
+of large proofs into a series of simpler proofs,
+and also neatly generalizes standalone security,
+along results about security games to be used in the context
+of protocols as well.
 \end{abstract}
 
 \input{sections/001-introduction.tex}

@@ -1,73 +1,58 @@
 \section{Introduction}
 
-\cite{EPRINT:Meier22}
+Universally composable (UC) security \cite{EPRINT:Canetti00}
+has seen widespread success since its introduction over
+two decades ago,
+becoming the dominant framework for analyzing the security of cryptographic
+protocols.
 
-\begin{definition}[Adversaries]
-An adversary is a cool thing.
-\end{definition}
+This success is understandable, because the guarantees
+the framework provides are very useful.
+In essence, when a protocol is proved secure in the UC framework,
+then arbitrary instances of that protocol can be used concurrently in the context
+of a larger system, without modifying the behavior
+of these protocols.
+This allows the analysis of isolated components to be used
+to guarantee the security of a system as a whole;
+this modular analysis is essential to being able to scale
+formal analysis to larger systems.
 
-\begin{theorem}[Cool Beans]
-    Woah mama
+games are still used, hard to write
 
-And that's what matters.
+variants have been developed
 
-$\blacksquare$
-\end{theorem}
+nonetheless, still hard, also informal
 
-\begin{lemma}
-    Woah mama again!
-\end{lemma}
+in this work, we propose
 
-\begin{corollary}
-    Woah mama again!
-\end{corollary}
+\subsection{Our Framework}
 
-\begin{game}{game:foo}{Some Game}
-\package{$\Gamma^0$}{
-\pind{0} \set{x}{3}\cr
-\pind{0} \pif{x + 2}\cr
-\pind{1} \draw{y}{\mathbb{F}_q}\cr
-\pind{0} \psend{m}{\pair{\party{i}}{\party{j}}}&\quad&\set{y}{4}\cr
-&\precv{m}{\pair{\tx{OT}}{\party{i}}}&\quad&\set{x}{3}\cr
-\cr
-&\pfn{Foo}{x, y}\cr
-\pind{1} \pcall{Bar}{x, y}\cr
-}
-\end{game}
+More modular, formal, and simpler.
 
-\subsection{Relevance of Time Travel}
+breaking down protocols.
 
-\begin{protocol}{prot:foo}{Some Protocol}
-$$
-\boxed{
-\begin{aligned}
-&\text{IND-CCA}\cr
-&x \gets 4\cr
-\end{aligned}
-}
-$$
-\end{protocol}
+transitivity of simulation
 
-\begin{protocol}{prot:foo}{Some Protocol}
-$$
-\boxed{
-\begin{aligned}
-&\text{IND-CCA}\cr
-&x \gets 4\cr
-\end{aligned}
-}
-$$
-\end{protocol}
+connection with games.
 
-\begin{functionality}{func:foo}{Encryption}
-$$
-\boxed{
-\begin{aligned}
-&\text{IND-CCA}\cr
-&x \gets 3\cr
-\end{aligned}
-}
-$$
-\end{functionality}
+founded on state separable proofs,
+most similar to.
 
-\todo{stuff}
+hierarchy of stuff
+
+we also formalize state separable proofs while we're at it, why not.
+
+\subsection{Overview}
+
+as mentioned above, we need to first define packages,
+systems, etc.
+
+in section 2
+
+in section 3
+
+in section 4
+
+in section 5
+
+in section 6
