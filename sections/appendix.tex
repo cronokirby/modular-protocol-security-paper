@@ -7,31 +7,28 @@ details are worth spelling out here.
 
 \subsection{Encryption}
 \label{app:encryption}
-An encryption scheme consists of types $\txbf{K}, \txbf{M}, \txbf{C}$,
-along with probabilistic functions $\tx{Enc} : \txbf{K} \times \txbf{M} \xleftarrow{\$} \txbf{C}$ and $\tx{Dec} : \txbf{K} \times \txbf{C} \to \txbf{M}$.
+A public key encryption scheme consists of types $\txbf{PK}, \txbf{PK}, \txbf{DK}, \txbf{M}, \txbf{C}$,
+along with probabilistic functions $\tx{Enc} : \txbf{PK} \times \txbf{M} \xleftarrow{\$} \txbf{C}$ and $\tx{Dec} : \txbf{SK} \times \txbf{C} \to \txbf{M}$.
 By $\txbf{M}(|m|)$ we denote the distribution of messages with the same
 length as $m$.
-We require that $\txbf{K}$ and $\txbf{M}(|m|)$ are efficiently sampleable.
+We require that $\txbf{M}(|m|)$ is efficiently sampleable,
+and we require that we can sample $(\txbf{SK}, \txbf{PK})$ via an algorithm
+$\tx{Gen}$
 
 The encryption scheme must satisfy a correctness property:
 $$
-\forall k \in \txbf{K},\ m \in \txbf{M}.\ P[\tx{Dec}(\tx{Enc}(k, m)) = m] = 1
+\forall (\tx{sk}, \tx{pk}) \gets \tx{Gen}(),\ m \in \txbf{M}.\ P[\tx{Dec}(\tx{sk}, \tx{Enc}(\tx{pk}, m)) = m] = 1
 $$
 Encrypting and then decrypting a message should return that same message.
 
 The security of an encryption scheme can be captured by the following game:
 \package{$\tx{IND-CPA}_b$}{
-\pind{0} \draw{k}{\txbf{K}}\cr
+\pind{0} \set{(\tx{sk}, \tx{pk})}{\tx{Gen}()}\cr
 \cr
 &\begin{aligned}
     &\pfn{Challenge}{m_0}\cr
     \pind{1} \draw{m_1}{\txbf{M}(|m|)}\cr
-    \pind{1} \preturn{\tx{Enc}(k, m_b)}\cr
-\end{aligned}
-&\begin{aligned}
-    &\pfn{Enc}{m}\cr
-    \pind{1} \preturn{\tx{Enc}(k, m)}\cr
-    &\cr
+    \pind{1} \preturn{\tx{Enc}(\tx{pk}, m_b)}\cr
 \end{aligned}
 }
 
