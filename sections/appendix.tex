@@ -22,7 +22,7 @@ $$
 Encrypting and then decrypting a message should return that same message.
 
 The security of an encryption scheme can be captured by the following game:
-\package{$\tx{IND-CPA}_b$}{
+\package{$\tx{IND}_b$}{
 \pind{0} \set{(\tx{sk}, \tx{pk})}{\tx{Gen}()}\cr
 \cr
 &\begin{aligned}
@@ -33,5 +33,4 @@ The security of an encryption scheme can be captured by the following game:
 }
 
 In essence, an adversary cannot distinguish between an encryption of a message
-of their choice and that of a random message, even if they can encrypt
-messages at will.
+of their choice and that of a random message.

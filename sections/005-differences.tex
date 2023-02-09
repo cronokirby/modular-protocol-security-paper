@@ -12,10 +12,169 @@ as is the case for other variants of UC,
 such as \cite{C:CanCohLin15}.
 
 \subsubsection*{Foundations without Turing Machines}
+
+One major technical difference is that our framework
+doesn't specify a concrete computational model.
+Rather than using interactive randomized turing machines,
+as most frameworks do, we instead just
+assume the existence of computable randomized functions,
+and then build everything on top of that foundation.
+
+We believe that this makes the foundations simpler to understand,
+since the complicated details of turing machines and various
+tapes are never mentioned, but it also
+makes proofs closer to the actual formalism.
+
+In principle, UC proofs would need to make reference
+to interactive turing machines writing messages on each other's
+tapes.
+In practice, a much higher level language is used.
+The advantage of basing ourselves on state-separable proofs
+is that we can give a formal justification for this kind
+of high-level language, by providing a precise semantics
+for the pseudo-code we use.
+Thus, we expect proofs in our framework to be writeable
+in a style close to the formalism itself,
+while also proving a high level of abstraction.
+
 \subsubsection*{Semi-Honest Security without Randomness}
+
+Another technical difference is that our notion of semi-honest
+security does not allow an adversary to see the randomness
+sampled by a given party.
+Instead, they're allowed to see all function calls
+and messages sent by the party.
+As explained before, the main reason for this difference
+is that we ultimately want two protocols
+with equal parties to be consider equal protocols,
+under any corruption model, and being able to see the
+exact randomness being sampled is often enough to distinguish
+otherwise equal parties.
+
+In practice, we don't expect this difference to matter,
+because meaningful randomness should affect the output
+calls and behavior of the adversary,
+and so the difference between these models are likely
+to come from more pathological examples.
+
 \subsubsection*{Hybrid Only}
-\subsubsection*{The Lack of Environment}
-\subsubsection*{Instantiation is Composition}
+
+In the usual presentation of UC security, simulation
+happens between a protocol in the \emph{hybrid} world,
+where parties can potentially interact with an ideal functionality,
+and the \emph{ideal} world, where the parties
+don't communicate between each other, instead interacting
+only with the ideal functionality.
+
+In our framework, only the hybrid world exists.
+Protocols aren't simulated by ideal functionalities,
+instead, protocols are simulated by other protocols,
+and all protocols may make use of ideal functionalities.
+
+The advantage of this approach is that it allows decomposing
+a larger simulation proof into multiple smaller proofs,
+which can then be stringed together via transitivity.
+The larger the gap between the protocols being simulated,
+the more complicated the simulator needs to be,
+and so this style of proof can be much simpler.
+
+\subsubsection*{Corruption Agnostic Ideal Functionalities}
+
+Another technical difference is that in our framework,
+ideal functionalities are not aware of which parties are corrupted,
+whereas some UC functionalities make use of this fact.
+
+We don't think this is a necessary feature of the framework itself,
+since it can be modeled by having slightly more complicated
+protocols on top of an ideal functionality.
+For example, one common use this kind of ``corruption aware''
+functionality is to describe \emph{endemic} functionalities,
+where malicious parties are allowed to choose their own randomness.
+This can be written by having the functionality alter its behavior
+based on which parties are corrupt, allowing them to choose their
+own randomness.
+In our framework, we can instead just have a small wrapping
+protocol around the functionality, where honest parties
+sample a random value before calling the functionality.
+Malicious parties are then free to sample a biased value,
+deviating from the protocol.
+
+In general, one can always have the functionality
+behave differently for certain inputs,
+and then restrict honest parties to never trigger this behavior,
+thus allowing the functionality to behave differently
+for malicious parties.
+
+\subsubsection*{The Lack of Adversaries}
+
+In the traditional presentations of UC,
+simulation is a statement of the form ``for all adversaries,
+there exists a simulator, such that for all environments...''.
+In our framework, we eliminate the notion of adversary
+entirely, instead simply considering the environment
+to be the adversary.
+
+This is actually a possibility in UC itself.
+Subsequent versions of \cite{EPRINT:Canetti00} include
+an explicit proof that it suffices to prove security against ``dummy adversary'',
+which simply does whatever the environment tells it to do.
+We can thus consider our framework to implicitly use such a dummy adversary.
+
 \subsubsection*{The Lack of Session IDs}
+
+Another big difference is that we do away with the use of ``session IDs'',
+at least explicitly.
+These are most often used to distinguish between multiple
+instances of a protocol in a given execution.
+These can still be used in our case, but are more implicit.
+
+For example, multiple instances of a protocol would be written
+$\mathscr{P} \otimes \mathscr{P}$.
+Technically, this is disallowed, but we could fix this
+by renaming all of the functions in one instance of the protocol,
+so that there's no longer any conflict.
+If we use this protocol, in practice it means that we
+have a way of distinguishing between the messages belonging
+to once instance of the protocol from the other instance.
+One way of accomplishing this would be assining session ids,
+but these aren't a formal part of our framework.
+
 \subsubsection*{``Timing Side-Channels''}
+
+One unfortunate strength of our framework is that the adversary
+is able to observe more timing properties of protocol execution.
+Indeed, they are able to observe how many times a given function
+yields before returning a result, or simply whether
+or not a function can return a result given the current state of
+execution.
+This is a consequence of the more asynchronous nature
+of execution our framework ends up having for protocols.
+
+This is arguably present in some variants of UC already,
+depending on the precision of the proofs.
+Indeed, if the adversary is able to stall or abort execution,
+then this needs to be reflected in the functionality
+targeted by the simulation proof.
+This is how the notion of ``MPC with abort'' arises.
+
+In some cases though, it seems like the visible
+delays are an undesirable consequence of simulation that
+is required to be, perhaps, too precise.
+We think that further work could develop more relaxed notions of simulation,
+which can paper over inessential differences like those of timing and delay.
+
 \subsubsection*{Clearer Connection with Games}
+
+Finally, we believe that a major advantage of our framework is that
+it provides a much simpler bridge between standalone security
+with games, and the composable security of protocols.
+By having ideal functionalities be simply games,
+and by having theorems showing that
+we can use indistinguishability results for games to produce
+simulation results for protocols,
+our framework makes it easier to use work done in proving
+standalone security for proving protocol security.
+Furthermore, simulation arguments ultimately boil down
+to an argument about games, and so this can motivate the
+intricate games that one might find in the analysis of protocols
+such as messaging.
