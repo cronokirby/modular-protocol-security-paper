@@ -14,7 +14,7 @@ Universally composable (UC) security \cite{EPRINT:Canetti00}
 is the most widely used framework for analyzing the security of cryptographic
 protocols.
 Many variants and simplifications of the framework have been proposed and developed,
-nonetheless, many practitioners find UC proofs to be both difficult
+nonetheless, many practicioners find UC proofs to be both difficult
 to construct and understand.
 We remedy this situation by proposing a new framework for protocol security.
 We believe that our framework provides that are both

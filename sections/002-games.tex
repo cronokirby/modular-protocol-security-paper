@@ -5,7 +5,7 @@ Our framework for describing protocols is based on
 \cite{AC:BDFKK18}.
 The security notions we develop for protocols ultimately
 find meaning in analogous notions of security for \emph{packages},
-the main object of study in state-seperable proofs.
+the main object of study in state-separable proofs.
 
 This section is intended to be a suitable independent presentation
 of this formalism.
@@ -13,7 +13,7 @@ In that spirit, we develop state-separable proofs ``from scratch''.
 Our starting point is merely that of computable randomized functions.
 This is in contrast to other protocol security frameworks like UC,
 whose foundational starting point is usually the more concrete notion
-of \emph{interactive turing machines}.
+of \emph{interactive Turing machines}.
 
 We also take the opportunity to solidify the formalism of state-separable
 proofs, providing more complete definitions of various objects,
@@ -42,13 +42,13 @@ which takes in a binary string as an input, and produces a binary string
 as output, and is allowed to make randomized decisions to aid its computation.
 
 We mainly consider \emph{families} of functions,
-parametrized by a security parameter $\lambda$.
+parameterized by a security parameter $\lambda$.
 Formally, this is in fact a function $f : \mathbb{N} \to \randf{\str}{\str}$,
 and we write $f_{\lambda} : \randf{\str}{\str}$ to denote a particular
 function in the family.
 In most cases, this security parameter is left \emph{implicit}.
 In fact, all of the objects we consider from here on out will \emph{implicitly}
-be \emph{families} of objects, parametrized by a security parameter $\lambda$,
+be \emph{families} of objects, parameterized by a security parameter $\lambda$,
 and we will invoke this fact only as necessary.
 
 \begin{definition}[Efficient Functions]
@@ -174,7 +174,7 @@ $$
 \end{aligned}
 $$
 In this example, $s$ is a quantified type variable.
-Formally, we can see $\tx{id}$ as a function parametrized by a type,
+Formally, we can see $\tx{id}$ as a function parameterized by a type,
 with $\tx{id}_S$ being a concrete function, after having chosen this type.
 
 \subsection{Defining Packages}
@@ -195,7 +195,7 @@ much more easily usable, and is the core strength of the state-separable
 proof formalism.
 
 Before we get to packages, we first need to define a few convenient
-notions for functions manipulating a state, and parametrizing
+notions for functions manipulating a state, and parameterizing
 functions with other functions.
 
 Our first definition will be a little bit of shorthand.
@@ -236,26 +236,26 @@ One can verify that this forms a valid equality relation.
 Note that this reduces to the standard notion of equality of functions
 by considering appropriate binary encodings of the two states.
 
-We also need to consider functions parametrized by other functions.
+We also need to consider functions parameterized by other functions.
 Intuitively, this arises when one function calls another.
 For example, consider:
 $$
 f(x) := g(x) \oplus g(x)
 $$
 which is well defined regardless of what $g$ is.
-Here $f$ is implicitly parametrized by $g$, but we could write this explicitly
+Here $f$ is implicitly parameterized by $g$, but we could write this explicitly
 as $f(x) := g \mapsto g(x) \oplus g(x)$.
 We could write $f : (\randf{\str}{\str}) \to (\randf{\str}{\str})$  
 as a potential type in this example.
-We write $f[g]$ for the instantiation of a parametrized function $f$
+We write $f[g]$ for the instantiation of a parameterized function $f$
 with an input function $g$.
-It might also be the case that $g$ is itself parametrized,
+It might also be the case that $g$ is itself parameterized,
 in which case $f[g]$ is defined as:
 $$
 f[g] := h \mapsto f[g[h]]
 $$
 
-We can define a natural, albeit very strong, notion of equality for parametrized
+We can define a natural, albeit very strong, notion of equality for parameterized
 functions, saying that:
 $$
 f = g \iff \forall h_1, \ldots, h_n.\ f[h_1, \ldots] = g[h_1, \ldots]
@@ -273,7 +273,7 @@ We've now developed enough tools to define packages.
         \item a permutation $\pi_{\tx{in}} : \tx{In}(A) \leftrightarrow [m]$,
         \item a set of \emph{output names} $\tx{In}(A)$, of size $n$,
         \item a permutation $\pi_{\tx{out}} : [m] \leftrightarrow \tx{Out}(A)$,
-        \item a set of parametrized functions $f_1, \ldots, f_n : \forall s. \stateful{s}^m \to \stateful{(S, s)}$,
+        \item a set of parameterized functions $f_1, \ldots, f_n : \forall s. \stateful{s}^m \to \stateful{(S, s)}$,
         each of which has a distinct name $n_i \in \tx{Out}(A)$.
     \end{itemize}
 
@@ -296,11 +296,11 @@ with functions manipulating different kinds of state.
 
 In practice, each function in a package is unlikely to use \emph{all}
 of the input functions of the package, but it is much simpler
-to have each function parametrized by all the possible inputs,
+to have each function parameterized by all the possible inputs,
 even if some are left unused.
 It's also much simpler to define an ordering of the input functions
 $\pi$, so be able to use $\stateful{s}^m$ as the input type for
-the parametrized functions.
+the parameterized functions.
 
 The semantics of a package without inputs are intuitively that of a stateful computer program
 or machine you can interact with.
@@ -568,7 +568,7 @@ One detail is that we start with functions expecting to receive
 just their state, but need to augment them to receive both states,
 and then place the result on the corresponding side.
 Another technical detail of our formalism shows up here as well,
-since $A.f_i$ and $B.f_i$ are paramterized functions, which pick up
+since $A.f_i$ and $B.f_i$ are parameterized functions, which pick up
 an extra state term $s$ after being instantiated with their inputs,
 and so $\tx{lift}_i$ needs to also carry this term around.
 We also choose to arrange the output functions by $A$ first,
@@ -933,7 +933,7 @@ from functions to packages.
     A package $P$ is said to be \emph{efficient} if all of its
     functions are efficient.
 
-    In turn, a parametrized function $f$ is \emph{efficient}
+    In turn, a parameterized function $f$ is \emph{efficient}
     if for any efficient functions $h_1, \ldots$, the instantiation
     $f[h_1, \ldots]$ is also efficient.
 
@@ -1127,7 +1127,7 @@ lemma shows.
 This notion of transitivity is very useful, since it lets us argue
 that two different games are equal by appealing to several successive
 differences.
-For example, some system might use both encrytion and signing,
+For example, some system might use both encryption and signing,
 and we can appeal to the hardness of both problems, one at a time,
 to argue that the system is secure.
 This kind of technique is called ``game hopping'',
@@ -1500,7 +1500,7 @@ are indistinguishable, you do so by a series of observations,
 each of which breaks down the package as a composition
 of many smaller packages.
 Sometimes you'll be able to use theorems you've already proved,
-or problemsa assumed to be hard, in order to argue
+or problems assumed to be hard, in order to argue
 that small pieces are indistinguishable, and thus apply
 the lemmas we've just demonstrated in order
 to lift that indistinguishability to the large composition.
@@ -1512,15 +1512,15 @@ to that of several smaller packages.
 
 In the previous subsections, we developed a formal model of
 how packages work.
-In practice, packages are described using a kind of pseudocode,
+In practice, packages are described using a kind of pseudo-code,
 which correspond with these formal objects, and some of the rules are relaxed
 in practice.
-In this subsection we give some examples of how this pseudocode
+In this subsection we give some examples of how this pseudo-code
 works.
 Note that the details here aren't essential, and one could imagine
-using a different kind of pseudocode instead.
+using a different kind of pseudo-code instead.
 
-We start with an example package, containg various syntactical constructs,
+We start with an example package, containing various syntactical constructs,
 which we'll then explain in more detail.
 
 \package{P}{
@@ -1632,5 +1632,5 @@ what a package is doing, while also not being excessively verbose.
 For further examples of how state-separable proofs work,
 we point the reader to the original paper
 \cite{AC:BDFKK18}, or
-to other works making use of the paradigim
+to other works making use of the paradigm
 \cite{joyofcryptography, mei22}.

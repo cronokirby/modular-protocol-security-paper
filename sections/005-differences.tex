@@ -15,25 +15,25 @@ such as \cite{C:CanCohLin15}.
 
 One major technical difference is that our framework
 doesn't specify a concrete computational model.
-Rather than using interactive randomized turing machines,
+Rather than using interactive randomized Turing machines,
 as most frameworks do, we instead just
 assume the existence of computable randomized functions,
 and then build everything on top of that foundation.
 
 We believe that this makes the foundations simpler to understand,
-since the complicated details of turing machines and various
+since the complicated details of Turing machines and various
 tapes are never mentioned, but it also
 makes proofs closer to the actual formalism.
 
 In principle, UC proofs would need to make reference
-to interactive turing machines writing messages on each other's
+to interactive Turing machines writing messages on each other's
 tapes.
 In practice, a much higher level language is used.
 The advantage of basing ourselves on state-separable proofs
 is that we can give a formal justification for this kind
 of high-level language, by providing a precise semantics
 for the pseudo-code we use.
-Thus, we expect proofs in our framework to be writeable
+Thus, we expect proofs in our framework to be writable
 in a style close to the formalism itself,
 while also proving a high level of abstraction.
 
@@ -136,7 +136,7 @@ so that there's no longer any conflict.
 If we use this protocol, in practice it means that we
 have a way of distinguishing between the messages belonging
 to once instance of the protocol from the other instance.
-One way of accomplishing this would be assining session ids,
+One way of accomplishing this would be assigning session ids,
 but these aren't a formal part of our framework.
 
 An exploration of secure composition without session IDs

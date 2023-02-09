@@ -238,7 +238,7 @@ Next, we pull a bit of a trick.
 It turns out that since both parties are honest, we don't need to actually
 decrypt the ciphertext.
 Instead, one party can simply send the plaintext via a separate channel
-to tthe other.
+to the other.
 Applying this gives us:
 $$
 \Gamma^0 \circ \tx{Keys} = 
@@ -639,7 +639,7 @@ This simulator is effectively creating a man-in-the-middle attack on the adversa
 by providing them with the wrong public key, allowing them to decrypt the ciphertexts
 they see.
 On the other side, the simulator can receive messages on behalf of the adversary,
-and then reencrypt them to create the fake ciphertext queue.
+and then re-encrypt them to create the fake ciphertext queue.
 
 Having now proved the upper bound for all the corruption models in $\mathscr{C}$,
 we conclude that our claim holds.
@@ -905,7 +905,7 @@ each participant once in order to learn the result,
 whereas in $\mathscr{P}[\tx{Rand}]$, two activations are needed,
 once to commit, and another time to open.
 
-Instead we introduce a sepate protocol, making use of
+Instead we introduce a separate protocol, making use of
 a ``synchronization'' functionality, defined in Game~\ref{game:sync}.
 
 \begin{game}{game:sync}{Synchronization Game}
@@ -1087,7 +1087,7 @@ which can perfectly simulate $\mathscr{P}[\tx{Rand}]$, as we now prove.
     For the honest parties, we know that they'll only open their values
     after everybody has already committed, so the assertion will always pass.
     This may not be the case for malicious parties, which may ``rush'',
-    opening their values \emph{before} the other parties have finished comitting.
+    opening their values \emph{before} the other parties have finished committing.
     This is why it's important to keep track of their commitments separately,
     so that we can present them inside the view, if necessary.
 

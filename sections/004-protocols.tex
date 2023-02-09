@@ -10,10 +10,10 @@ The first way of composing protocols we look at is concurrent composition,
 which lets us run two protocols involving separate players in parallel,
 with on interaction between them.
 The second way of composing protocols is more interesting.
-We can have one protocol invoke another as a subprotocol,
+We can have one protocol invoke another as a sub-protocol,
 with each player in the first playing the role of several players
 in the latter.
-These two operations are useful in tandemn, allowing
+These two operations are useful in tandem, allowing
 us to decompose large protocols into smaller ones,
 allowing for modular reasoning.
 
@@ -27,7 +27,7 @@ notions of equality,
 which allow describing the fact that two protocols behave exactly the same,
 or almost the same, even without simulation.
 
-This section follows the basic roadmap we've used for both packages
+This section follows the basic road map we've used for both packages
 and systems.
 We first define what protocols are formally, as well as the ways
 in which they compose.
@@ -139,7 +139,7 @@ we'll often want to talk about protocols without any dependencies.
 \end{definition}
 
 When we eventually get to defining notions of equality and simulation
-for protocols, these will be targetting \emph{closed} protocols,
+for protocols, these will be targeting \emph{closed} protocols,
 whose semantics are well defined, since no dependencies are left unfulfilled.
 
 We can, however, define a very strong notion of equality right now.
@@ -213,9 +213,9 @@ $\blacksquare$
 \end{claim}
 
 The next kind of composition we look at allows a protocol
-to use another as a kind of subprotocol.
+to use another as a kind of sub-protocol.
 The idea is that each player in one protocol plays the role
-of one or several players in the subprotocol.
+of one or several players in the sub-protocol.
 The definition is somewhat involved, so we provide some more motivation
 later.
 
@@ -287,7 +287,7 @@ as required.
 By definition, the dependencies $\text{In}$ of each player in $\mathscr{P} \lhd \mathscr{Q}$
 are the union of several players in $\mathscr{Q}$, and
 the ideal dependencies of players in $\mathscr{P}$,
-both of these are required to be disjoint, so disjointness property
+both of these are required to be disjoint, so the disjointedness property
 continues to hold.
 
 Finally, since each player is of the form $\mathscr{P}.P_i \circ \ldots$,
@@ -305,10 +305,10 @@ from each other, beyond the fact that the players in $\mathscr{P}$
 are able to control the players in $\mathscr{Q}$ via the functions they provide.
 The protocols don't share any channels, or an ideal functionality.
 The end result is a protocol in which each player
-is ``emulating'' the behavior of the players in the subprotocol,
+is ``emulating'' the behavior of the players in the sub-protocol,
 and where even though the channels are now shared, it's clear
 whether a message is intended for the main protocol,
-or for a specific player in the subprotocol.
+or for a specific player in the sub-protocol.
 
 Horizontal composition is also well behaved.
 For example, it satisfies associativity.
@@ -452,7 +452,7 @@ $\square$
 
 One detail which might seem odd at first is that we allow
 for $\mathscr{P}.F = \mathscr{Q}.F$, handling that case a bit separately.
-This is useful because it allows accomodating a common situation
+This is useful because it allows accommodating a common situation
 where both protocols have a functionality of the form $1(S)$,
 for some set, and we want to allow them to be composed,
 to then later write $(\mathscr{P} \otimes \mathscr{Q}) \circ G$,
@@ -480,7 +480,7 @@ since the resulting set of players and ideal functionality are the same
 in both cases.
 
 Similarly, since $\cup$ and $\otimes$ (for systems) are commutative,
-we conclude that concurrenty composition is commutative.
+we conclude that concurrently composition is commutative.
 
 $\blacksquare$
 \end{lemma}
@@ -498,7 +498,7 @@ $$
   \mathscr{Q}_2
 \end{pmatrix}
 $$
-where $\mathscr{Q}_i$ are subprotocols for each task,
+where $\mathscr{Q}_i$ are sub-protocols for each task,
 and $\mathscr{O}$ is an orchestration protocol running the tasks in sequence.
 This decomposition allows a more fine-grained analysis of the protocol's
 security.
@@ -587,9 +587,9 @@ out events by function.
 
 One important detail is that the log also contains entries
 for when the player itself is activated through one of its input functions.
-This will be useful when reasing about how protocol composition behaves,
+This will be useful when reasoning about how protocol composition behaves,
 because the input events in one players log can become the output function
-events in the log of a player calling that subprotocol.
+events in the log of a player calling that sub-protocol.
 
 Note that, unlike other definitions of semi-honest corruption,
 we do not provide access to the randomness sampled by a player,
@@ -640,7 +640,7 @@ $\square$
 \end{definition}
 
 The intuitive idea behind malicious corruption is that this party
-can deviate arbitarily from the protcol.
+can deviate arbitrarily from the protocol.
 The adversary corrupting this party can call any function this
 party is allowed to call, and use any channel this party uses.
 
@@ -742,7 +742,7 @@ with a protocol, having corrupted some of the parties.
   allowing an adversary to control the order of delivery of messages.
 
   Let $\{A_1, \ldots, A_n\} = \tx{Chan}(P_1, \ldots, P_n)$.
-  We then define $\mathcal{R}$ as the syten:
+  We then define $\mathcal{R}$ as the system:
 \package{$\mathcal{R}$}{
 &\underline{\tx{Deliver}_{A_i}()\tx{:}}\cr
 \pind{1} \precv{m}{\langle A_i, \mathcal{R} \rangle}\cr
@@ -753,7 +753,7 @@ with a protocol, having corrupted some of the parties.
   which makes communication pass via the router:
   \begin{itemize}
     \item Whenever $S$ sends $m$ via $A$, $\tx{Routed}(S)$ sends $m$ via $\langle A , \mathcal{R} \rangle$.
-    \item Whenever $S$ receives $m$ via $B$, $\tx{Routed}(S)$ recieves $m$ via $\langle \mathcal{R}, B \rangle$.
+    \item Whenever $S$ receives $m$ via $B$, $\tx{Routed}(S)$ receives $m$ via $\langle \mathcal{R}, B \rangle$.
   \end{itemize}
 
 With this in hand, we define:
@@ -867,10 +867,10 @@ in $\mathscr{C}$.
   $\square$
 \end{definition}
 
-For tensoring, compatability is quite simple, we just need the players
+For tensoring, compatibility is quite simple, we just need the players
 that belong to $\mathscr{P}$'s ``side'' of the protocol
 to be corrupted in the same way, or worse.
-For composition, the idea is that for a player in a subprotocol
+For composition, the idea is that for a player in a sub-protocol
 to be corrupted, then the player using it in the main protocol
 needs to be at least as corrupt.
 For technical reasons, we'll also be needing
@@ -884,7 +884,7 @@ If this doesn't quite make sense now, hopefully it will
 be clearer when reading the proofs that make use of this strict
 property.
 
-As a first use of this notion of compatability, we make
+As a first use of this notion of compatibility, we make
 a fundamental observation about instantiating the concurrent composition
 of protocols.
 This is elevated to a theorem, because this breakdown observation
@@ -1359,7 +1359,7 @@ are about claims that:
 \end{enumerate}
 After defining these notions, we also show that all the kinds
 of protocol composition we've defined respect these notions,
-and satisfy a form of transitivty.
+and satisfy a form of transitivity.
 This allows us to make such claims about a large protocol,
 by decomposing it into smaller protocols, and then making
 several hops, appealing to claims about these smaller protocols.
@@ -1452,7 +1452,7 @@ since that would immediately translate into an attack against
 the secure one.
 
 To get to this notion of simulation, we first need to formally
-define what a simulator is, and what it means to instatiate
+define what a simulator is, and what it means to instantiate
 a protocol with that simulator.
 
 \begin{definition}[Simulated Instantiation]
@@ -1657,7 +1657,7 @@ and in some cases we can also do this for simulation as well.
   \end{enumerate}
 
   \txbf{Proof:} Lemma~\label{thm:simulatingcorruption} (simulating corruptions) is the crux of our proof.
-  It implies that there existts a system $S_{\tx{SH}}$ such that
+  It implies that there exists a system $S_{\tx{SH}}$ such that
   $$
   \tx{Corrupt}_{\tx{SH}}(P) = S_{\tx{SH}} \circ \tx{Corrupt}_M(P)
   $$
@@ -1731,7 +1731,7 @@ and in some cases we can also do this for simulation as well.
 \end{theorem}
 
 For simulation, unfortunately we get stuck in the proof without the additional
-assumptional.
+assumption.
 The fundamental issue is that malicious corruption helps both
 the adversary and the simulator.
 The simulator might make use of the extra powers they get
@@ -1785,7 +1785,7 @@ use of indistinguishability proofs for games to aid
 in proving properties of protocols.
 
 Next, we look at composing protocols concurrently.
-We'll need to use the notion of compatability for corruption
+We'll need to use the notion of compatibility for corruption
 classes that we've defined before.
 
 \begin{theorem}[Concurrent Composition Theorem]
@@ -1902,7 +1902,7 @@ for systems to finish the details of the proof.
 Finally, we can look horizontal composition of protocols.
 Like with the breakdown theorems, this one is a tad more complicated,
 and is where we need to deploy the notion of \emph{strict}
-compatability we developed earlier.
+compatibility we developed earlier.
 
 \begin{theorem}[Horizontal Composition Theorem]
   \label{thm:horizontal_composition_theorem}
@@ -1936,7 +1936,7 @@ compatability we developed earlier.
   there exists a compatible $C \in \mathscr{C}$.
   In this case, we have:
   $$
-  \tx{Inst}_{C'}(\mathscr{P} \lhd \mathscr{Q}) = \tx{Sutff} \circ \tx{Inst}_C(\mathscr{Q})
+  \tx{Inst}_{C'}(\mathscr{P} \lhd \mathscr{Q}) = \tx{Stuff} \circ \tx{Inst}_C(\mathscr{Q})
   $$
   If we then apply $\mathscr{Q} =_{\mathscr{C}} \mathscr{Q}'$,
   we get:
@@ -1969,7 +1969,7 @@ compatability we developed earlier.
   $$
   {(S' \otimes 1(\ldots)) \circ \tx{Inst}_{C'}(\mathscr{P} \lhd \mathscr{Q}')}
   $$
-  We start by unrolling $\tx{Stuff}$, using strict compatability, to get:
+  We start by unrolling $\tx{Stuff}$, using strict compatibility, to get:
   $$
   1(O)\circ
   \begin{pmatrix}
@@ -2113,7 +2113,7 @@ compatability we developed earlier.
   $\blacksquare$
 \end{theorem}
 
-The reason we needed strict compatability was that we needed
+The reason we needed strict compatibility was that we needed
 to move the simulator $S$ for $\mathscr{Q}$, to instead
 become a simulator for $\mathscr{P}$.
 When we have strictly compatible corruption, there are no barriers
@@ -2124,7 +2124,7 @@ we might run into the issue that $S$ requires a stronger kind
 of corruption than $\mathscr{P}$ ends up using,
 and so we wont be able to move $S$ to the left hand side,
 as we did here.
-This is why we demand strict compatability.
+This is why we demand strict compatibility.
 In practice, this condition shouldn't be very demanding,
 because in many cases the number of parties is the same for both protocols,
 or we're focusing on a complete corruption class, like ``up to $n - 1$ corruptions''.
@@ -2580,7 +2580,7 @@ as well.
   \end{enumerate}
 
   \txbf{Proof:} This proof is similar to that of Theorem~\ref{thm:horizontal_composition_theorem}.
-  By compatability, for any $C' \in \mathscr{C}'$, we have a compatible $C \in \mathscr{C}$.
+  By compatibility, for any $C' \in \mathscr{C}'$, we have a compatible $C \in \mathscr{C}$.
 
   A crude summary of the horizontal breakdown theorem is that:
   $$
@@ -2671,7 +2671,7 @@ as well.
 
 So, the three big theorems we proved in the standalone context
 also hold in the global context.
-We could have saved some repetition by just doing everyting in the global
+We could have saved some repetition by just doing everything in the global
 context, but since we expect most proofs to be done standalone,
 we felt that it was clearer to present that in more detail,
 and then present the global generalizations more rapidly.
@@ -2716,9 +2716,9 @@ and the following lemma can help us with that.
 
 The idea is that if we're using some ideal functionality inside
 of a protocol, we can actually write this as using
-a \emph{subprotocol}, where that subprotocol is the one using
+a \emph{sub-protocol}, where that sub-protocol is the one using
 the ideal functionality.
-This subprotocol will be a kind of ``dummy protocol'',
+This sub-protocol will be a kind of ``dummy protocol'',
 which just immediately forwards inputs to the functionality.
 This allows us to capture the kind of ``a protocol is simulated by functionality''
 statement that one might want to make.
