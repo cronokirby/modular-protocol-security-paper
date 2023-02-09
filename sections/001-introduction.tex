@@ -96,32 +96,105 @@ but also simpler to understand and use.
 
 \subsection{Our Framework}
 
-More modular, formal, and simpler.
+Our framework attempts to provide a simple, high-level language
+for reasoning about protocol security, while also having
+a well-defined formal model that is close to how proofs
+are actually written.
 
-breaking down protocols.
+Our framework tries to be \emph{modular}, in the sense that
+large proofs for complicated protocols can be built up from smaller proofs
+for simpler protocols.
 
-transitivity of simulation
+The first way we try and achieve this is by having allowing
+modular specifications of protocols: being able to describe a protocol
+as the composition of other protocols.
+The two fundamental operations we have are:
+\begin{enumerate}
+\item tensoring, written $\mathscr{P} \otimes \mathscr{Q}$,
+which allows writing a protocol as involving two distinct protocols
+running at the same time,
+\item and composition, written $\mathscr{P} \lhd \mathscr{Q}$,
+which allows the participants in one protocol to use another
+as a kind of ``subprotocol'', in which each player may play
+several roles.
+\end{enumerate}
+These operations can simplify proofs by allowing large protocols
+to be decomposed into smaller components,
+and then for security to be argued component by component.
 
-connection with games.
+The second way we try and achieve modularity is by having our
+notion of simulation be between \emph{protocols},
+rather than between a protocol and an ideal functionality,
+as in UC security.
+The ultimate goal is to prove that a protocol can be simulated
+by some clear ideal functionality,
+but this often requires writing a complicated simulator
+which can achieve this large jump all at once.
+By allowing protocols to be simulated by other protocols,
+we can transform this jump into several smaller hops,
+which are then composed together.
+This can help break down a large proof into a series of simpler proofs.
 
-founded on state separable proofs,
-most similar to.
+Our framework relies heavily on state-separable proofs \cite{AC:BDFKK18},
+a recent framework for standalone security with games.
+Our work can be seen as an attempt to lift the modular
+properties of this framework for games into a modular
+framework for protocol security.
+Ultimately, the semantics of protocols will be defined in terms
+of state-separable games.
 
-hierarchy of stuff
+This provides an interesting advantage, in that proofs
+and techniques using games can be used to reason
+about the security of protocols, which will ultimately
+boil down to a game based proof.
+This can also help motivate complicated games used in the analysis
+of protocols, which can be seen as being related to protocols
+written in this framework.
 
-we also formalize state separable proofs while we're at it, why not.
+We also take the opportunity to present state-separable proofs
+in a more formal way, filling in several proofs left as sketches
+in the original paper.
+Instead of using interactive turing machines as our foundational
+object, like in UC security,
+we instead simply assume the existence of computable randomized functions,
+and some pseudo-code to describe them.
 
 \subsection{Overview}
 
-as mentioned above, we need to first define packages,
-systems, etc.
+Here we provide a basic overview of the rest of this work.
 
-in section 2
+In Section 2, we develop the framework of state-separable proofs
+for standalone security from scratch, filling some gaps
+left in the original paper, and proving a few additional properties
+that we'll be needing in the rest of this work.
 
-in section 3
+In Section 3, we generalize state-separable games into \emph{systems},
+which are a kind of game that has the ability to communicate
+with other games by sending and receiving messages along a channel.
+We also need to develop a notion of \emph{asynchronous} games
+in this section, allowing us to model games which can delay
+answers to queries, if they're not yet ready to provide them.
+This arises naturally with channels, since a game maybe waiting
+to receive a message along a channel before being able to respond.
 
-in section 4
+In Section 4, we use the newly developed notion of systems
+to define \emph{protocols}.
+We then define various ways to compose protocols together,
+then notions of equality and simulation for protocols,
+before showing that the various ways of composing protocols
+behave well with respect to equality and simulation,
+allowing us to decompose proofs in a modular fashion.
+We also describe how to incorporate global functionalities,
+such as a common random oracle, into our framework.
 
-in section 5
+In Section 5, we provide a couple examples of proofs written
+in our framework.
+Our first example constructs a private channel from one
+that leaks all messages sent over it, by using a public key encryption scheme.
+Our second example constructs a protocol for sampling
+an unbiased random value, using the common ``commit reveal'' paradigm.
 
-in section 6
+
+In Section 6, we compare the framework we've developed with
+that of UC security, illustrating several differences
+between the two approaches.
