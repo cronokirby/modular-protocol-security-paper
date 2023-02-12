@@ -8,12 +8,12 @@ details are worth spelling out here.
 \subsection{Encryption}
 \label{app:encryption}
 A public key encryption scheme consists of types $\txbf{PK}, \txbf{PK}, \txbf{DK}, \txbf{M}, \txbf{C}$,
-along with probabilistic functions $\tx{Enc} : \txbf{PK} \times \txbf{M} \xleftarrow{\$} \txbf{C}$ and $\tx{Dec} : \txbf{SK} \times \txbf{C} \to \txbf{M}$.
+along with probabilistic functions $\tx{Enc} : (\txbf{PK}, \txbf{M}) \xleftarrow{\$} \txbf{C}$ and $\tx{Dec} : (\txbf{SK}, \txbf{C}) \to \txbf{M}$.
 By $\txbf{M}(|m|)$ we denote the distribution of messages with the same
 length as $m$.
 We require that $\txbf{M}(|m|)$ is efficiently sampleable,
 and we require that we can sample $(\txbf{SK}, \txbf{PK})$ via an algorithm
-$\tx{Gen}$
+$\tx{Gen}$.
 
 The encryption scheme must satisfy a correctness property:
 $$

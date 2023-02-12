@@ -31,6 +31,17 @@ and write $\str$ to denote binary strings.
 We write $\bullet$ to denote the empty string,
 which also serves as a ``dummy'' value in various contexts.
 
+By $x \mapsto f(x)$, we mean a function taking in an input
+$x$, and returning the value $f(x)$.
+Sometimes we'll need to extend this syntax to more complicated expressions,
+writing:
+$$
+x \mapsto y \gets f(x);\ g(x, y)
+$$
+to mean a function taking in an input value $x$,
+then calling $f$ to produce a value $y$, before then using
+both $x$ and $y$ to return the value $g(x, y)$.
+
 \subsection{Probabilistic Functions}
 
 Our starting point is the notion of \emph{randomized computable functions}.
@@ -128,11 +139,12 @@ in particular that it forms a \emph{metric}.
     $\blacksquare$
 \end{lemma}
 
-We actually skipped one property in our proof that $\varepsilon$ is a valid metric,
-which requires that if $f \neq g$, then $\varepsilon(f, g) > 0$.
-This is because we haven't yet defined what equality should mean
-for functions.
-This metric property gives us a very natural definition though.
+Another property not included in our proof that $\varepsilon$ is a valid metric.
+requires that if $f \neq g$, then $\varepsilon(f, g) > 0$.
+We omitted this property, because we haven't yet defined what $=$
+should mean for functions.
+Since we'd like this property to hold, we can simply define
+equality so that it does.
 
 \begin{definition}[Function Equality]
     Two functions, $f$ and $g$, are \emph{equal}, written $f = g$, when:
@@ -166,14 +178,18 @@ if it fails to decode its input successfully.
 
 Being able to quantify types is also useful for the formalism itself,
 and potentially even for some packages.
-This allows us to type functions such as:
+As an example, consider the function $\tx{id}(x)$ which immediately
+returns $x$.
+This function is valid regardless of what type $x$ has.
+Because of this, we might write this function formally as:
 $$
 \begin{aligned}
     &\tx{id} : \forall s.\ s \to s\cr
     &\tx{id} = x \mapsto x
 \end{aligned}
 $$
-In this example, $s$ is a quantified type variable.
+assigning it the type $\forall s.\ s \to s$.
+In this type, $s$ is a quantified type variable, as indicated by the $\forall s$.
 Formally, we can see $\tx{id}$ as a function parameterized by a type,
 with $\tx{id}_S$ being a concrete function, after having chosen this type.
 
@@ -283,23 +299,28 @@ We've now developed enough tools to define packages.
     $\blacksquare$
 \end{definition}
 
+Note that here $\stateful{s}^m$ denotes a tuple type containing
+m values of type $\stateful{s}$.
+
 The basic idea is that a package has an internal state $S$, which gets
 manipulated by each of the functions it exports.
 These functions, in turn, can depend on other input functions.
-If a stateful function $f$ uses a stateful function $g$,
-then the result is a stateful function $f[g]$ manipulating 
+If a stateful function $f : \forall s. \stateful{s} \to \stateful{(S_1, s)}$ uses a stateful function $g : \stateful{S_2}$,
+then the result is a stateful function $f[g] : \stateful{(S_1, S_2)}$ manipulating 
 \emph{both} the state of $f$, and the state of $g$.
 Furthermore, $f$ is defined in such way agnostic to what the state manipulated
 by $g$ happens to be,
 which is why we use a \emph{quantified} type instead, to allow instantiation
 with functions manipulating different kinds of state.
+If $g$ used a state type $S'_2$, then $f[g]$ would have type $\stateful{(S_1, S'_2)}$
+instead.
 
 In practice, each function in a package is unlikely to use \emph{all}
 of the input functions of the package, but it is much simpler
 to have each function parameterized by all the possible inputs,
 even if some are left unused.
 It's also much simpler to define an ordering of the input functions
-$\pi$, so be able to use $\stateful{s}^m$ as the input type for
+$\pi$, so that we can use $\stateful{s}^m$ as the input type for
 the parameterized functions.
 
 The semantics of a package without inputs are intuitively that of a stateful computer program
