@@ -53,7 +53,7 @@ and we will invoke this fact only as necessary.
 
 \begin{definition}[Efficient Functions]
     We assume that a function $f$ has a runtime, denoted $T(f, x)$,
-    measuring how long the function takes to execute on a given input $x \in \str$.
+    measuring how much time the function takes to execute on a given input $x \in \str$.
 
     We say that a function family is \emph{efficient} if:
     $$
@@ -271,8 +271,8 @@ We've now developed enough tools to define packages.
         \item a type $S$, for its state,
         \item a set of \emph{input names} $\tx{In}(A)$, of size $m$,
         \item a permutation $\pi_{\tx{in}} : \tx{In}(A) \leftrightarrow [m]$,
-        \item a set of \emph{output names} $\tx{In}(A)$, of size $n$,
-        \item a permutation $\pi_{\tx{out}} : [m] \leftrightarrow \tx{Out}(A)$,
+        \item a set of \emph{output names} $\tx{Out}(A)$, of size $n$,
+        \item a permutation $\pi_{\tx{out}} : [n] \leftrightarrow \tx{Out}(A)$,
         \item a set of parameterized functions $f_1, \ldots, f_n : \forall s. \stateful{s}^m \to \stateful{(S, s)}$,
         each of which has a distinct name $n_i \in \tx{Out}(A)$.
     \end{itemize}
@@ -340,7 +340,7 @@ notion of package \emph{composition}.
     $$
     where $\varphi_{A}$ assigns each function $B.f_i$ to a slot in $[m]$
     using $A.\pi_{\tx{in}}$ on the name of that function, $B.n_i$.
-    The same input functions $h_j$ being given
+    The same input functions $h_j$ are given
     to all the functions used by $A.f_i$.
 
     $\square$
@@ -447,7 +447,7 @@ This property is useful, since it lets us simply write $A \circ B \circ C$,
 without worrying about the order in which packages are composed.
 
 Another more technical property we want composition to satisfy is
-that if \emph{equality preservation}.
+that of \emph{equality preservation}.
 If $B \equiv B'$, then it should be the case that $A \circ B \equiv A \circ B'$,
 or that $B \circ C \equiv B' \circ C$.
 If that weren't the case, then that would indicate that something is wrong

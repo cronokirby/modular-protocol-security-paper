@@ -105,7 +105,7 @@ Our framework tries to be \emph{modular}, in the sense that
 large proofs for complicated protocols can be built up from smaller proofs
 for simpler protocols.
 
-The first way we try and achieve this is by having allowing
+The first way we try and achieve this is by allowing
 modular specifications of protocols: being able to describe a protocol
 as the composition of other protocols.
 The two fundamental operations we have are:
@@ -174,7 +174,7 @@ with other games by sending and receiving messages along a channel.
 We also need to develop a notion of \emph{asynchronous} games
 in this section, allowing us to model games which can delay
 answers to queries, if they're not yet ready to provide them.
-This arises naturally with channels, since a game maybe waiting
+This arises naturally with channels, since a game may be waiting
 to receive a message along a channel before being able to respond.
 
 In Section 4, we use the newly developed notion of systems
@@ -187,7 +187,7 @@ allowing us to decompose proofs in a modular fashion.
 We also describe how to incorporate global functionalities,
 such as a common random oracle, into our framework.
 
-In Section 5, we provide a couple examples of proofs written
+In Section 5, we provide a couple of examples of proofs written
 in our framework.
 Our first example constructs a private channel from one
 that leaks all messages sent over it, by using a public key encryption scheme.
