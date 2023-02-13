@@ -31,7 +31,7 @@ tapes.
 In practice, a much higher level language is used.
 The advantage of basing ourselves on state-separable proofs
 is that we can give a formal justification for this kind
-of high-level language, by providing a precise semantics
+of high-level language, by providing precise semantics
 for the pseudo-code we use.
 Thus, we expect proofs in the MPS framework to be writable
 in a style close to the formalism itself,
@@ -87,7 +87,7 @@ whereas some UC functionalities make use of this fact.
 We don't think this is a necessary feature of the framework itself,
 since it can be modeled by having slightly more complicated
 protocols on top of an ideal functionality.
-For example, one common use this kind of ``corruption aware''
+For example, one common use of this kind of ``corruption aware''
 functionality is to describe \emph{endemic} functionalities,
 where malicious parties are allowed to choose their own randomness.
 This can be written by having the functionality alter its behavior
@@ -111,13 +111,13 @@ for malicious parties.
 In the traditional presentations of UC,
 simulation is a statement of the form ``for all adversaries,
 there exists a simulator, such that for all environments...''.
-In our MPS, we eliminate the notion of adversary
+In MPS, we eliminate the notion of adversary
 entirely, instead simply considering the environment
 to be the adversary.
 
 This is actually a possibility in UC itself.
 Subsequent versions of \cite{EPRINT:Canetti00} include
-an explicit proof that it suffices to prove security against ``dummy adversary'',
+an explicit proof that it suffices to prove security against the ``dummy adversary'',
 which simply does whatever the environment tells it to do.
 We can thus consider MPS to implicitly use such a dummy adversary.
 
@@ -173,7 +173,7 @@ which can paper over inessential differences like those of timing and delay.
 Finally, we believe that a major advantage of the MPS framework is that
 it provides a much simpler bridge between standalone security
 with games, and the composable security of protocols.
-Ideal functionalities be simply games,
+Ideal functionalities are simply games,
 and we have theorems showing that
 we can use indistinguishability results for games to produce
 simulation results for protocols.

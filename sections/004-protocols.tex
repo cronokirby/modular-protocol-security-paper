@@ -39,7 +39,7 @@ and explore the ways in which these notions are preserved under composition.
 
 \subsection{Defining Protocols and Composition}
 
-We start by definition protocols.
+We start by defining protocols.
 All of the work we expended in defining systems was ultimately
 to describe protocols,
 so naturally we'll be using systems again here.
@@ -401,7 +401,7 @@ $$
   1(\mathscr{P}.\tx{IdealIn}_i)
   \end{pmatrix}
 $$
-Which is non other than the players in $\mathscr{P} \lhd (\mathscr{Q} \lhd \mathscr{R})$.
+Which is none other than the players in $\mathscr{P} \lhd (\mathscr{Q} \lhd \mathscr{R})$.
 
 $\blacksquare$
 \end{lemma}
@@ -454,7 +454,7 @@ One detail which might seem odd at first is that we allow
 for $\mathscr{P}.F = \mathscr{Q}.F$, handling that case a bit separately.
 This is useful because it allows accommodating a common situation
 where both protocols have a functionality of the form $1(S)$,
-for some set, and we want to allow them to be composed,
+for some set $S$, and we want to allow them to be composed,
 to then later write $(\mathscr{P} \otimes \mathscr{Q}) \circ G$,
 for some package $G$.
 Having a shared functionality between concurrent protocols
@@ -556,14 +556,14 @@ This is a transformation of
 of $P$, providing access to its ``view''.
 More formally, $\tx{Corrupt}_{\tx{SH}}(P)$ is a system which works the same
 as $P$, but with an additional public variable $\tx{log}$,
-which contains several sub logs:
+which contains several sub-logs:
 \begin{enumerate}
   \item $\tx{log}.{A_i}$ for each sending channel $A_i$,
   \item $\tx{log}.{B_i}$ for each receiving channel $B_i$,
   \item $\tx{log}.F$ for each input function $F$.
   \item $\tx{log}.G$ for each output function $G$.
 \end{enumerate}
-Each of these sub logs is initialized with ${\tx{log}.\bullet \gets \tx{FifoQueue.New()}}$.
+Each of these sub-logs is initialized with ${\tx{log}.\bullet \gets \tx{FifoQueue.New()}}$.
 Additionally, $\tx{Corrupt}_{\tx{SH}}(P)$ modifies $P$ by pushing events to these
 logs at different points in time.
 These events are:
@@ -692,15 +692,16 @@ The first notion we'll need to develop is that of a \emph{corruption model},
 which is just a way of specifying which players in a protocol are corrupted,
 and how.
 
-Before that, we need a little syntax to talk about corruptions in general,
-and so define the shorthand $\text{Corrupt}_\kappa(P)$,
-for $\kappa \in \{\tx{H}, \tx{SH}, \tx{M}\}$.
+
 
 \begin{definition}[Corruption Models]
 Given a protocol $\mathscr{P}$ with players $P_1, \ldots, P_n$, a \emph{corruption model} $C$
 is a function $C : [\mathscr{P}.n] \to \{\tx{H}, \tx{SH}, \tx{M}\}$.
 This provides a corruption $C_i$ associated with each player $P_i$.
-We can then define $\text{Corrupt}_C(P_i) := \text{Corrupt}_{C_i}(P_i)$.
+We also define a little syntax to talk about corruptions in general,
+writing $\text{Corrupt}_\kappa(P)$,
+for $\kappa \in \{\tx{H}, \tx{SH}, \tx{M}\}$, which we can then use
+to define $\text{Corrupt}_C(P_i) := \text{Corrupt}_{C_i}(P_i)$.
 
 Corruption models have a natural partial order associated with them. 
 We have:
@@ -833,9 +834,8 @@ $\mathscr{P} \lhd \mathscr{Q}$?
 Thankfully, for the ways of composing protocols we've defined,
 there are natural notions of corruption which make sense in such
 a situation.
-If $\mathscr{Q}$ is corrupted in a certain way, then that
-implies that certain corruptions need to happen
-to have $\mathscr{P} \lhd \mathscr{Q}$ make sense as well.
+If $\mathscr{Q}$ is corrupted in a certain way, then this
+implies that certain corruptions need to happen in $\mathscr{P} \lhd \mathscr{Q}$ as well.
 
 We define this more formally, through the notion of \emph{compatible}
 corruptions.
@@ -874,7 +874,7 @@ For composition, the idea is that for a player in a sub-protocol
 to be corrupted, then the player using it in the main protocol
 needs to be at least as corrupt.
 For technical reasons, we'll also be needing
-this notion of \emph{strict} compatibility.
+the notion of \emph{strict} compatibility.
 This avoids situations where a player $P$ uses two players $Q_1$,
 and $Q_2$, but only $Q_2$ is malicious.
 In that case, we'd require $P$ to be malicious for compatibility,
@@ -888,7 +888,7 @@ As a first use of this notion of compatibility, we make
 a fundamental observation about instantiating the concurrent composition
 of protocols.
 This is elevated to a theorem, because this breakdown observation
-will be used as the crux of all of our equality related theorems about concurrent
+will be used as the crux of all of our equality-related theorems about concurrent
 composition.
 
 \begin{theorem}[Concurrent Breakdown]
@@ -1069,7 +1069,7 @@ We can write this expression more concisely,
 using $1(L^M)$ for $L^M = \tx{Out}(\tx{Corrupt}_M(Q_1)) \cup \cdots$.
 
 Next, we look at semi-honest corruption.
-Because the logs are divided into independent sub logs, we can write:
+Because the logs are divided into independent sub-logs, we can write:
 $$
 \tx{Corrupt}_{\tx{SH}}(P \circ (1(I) \otimes Q_1 * \cdots)) =
 1(O) \circ
@@ -1367,7 +1367,7 @@ This is analogous to the strategy that the state-separable proof
 paradigm takes to proving things about game.
 Indeed, this analogy is the principal motivation for this framework.
 
-Like with packages and systems, two even compare two protocols,
+Like with packages and systems, to even compare two protocols,
 they need to have the same shape.
 
 \begin{definition}[Shape]
@@ -1739,11 +1739,11 @@ from malicious corruption, which are then no longer available
 to them in the semi-honest case.
 One particular power is the ability to change the input being
 provided, as noted in
-\cite{EPRINT:HazLin10a}, which provides
+\cite{EPRINT:HazLin10a}, in which this conundrum
+is explored further, providing
 some example protocols secure under malicious, but not semi-honest corruption.
-The condition we've added might seem a bit odd, being able to simulate
-semi-honest corruption from malicious corruption,
-but it does actually show up somewhat often
+The condition we've added might seem a bit odd---being able to simulate
+semi-honest corruption from malicious corruption---but it does actually show up somewhat often.
 For example, if a protocol just consists of calling part of an ideal
 functionality, then semi-honest and malicious corruption
 are the same, as we'll see later.
@@ -1770,7 +1770,7 @@ First, we look at composing protocols with functionalities.
 for some system $A$.
 Part 1 follows immediately from this, since $\circ$ is equality respecting.
 
-Part 2 follows by applying Lemma~\ref{lemma:systemcomposition},
+Part 2 follows by applying Lemma~\ref{lemma:system_composition},
 which entails that for any system $S$, we have $S \circ G \overset{\epsilon}{\approx} S \circ G'$.
 
 $\blacksquare$
@@ -1779,7 +1779,7 @@ $\blacksquare$
 This property is quite useful, since it allows separating out part
 of a functionality, and then appealing to the indistinguishability
 of two games, to argue that one protocol simulates another.
-This allows a kind of bridging between gamed based proofs
+This allows a kind of bridging between game-based proofs
 and protocols, allowing us to make
 use of indistinguishability proofs for games to aid
 in proving properties of protocols.
@@ -2129,7 +2129,7 @@ In practice, this condition shouldn't be very demanding,
 because in many cases the number of parties is the same for both protocols,
 or we're focusing on a complete corruption class, like ``up to $n - 1$ corruptions''.
 
-At this point, we've defined the crux of our modular framework for protocols.
+At this point, we've covered the crux of our modular framework for protocols.
 We've defined the common notion of simulation, which is usually
 the kind of statement we want to prove.
 Furthermore, we've shown that the various means of composing
@@ -2154,10 +2154,9 @@ The basic example one should have in mind throughout this section
 is that of a hash function, treated as a \emph{global random oracle}.
 This hash can be used by various protocols, but yet it should
 be treated as one common random oracle throughout all of the protocols.
-We need a notion of simulation which can account for this reality.
+We need a notion of simulation which can account for this example.
 Basically, we want to say that one protocol simulates another,
-even in the presence of a shared random oracle,
-and this notion of simulation should have the nice composability properties
+even in the presence of a shared random oracle---or some other global functionality---and this notion of simulation should have the nice composability properties
 that we've come to expect.
 
 This development does involve rehashing some of the work
@@ -2171,7 +2170,7 @@ this is because it isn't closed.
 This dependency will be from the fact that its ideal functionality
 still has some dependencies on the global functionality.
 
-We can formalize this kind of ``closed but for the global functionality''
+We can formalize this ``closed but for the global functionality''
 notion.
 
 \begin{definition}[Relatively Closed Protocols]
@@ -2728,12 +2727,11 @@ Then, whenever that functionality is used inside of a protocol,
 we can appeal to the deidealization lemma to argue that we can
 replace the functionality with the concrete protocol.
 
-An example might help with this.
+An example might help.
 Let's say we have a functionality $G$.
 It's dummy protocol is, say, $\mathscr{G}$.
 We might succeed in proving that
-$\mathscr{Q} \leadsto \mathscr{G}$---ignoring corruption classes and the epsilon---
-for a concrete protocol $\mathscr{Q}$.
+$\mathscr{Q} \leadsto \mathscr{G}$---ignoring corruption classes and the epsilon---for a concrete protocol $\mathscr{Q}$.
 Then, if we have a protocol $\mathscr{P} \circ G$,
 by deidealization, we can write this as:
 $\mathscr{P}' \lhd \mathscr{G}$, and then we use the fact that composition
