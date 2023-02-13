@@ -803,7 +803,7 @@ the stronger functionality from the weaker one.
         \pind{2} \set{\tx{faked}}{\txt{true}}\cr
         \pind{2} \pfor{j \in h + 1, \ldots, m}\cr
         \pind{3} x'_j \gets \tx{Contribution}_j()\cr
-        \pind{2} \draw{x'_2, \ldots, x_h}{\mathbb{G}}\cr
+        \pind{2} \draw{x'_2, \ldots, x'_h}{\mathbb{G}}\cr
         \pind{2} \set{x'_1}{\textstyle \tx{out} - \sum_{i \in [2, \ldots, n]} x_i}\cr
         \pind{1} \preturn{(\txt{done}, [x'_i \mid i \in [n]])}\cr
         \end{aligned}
@@ -987,7 +987,7 @@ which can perfectly simulate $\mathscr{P}[\tx{Rand}]$, as we now prove.
         \end{aligned}
         \begin{aligned}
             &\pfn{$(1)\tx{Rand}_j$}{}\cr
-            \pind{1} \tx{log}.\tx{Rand}_j.\tx{push}(\txt{input})\cr
+            \pind{1} \tx{log}_j.\tx{Rand}_j.\tx{push}(\txt{input})\cr
             \pind{1} \draw{x_i}{\mathbb{G}}\cr
             \pind{1} \tx{log}_j.\tx{Commit}_j.\tx{push}((\txt{call}, x_i))\cr
             \pind{1} \pwait{\forall i.\ \tx{View}_i \neq \txt{empty}}\cr
