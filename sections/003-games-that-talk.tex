@@ -25,6 +25,22 @@ where a system can \emph{yield} control back to the caller,
 indicating that it isn't able to provide an answer yet,
 because it's waiting on something else to happen first.
 
+Syntactically, this gives us functions such as:
+$$
+\begin{aligned}
+&\pfn{F}{x_1}\cr
+\pind{1} x_2 \gets \txbf{yield } 3\cr
+\pind{1} \preturn{x_1 + x_2}
+\end{aligned}
+$$
+This function takes in an input $x_1$, and then immediately yield control
+to the caller, with the value $3$.
+The caller can then resume the function with some value,
+which gets stored in the variable $x_2$,
+and the function returns $x_1 + x_2$.
+If this function were part of a package, it could now be called
+again, starting from the top once more.
+
 While the intuition of yielding control is simple, defining
 it precisely is a bit more tricky.
 Ultimately, the definition we provide isn't very elegant,
@@ -135,7 +151,10 @@ caller as to whether or not the return value was \emph{yielded}
 or \emph{returned}, syntactically the caller often ignores this,
 simply doing $x \gets F(\ldots)$, meaning that they simply use
 return value $x$, discarding the tag.
-We describe a bit of syntax for this shorthand.
+
+In many cases, \txbf{yield} is used purely to yield control,
+and not to exchange any value between the caller and the function.
+We have a special shorthand for this kind of use.
 
 \begin{syntax}[Empty Yields]
 In many cases, no value is yielded, or returned back, which we can write as:
@@ -222,7 +241,7 @@ $$
 &\langle \tx{body}_i \rangle
 \end{aligned}
 $$
-Note that the order in which we call the functions is completely deterministic,
+Note that the order in which we call the functions is completely deterministic
 and fair.
 It's also important that we yield, like with await statements, but we only
 do so after having pinged each of our underlying functions at least once.
@@ -239,7 +258,7 @@ that happens to arrive.
 Another variant of waiting occurs when we want to wait for some
 \emph{condition} to be true.
 For example, we could set up a lock over a shared value,
-and we might need to wait for the lock to be free, so we can modify
+and we might need to wait for the lock to be free so we can modify
 the value.
 We model this kind of situation with a \txbf{wait} statement.
 
@@ -395,14 +414,22 @@ via the $\tx{Channels}$ package.
 &\underline{\tx{Recv}_{A_i}()\tx{:}}\cr
 \pind{1} \txbf{while } q[A_i].\tx{IsEmpty()}\cr
 \pind{2} \txbf{yield}\cr
-\pind{1} q[A_i].\tx{Next}()\cr
+\pind{1} q[A_i].\tx{Pop}()\cr
 }
 \end{game}
 
 Basically, this game has a queue for each channel, and then provides
 the functions need to send, receive, and test that channel.
+We use a $\tx{FifoQueue}$ which pops messages in the same order
+that they get pushed in, which models the semantics of
+a channel delivering messages in order.
+
 One consequence of defining separate functions for each channel
-is that $\text{Channels}(S) \otimes \text{Channels}(R) = \text{Channels}(S \cup R)$.
+is that:
+$$
+\text{Channels}(S) \otimes \text{Channels}(R) = \text{Channels}(S \cup R)
+$$
+which will prove to be a useful property.
 
 Armed with the syntax sugar for channels, and the $\tx{Channels}$ game,
 we can convert a system $S$ into a package via:
@@ -749,7 +776,7 @@ $\blacksquare$
 
 This lemma plays the same critical role as it did for packages,
 and we'll be applying it quite often throughout the rest
-of this work, starting even from the next subsection.
+of this work.
 
 \subsection{System Equality and Indistinguishability}
 
