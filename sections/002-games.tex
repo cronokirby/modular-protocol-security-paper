@@ -27,7 +27,7 @@ with state-separable proofs.
 We write $[n]$ to denote the set $\{1, \ldots, n\}$.
 
 We write $\txt{01}$ to denote the set $\{0, 1\}$,
-and write $\str$ to denote binary strings.
+and $\str$ to denote binary strings.
 We write $\bullet$ to denote the empty string,
 which also serves as a ``dummy'' value in various contexts.
 
@@ -60,7 +60,7 @@ function in the family.
 In most cases, this security parameter is left \emph{implicit}.
 In fact, all of the objects we consider from here on out will \emph{implicitly}
 be \emph{families} of objects, parameterized by a security parameter $\lambda$,
-and we will invoke this fact only as necessary.
+but we will invoke this fact only as necessary.
 
 \begin{definition}[Efficient Functions]
     We assume that a function $f$ has a runtime, denoted $T(f, x)$,
@@ -71,19 +71,17 @@ and we will invoke this fact only as necessary.
     \forall \lambda.\ \forall x, |x| \in \mathcal{O}(\tx{poly}(\lambda)).\quad T(f_\lambda, x) \in \mathcal{O}(\tx{poly}(\lambda))
     $$
     In other words, the runtime is always polynomial in $\lambda$, regardless
-    of the input, or the random choices of the function.
+    of its random choices, or its input (as long as that input is of a reasonable size).
 
     $\square$
 \end{definition}
 
 Functions which are not necessarily efficient are said to be \emph{unbounded}.
 
-Considering efficient functions is essential, because the vast majority
+Considering efficient functions is essential for game-based security, because the vast majority
 of cryptographic techniques depend on assuming that some problems are ``hard''
-for adversaries with bounded computational resources,
-and so this notion of efficiency is critical to defining game-based
-security.
-Ironically, for protocol security, many protocols can be proved secure
+for adversaries with bounded computational resources.
+Ironically, for protocol security, many protocols can be proven secure
 without this restriction.
 
 Another crucial notion we need to develop is that of a \emph{distance},
@@ -93,8 +91,9 @@ which is based on saying that two different games are difficult
 to tell apart.
 
 \begin{definition}[Distance Function]
-    Given a function $f : \randf{\bullet}{\bin}$, we assume that the probability
-    $P[f \to 1]$ of the function returning $1$ on the input $\bullet$ is well defined.
+    Given a function $f : \randf{\bullet}{\bin}$, we let
+    $P[f \to 1]$ denote the probability
+    of the function returning $1$ on the input $\bullet$ is well defined.
 
     Given two functions $f, g$, we define their distance $\varepsilon(f, g)$ as:
     $$
@@ -139,12 +138,12 @@ in particular that it forms a \emph{metric}.
     $\blacksquare$
 \end{lemma}
 
-Another property not included in our proof that $\varepsilon$ is a valid metric.
+Another property not included in our proof that $\varepsilon$ is a valid metric
 requires that if $f \neq g$, then $\varepsilon(f, g) > 0$.
 We omitted this property, because we haven't yet defined what $=$
 should mean for functions.
 Since we'd like this property to hold, we can simply define
-equality so that it does.
+equality in such a way that it does.
 
 \begin{definition}[Function Equality]
     Two functions, $f$ and $g$, are \emph{equal}, written $f = g$, when:
@@ -163,7 +162,10 @@ $f : \randf{\bullet}{\bin}$, by defining:
 $$
 \varepsilon(f, g) := \tx{sup}_{x, y \in \str} |P[f(x) \to y] - P[g(x) \to y]|
 $$
-however, we will not really be needing this general definition, outside
+In other words, we look at the maximum difference
+across all possible inputs and outputs.
+
+However, we will not really be needing this general definition, outside
 of a technical and very strong notion of equality for packages
 used in the following subsection.
 
@@ -302,7 +304,13 @@ We've now developed enough tools to define packages.
 Note that here $\stateful{s}^m$ denotes a tuple type containing
 m values of type $\stateful{s}$.
 
-The basic idea is that a package has an internal state $S$, which gets
+We'll often use $\tx{In}(A)$ or $\tx{Out}(A)$ to talk about the input
+and output functions of a package.
+As a bit of a short hand notation, we write $\tx{In}(A, B, \ldots)$
+for the union $\tx{In}(A) \cup \tx{In}(B) \cup \ldots$, and similarly
+for $\tx{Out}(\ldots)$.
+
+The motivation behind this definition is that a package has an internal state $S$, which gets
 manipulated by each of the functions it exports.
 These functions, in turn, can depend on other input functions.
 If a stateful function $f : \forall s. \stateful{s} \to \stateful{(S_1, s)}$ uses a stateful function $g : \stateful{S_2}$,
@@ -310,7 +318,7 @@ then the result is a stateful function $f[g] : \stateful{(S_1, S_2)}$ manipulati
 \emph{both} the state of $f$, and the state of $g$.
 Furthermore, $f$ is defined in such way agnostic to what the state manipulated
 by $g$ happens to be,
-which is why we use a \emph{quantified} type instead, to allow instantiation
+which is why we use a \emph{quantified} type instead: to allow instantiation
 with functions manipulating different kinds of state.
 If $g$ used a state type $S'_2$, then $f[g]$ would have type $\stateful{(S_1, S'_2)}$
 instead.
@@ -332,11 +340,6 @@ of the machine, in order to supply you with an output,
 potentially modifying the state along the way.
 The input functions allow a package to interact with other packages itself.
 
-We'll often use $\tx{In}(A)$ or $\tx{Out}(A)$ to talk about the input
-and output functions of a package.
-As a bit of a short hand notation, we write $\tx{In}(A, B, \ldots)$
-for the union $\tx{In}(A) \cup \tx{In}(B) \cup \ldots$, and similarly
-for $\tx{Out}(\ldots)$.
 
 We describe this kind of interaction using the formal
 notion of package \emph{composition}.
@@ -376,8 +379,8 @@ inside $B$ itself now effectively inlined inside of $A \circ B$.
 Next we'd like to prove that package composition satisfies some nice
 properties.
 For example $A \circ (B \circ C)$ is the same as $(A \circ B) \circ C$.
-There's one problem though, which is that we haven't defined
-what it means for two packages to be "the same".
+Before we can prove such properties, we need to define
+what it means for two packages to be ``the same''.
 
 \begin{definition}[Literal Equality]
     We say that two packages $A, B$ are \emph{literally equal},
@@ -410,7 +413,7 @@ While it suffices to explore basic properties of composition for packages,
 we'll want to abandon it quite quickly for a looser and more easily
 used notion of equality.
 
-The first property we prove is the one used as an example above.
+The first property we prove using this new definition is the one used as an example before.
 
 \begin{lemma}[Associativity of Composition]
     Given packages $A, B, C$, it holds that:
@@ -421,7 +424,7 @@ The first property we prove is the one used as an example above.
 
     \txbf{Proof:} The input and output names are clearly equal on both sides.
     Furthermore, the state on the left is $(A.S, (B.S, C.S))$,
-    $((A.S, B.S), C.S)$ on the right, and so the two states are isomorphic.
+    and $((A.S, B.S), C.S)$ on the right, and so the two states are isomorphic.
     All that's left is the final condition, talking about the equality
     of the functions defined in each package.
 
@@ -474,7 +477,7 @@ or that $B \circ C \equiv B' \circ C$.
 If that weren't the case, then that would indicate that something is wrong
 with our definition of either equality or composition.
 The property we want for literal equality is that $A$ and $A'$ are completely
-interchangeable, and so once can always be replaced with the other, no matter
+interchangeable, and so one can always be replaced with the other, no matter
 the context, to the point that we can think of them as literally being the same
 package.
 
@@ -531,7 +534,7 @@ tensoring.
 The intuitive idea is that tensoring allows us to run two
 packages ``in parallel''.
 The result of tensoring two packages is a new package with the functions
-in both packages, and we can interact with one package or the other at will.
+in both packages, allowing us to interact with one package or the other at will.
 We'll discuss the semantics a bit more after the formal definition.
 
 \begin{definition}[Package Tensoring]
@@ -612,7 +615,7 @@ packages are composed.
 This technically introduces a new assumption about names, since we
 haven't assumed anything about what a name is yet.
 However, assuming that names can be sorted alphabetically is not
-a very strong one.
+a strong assumption.
 
 Continuing our analogy of machines, we can see the tensoring of $A \otimes B$
 as having two independent machines, side-by-side, that one can interact
@@ -666,7 +669,7 @@ Like with composition, tensoring is also associative.
 
     The only remaining difference, potentially, is the instantiation.
     But, our definition ensures that the instantiation depends only on the names
-    of the functions, but these are the same in both cases,
+    of the functions, and these are the same in both cases,
     so we conclude that the functions are equal.
 
     $\blacksquare$
@@ -697,7 +700,7 @@ since the resulting functions are the same.
     The inputs to each of the functions depend only on the set
     of names of the input functions, which are identical for both sides.
     The ordering is different though, but it suffices
-    to swap $f_i$ with $f_{i + A.n}$ to make the ordering the same.
+    to swap $f_i$ with $f_{i + A.n}$ to make the ordering match.
 
     Thus, we conclude that the two packages are the same.
 
@@ -705,8 +708,8 @@ since the resulting functions are the same.
 \end{lemma}
 
 So far, we've treated composition and tensoring as two separate operations,
-but very often we want to use them together.
-Very often we want to be able to decompose a large package
+but very often we want to use them together:
+this allows us to decompose a large package
 into smaller components, using tensoring and composition.
 Then we'll rearrange these components around to make proving
 certain properties easier.
@@ -972,7 +975,7 @@ The next notion we define is that of the \emph{game}.
     $\square$
 \end{definition}
 
-This is a very simply distinction, but it's important,
+This is a very simple distinction, but it's important,
 because when a package has no input functions, then one can interact
 with it as a complete machine already, there's nothing that needs
 to be plugged in before the machine can actually ``run''.
@@ -1117,7 +1120,7 @@ If a problem is actually hard, the supremum should be small too,
 since there shouldn't 
 be any $\mathcal{B}$ with a large advantage.
 
-We can also add these advantages together, as this following
+We can also add these advantages together, as the following
 lemma shows.
 
 \begin{lemma}[Transitivity of Indistinguishability]
@@ -1153,7 +1156,7 @@ and we can appeal to the hardness of both problems, one at a time,
 to argue that the system is secure.
 This kind of technique is called ``game hopping'',
 and one of the strengths of state-separable proofs is making
-the application of the technique as simple and route as possible.
+the application of the technique as simple and routine as possible.
 
 Having defined these notions of equality for games,
 we now extend them to \emph{packages}.
@@ -1186,7 +1189,7 @@ but it also leaks extra information forward.
 The reason behind this is so that an adversary is also able
 to see what's happening ``behind'' the package $A$.
 Note that for completions, the names of the extra
-functions, those in $\tx{Out}(\mathcal{C}) / \tx{In}(A)$
+functions, those in $\tx{Out}(\mathcal{C}) / \tx{In}(A)$,
 are very inessential, and should be considered
 as being distinct from any other name used by a real package.
 
@@ -1283,7 +1286,7 @@ since whenever we would've used it, we can just use $=$ instead,
 which is applicable to many more packages.
 
 The main properties we need to prove to wrap up our formal discussion
-of packages is to show that the composition operations we've
+of packages relate to showing that the composition operations we've
 defined respect equality and indistinguishability.
 This is very important, since it lets us reason about large
 packages by arguing that small components are equal or indistinguishable,
@@ -1534,7 +1537,8 @@ to that of several smaller packages.
 In the previous subsections, we developed a formal model of
 how packages work.
 In practice, packages are described using a kind of pseudo-code,
-which correspond with these formal objects, and some of the rules are relaxed
+which corresponds with these formal objects.
+Some some of the rules governing packages are also relaxed
 in practice.
 In this subsection we give some examples of how this pseudo-code
 works.
@@ -1625,8 +1629,7 @@ Another slight deviation from the formal specification is the use
 of initialization code.
 Formally, a package just exports functions,
 it doesn't have any code running before those functions do.
-One way to add initialization is to have a special function,
-say $\txt{Init}$ which must be called before any other of the functions.
+One way to add initialization is to have a special function---say, $\txt{Init}$---which must be called before any other of the functions.
 The initialization code could then be placed there.
 
 We also don't particularly care about the names and variables
@@ -1635,7 +1638,7 @@ are using what functions.
 If it's not ambiguous, we could refer to one of the functions
 in $P$ as just $A$,
 but we may want to explicitly write down $P.A$, to disambiguate this
-function from another, say $Q.A$.
+function from another, say, $Q.A$.
 We might also tensor multiple versions of $P$ together,
 calling one function $A_1$, and the other $A_2$, for example.
 Another common way to disambiguate names is
