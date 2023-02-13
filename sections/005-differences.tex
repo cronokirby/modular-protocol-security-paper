@@ -1,7 +1,7 @@
 \section{Differences with UC Security}
 
 In this section, we outline a few differences between
-the framework we've developed, and that of UC security
+the framework we've developed, MPS, and that of UC security
 \cite{EPRINT:Canetti00}.
 Despite these differences, we think that the frameworks
 ultimately remain quite compatible, 
@@ -13,7 +13,7 @@ such as \cite{C:CanCohLin15}.
 
 \subsubsection*{Foundations without Turing Machines}
 
-One major technical difference is that our framework
+One major technical difference is that MPS
 doesn't specify a concrete computational model.
 Rather than using interactive randomized Turing machines,
 as most frameworks do, we instead just
@@ -33,7 +33,7 @@ The advantage of basing ourselves on state-separable proofs
 is that we can give a formal justification for this kind
 of high-level language, by providing a precise semantics
 for the pseudo-code we use.
-Thus, we expect proofs in our framework to be writable
+Thus, we expect proofs in the MPS framework to be writable
 in a style close to the formalism itself,
 while also proving a high level of abstraction.
 
@@ -66,7 +66,7 @@ and the \emph{ideal} world, where the parties
 don't communicate between each other, instead interacting
 only with the ideal functionality.
 
-In our framework, only the hybrid world exists.
+In MPS, only the hybrid world exists.
 Protocols aren't simulated by ideal functionalities,
 instead, protocols are simulated by other protocols,
 and all protocols may make use of ideal functionalities.
@@ -80,7 +80,7 @@ and so this style of proof can be much simpler.
 
 \subsubsection*{Corruption Agnostic Ideal Functionalities}
 
-Another technical difference is that in our framework,
+Another technical difference is that in MPS,
 ideal functionalities are not aware of which parties are corrupted,
 whereas some UC functionalities make use of this fact.
 
@@ -93,7 +93,8 @@ where malicious parties are allowed to choose their own randomness.
 This can be written by having the functionality alter its behavior
 based on which parties are corrupt, allowing them to choose their
 own randomness.
-In our framework, we can instead just have a small wrapping
+
+In MPS, we can instead just have a small wrapping
 protocol around the functionality, where honest parties
 sample a random value before calling the functionality.
 Malicious parties are then free to sample a biased value,
@@ -110,7 +111,7 @@ for malicious parties.
 In the traditional presentations of UC,
 simulation is a statement of the form ``for all adversaries,
 there exists a simulator, such that for all environments...''.
-In our framework, we eliminate the notion of adversary
+In our MPS, we eliminate the notion of adversary
 entirely, instead simply considering the environment
 to be the adversary.
 
@@ -118,7 +119,7 @@ This is actually a possibility in UC itself.
 Subsequent versions of \cite{EPRINT:Canetti00} include
 an explicit proof that it suffices to prove security against ``dummy adversary'',
 which simply does whatever the environment tells it to do.
-We can thus consider our framework to implicitly use such a dummy adversary.
+We can thus consider MPS to implicitly use such a dummy adversary.
 
 \subsubsection*{The Lack of Session IDs}
 
@@ -145,14 +146,14 @@ in \cite{CCS:KusTue11}.
 
 \subsubsection*{``Timing Side-Channels''}
 
-One unfortunate strength of our framework is that the adversary
+One unfortunate strength of the MPS framework is that the adversary
 is able to observe more timing properties of protocol execution.
 Indeed, they are able to observe how many times a given function
 yields before returning a result, or simply whether
 or not a function can return a result given the current state of
 execution.
 This is a consequence of the more asynchronous nature
-of execution our framework ends up having for protocols.
+of execution we have for protocols.
 
 This is arguably present in some variants of UC already,
 depending on the precision of the proofs.
@@ -169,15 +170,13 @@ which can paper over inessential differences like those of timing and delay.
 
 \subsubsection*{Clearer Connection with Games}
 
-Finally, we believe that a major advantage of our framework is that
+Finally, we believe that a major advantage of the MPS framework is that
 it provides a much simpler bridge between standalone security
 with games, and the composable security of protocols.
-By having ideal functionalities be simply games,
-and by having theorems showing that
+Ideal functionalities be simply games,
+and we have theorems showing that
 we can use indistinguishability results for games to produce
-simulation results for protocols,
-our framework makes it easier to use work done in proving
-standalone security for proving protocol security.
+simulation results for protocols.
 Furthermore, simulation arguments ultimately boil down
 to an argument about games, and so this can motivate the
 intricate games that one might find in the analysis of protocols

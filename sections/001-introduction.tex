@@ -12,15 +12,15 @@ In essence, when a protocol is proved secure in the UC framework,
 then arbitrary instances of that protocol can be used concurrently in the context
 of a larger system, without modifying the behavior
 of these protocols.
-This allows the analysis of isolated components to be used
+This allows the study of isolated components to be used
 to guarantee the security of a system as a whole;
-this modular analysis is essential to being able to scale
+this modular approach is essential to being able to scale
 formal analysis to larger systems.
 
-The framework is not ubiquitous however.
+However, the framework is not ubiquitous.
 For many cryptographic schemes, standalone security with games
 is a more suitable approach.
-Even for some protocols, the use of game-based security has been popular.
+Even for some protocols, the use of game-based security remains popular.
 The analysis of threshold signatures and messaging protocols
 has seen the development of increasingly intricate games,
 which describe all the ways in which an adversary can attack a protocol.
@@ -28,15 +28,16 @@ This is the main disadvantage of game-based security for protocols:
 it's not always clear what the ``right'' game is to analyze
 the security of a protocol, and these games often need to provide
 explicit capabilities to the adversary.
-This problem is alleviated somewhat in UC security,
-where the security of a protocol boils down to describing
+
+This problem is alleviated somewhat in UC security.
+The security goals of a protocol are described by
 an ``ideal functionality'',
 which represents how the protocol could function if one had access
-to a perfectly trusted third party,
-thus making it easier to determine if a given notion of security
+to a perfectly trusted third party.
+This makes it easier to determine if a given notion of security
 reflects the kinds of attacks that need to be analyzed.
 
-The game based approach is still sometimes preferred because of
+The game-based approach is still sometimes preferred because of
 its perceived ease of use as compared to UC proofs.
 Some of these difficulties are inherent:
 because UC security provides stronger guarantees than standalone
@@ -61,13 +62,6 @@ for the common setting of multiparty computation,
 but also a way to interpret proofs in this simplified
 model as actually being UC proofs.
 
-Another series of works ended up taking
-a similar approach.
-The IITM framework \cite{EPRINT:Kuesters06, JC:KusTueRau20a}
-was first introduced as an alternative to UC, with very different foundations.
-Recently, this framework was shown to be effectively equivalent to UC
-\cite{EC:RauKusChe22}.
-
 Another interesting alternative to UC is that presented in
 \cite{cramer2015secure}.
 This approach defines a kind of UC security in terms of
@@ -75,7 +69,7 @@ a calculus for \emph{interactive systems},
 and their composition.
 This is an interesting departure from the interactive Turing machine
 foundations, and does away with many inessential details.
-This approach is the most similar to the framework we develop
+This approach is the most similar one to the framework we develop
 in this work.
 
 In practice, UC proofs are often quite informal,
@@ -96,12 +90,13 @@ but also simpler to understand and use.
 
 \subsection{Our Framework}
 
-Our framework attempts to provide a simple, high-level language
+Our framework---which we call, ``modular protocol security'',
+or ``\shortname''---attempts to provide a simple, high-level language
 for reasoning about protocol security, while also having
 a well-defined formal model that is close to how proofs
 are actually written.
 
-Our framework tries to be \emph{modular}, in the sense that
+\shortname{} tries to be \emph{modular}, in the sense that
 large proofs for complicated protocols can be built up from smaller proofs
 for simpler protocols.
 
@@ -122,7 +117,7 @@ These operations can simplify proofs by allowing large protocols
 to be decomposed into smaller components,
 and then for security to be argued component by component.
 
-The second way we try and achieve modularity is by having our
+The second approach is to have the
 notion of simulation be between \emph{protocols},
 rather than between a protocol and an ideal functionality,
 as in UC security.
@@ -135,7 +130,7 @@ we can transform this jump into several smaller hops,
 which are then composed together.
 This can help break down a large proof into a series of simpler proofs.
 
-Our framework relies heavily on state-separable proofs \cite{AC:BDFKK18},
+MPS builds on state-separable proofs \cite{AC:BDFKK18},
 a recent framework for standalone security with games.
 Our work can be seen as an attempt to lift the modular
 properties of this framework for games into a modular
@@ -145,8 +140,7 @@ of state-separable games.
 
 This provides an interesting advantage, in that proofs
 and techniques using games can be used to reason
-about the security of protocols, which will ultimately
-boil down to a game based proof.
+about the security of protocols.
 This can also help motivate complicated games used in the analysis
 of protocols, which can be seen as being related to protocols
 written in this framework.
@@ -195,6 +189,6 @@ Our second example constructs a protocol for sampling
 an unbiased random value, using the common ``commit reveal'' paradigm.
 
 
-In Section 6, we compare the framework we've developed with
+In Section 6, we compare the MPS framework we've developed with
 that of UC security, illustrating several differences
 between the two approaches.
