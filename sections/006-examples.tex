@@ -245,7 +245,7 @@ $$
 \Gamma^0 \circ \tx{Keys} = 
 \inlinepackage{$\Gamma^1$}{
     &\txbf{view } c_{1\to2}, c_{2\to1} \gets \tx{FifoQueue}.\tx{new}()\cr
-    &\txbf{view } m_{1\to2}, m_{2\to1} \gets \tx{FifoQueue}.\tx{new}()\cr
+    &m_{1\to2}, m_{2\to1} \gets \tx{FifoQueue}.\tx{new}()\cr
     &(\bullet, \tx{pk}_{\noti}) \gets \tx{Keys}_i()\cr
     \cr
     &\pfn{PKs}{}\cr
@@ -276,7 +276,7 @@ $$
 \Gamma^1 \circ \tx{Keys} = 
 \inlinepackage{$\Gamma^2$}{
     &\txbf{view } c_{1\to2}, c_{2\to1} \gets \tx{FifoQueue}.\tx{new}()\cr
-    &\txbf{view } m_{1\to2}, m_{2\to1} \gets \tx{FifoQueue}.\tx{new}()\cr
+    &m_{1\to2}, m_{2\to1} \gets \tx{FifoQueue}.\tx{new}()\cr
     \cr
     &\pfn{PKs}{}\cr
     \pind{1} \preturn (\txbf{super}.\tx{pk}_1, \super.\tx{pk}_2)\cr
@@ -332,7 +332,7 @@ $$
 =
 \inlinepackage{$\Gamma^3$}{
     &\txbf{view } c_{1\to2}, c_{2\to1} \gets \tx{FifoQueue}.\tx{new}()\cr
-    &\txbf{view } m_{1\to2}, m_{2\to1} \gets \tx{FifoQueue}.\tx{new}()\cr
+    &m_{1\to2}, m_{2\to1} \gets \tx{FifoQueue}.\tx{new}()\cr
     &(\tx{sk}_i, \tx{pk}_i) \xleftarrow{\$} \tx{Gen}()\cr
     \cr
     &\pfn{PKs}{}\cr
@@ -361,9 +361,9 @@ This gives us:
 $$
 \Gamma^4 =
 \inlinepackage{$\Gamma^5$}{
-    &\txbf{pub } l_{1\to2}, l_{2\to1} \gets \tx{FifoQueue}.\tx{new}()\cr
+    &l_{1\to2}, l_{2\to1} \gets \tx{FifoQueue}.\tx{new}()\cr
     &\txbf{view } c_{1\to2}, c_{2\to1} \gets \tx{FifoQueue}.\tx{new}()\cr
-    &\txbf{view } m_{1\to2}, m_{2\to1} \gets \tx{FifoQueue}.\tx{new}()\cr
+    &m_{1\to2}, m_{2\to1} \gets \tx{FifoQueue}.\tx{new}()\cr
     &(\tx{sk}_i, \tx{pk}_i) \xleftarrow{\$} \tx{Gen}()\cr
     \cr
     &\begin{aligned}
@@ -526,7 +526,7 @@ This gives us:
 $$
 \Gamma^2 =
 \inlinepackage{$\Gamma^3$}{
-    &\txbf{view } m_{1\to 2}, c_{1\to2}, c_{2\to1} \gets \tx{FifoQueue}.\tx{new}()\cr
+    &m_{1\to 2}, \txbf{view } c_{1\to2}, \txbf{view } c_{2\to1} \gets \tx{FifoQueue}.\tx{new}()\cr
     &(\tx{sk}_1, \tx{pk}_1),\
     (\tx{sk}_2, \tx{pk}_2),\
     (\tx{sk}'_2, \tx{pk}'_2) \gets \tx{Gen}()\cr
