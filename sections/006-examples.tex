@@ -62,7 +62,7 @@ captured by Game~\ref{game:privchan}.
 
 \begin{game}{game:privchan}{Private Channel Functionality}
 \package{$F[\tx{PrivChan}]$}{
-    &\txbf{view } m_{1\to2}, m_{2\to1} \gets \tx{FifoQueue}.\tx{new}()\cr
+    &m_{1\to2}, m_{2\to1} \gets \tx{FifoQueue}.\tx{new}()\cr
     &\txbf{pub } l_{1\to2}, l_{2\to1} \gets \tx{FifoQueue}.\tx{new}()\cr
     \cr
     &\begin{aligned}
@@ -82,7 +82,7 @@ captured by Game~\ref{game:privchan}.
 \end{game}
 
 The crucial difference is the nature of the leakage.
-Now, rather than being able to see the current state of either message queue,
+Rather than being able to see the current state of either message queue,
 including the messages themselves, now the adversary can only
 see a historical log for each queue, describing only the \emph{length}
 of the messages inserted into the queue.
