@@ -1073,9 +1073,9 @@ hard problems, by restricting the resources of the adversary.
     Given two games $G$ and $H$ with the same shape,
     we say that $G$ and $H$ are indistinguishable up to $\epsilon$,
     written $G \overset{\epsilon}{\approx} H$, if for all \emph{efficient}
-    adversaries $\mathcal{A}$, we have:
+    adversaries $\mathcal{A}$, and for sufficiently large $\lambda$\footnote{By this we mean that there exists a $\lambda_0$ (which can depend on $\mathcal{A}$) such that $\forall \lambda \geq \lambda_0$, the inequality holds, noting that $\mathcal{A}, G, H, \epsilon$ are all implicit functions of $\lambda$. We thank Joseph Jaeger for pointing out the necessity of this condition.}, we have:
     $$
-    \varepsilon_{\mathcal{A}}(G, H) \leq \epsilon
+    \varepsilon_{\mathcal{A}}(G, H) \leq \epsilon(\mathcal{A}, G, H)
     $$
 
     $\square$
@@ -1085,6 +1085,10 @@ This definition only considers efficient adversaries to allow for
 hard problems to exist, and also allows a bit of a ``gap'',
 letting the adversary have some success at distinguishing
 the two games.
+Note that $\epsilon$ is actually a \emph{function} of $\mathcal{A}$,
+$G$, and $H$.
+This might seem a bit odd at first, but it actually captures
+the most common kind of bound: the one we get from reduction.
 
 When we say that distinguishing a pair of games $G_0, G_1$ reduces
 to distinguishing a pair of games $H_0, H_1$, we mean that
@@ -1101,27 +1105,16 @@ This statement is interesting because if $\varepsilon_{\mathcal{B}}$
 is ``small'', then $\varepsilon_{\mathcal{A}}$ will also be ``small''.
 So, $G_b$ is hard assuming $H_b$ is.
 
-The way we'd translate that in a statement about $\varepsilon$ is by saying
-that:
-$$
-\varepsilon_{\mathcal{A}}(G_0, G_1) \leq \underset{\tx{efficient } \mathcal{B}}{\tx{sup}} \varepsilon_{\mathcal{B}}(H_0, H_1)
-$$
-or, in shorthand:
-$$
-G_0 \overset{H_b}{\approx} G_1
-$$
-Now, the reduction statement above implies this one,
-since if the advantage $\mathcal{A}$ is bounded above by the advantage
-of some $\mathcal{B}$, then it is certainly bounded above by the one with
-the highest advantage.
-Using the supremum also has the advantage of summarizing the reduction
-property into a single real number.
-If a problem is actually hard, the supremum should be small too,
-since there shouldn't 
-be any $\mathcal{B}$ with a large advantage.
+This statement is actually talking about the existence of a function $\epsilon$
+mapping $(\mathcal{A}, G_0, G_1)$ to $\varepsilon_{\mathcal{B}}(H_0, H_1)$.
+Thus, we can write
+$G_0 \overset{H_b}{\approx} G_1$, as an abuse of notation,
+letting $H_b$ here denote this implicit function $\epsilon$,
+mapping adversaries $\mathcal{A}$ for $G_b$ to adversaries
+$\mathcal{B}$ for $H_b$.
 
-We can also add these advantages together, as the following
-lemma shows.
+These epsilon functions can also be added together, which we'll
+use to define an analogous notion of transitivity.
 
 \begin{lemma}[Transitivity of Indistinguishability]
     Given games $G$, $H$, $I$ satisfying:
@@ -1134,7 +1127,7 @@ lemma shows.
     $$
     In more detail, for all efficient adversaries $\mathcal{A}$, we have:
     $$
-    \varepsilon_{\mathcal{A}}(G, I) \leq \epsilon_1 + \epsilon_2
+    \varepsilon_{\mathcal{A}}(G, I) \leq \epsilon_1(\mathcal{A}, G, H) + \epsilon_2(\mathcal{A}, H, I)
     $$
 
     \txbf{Proof:} Since $\varepsilon_{\mathcal{A}}$ is a metric, it
