@@ -1095,11 +1095,11 @@ to define \emph{indistinguishability}.
     Given two games $G$ and $H$ with the same shape,
     we say that $G$ and $H$ are indistinguishable up to an advantage bound $\epsilon$,
     written ${G \overset{\epsilon}{\approx} H}$, if for all \emph{efficient}
-    adversaries $\mathcal{A}$, and for sufficiently large $\lambda$\footnote{
+    adversaries $\mathcal{A}$, there exists efficient adversaries $\mathcal{B}_1, \ldots, \mathcal{B}_n$, such that for sufficiently large $\lambda$\footnote{
         By this we mean that there exists a $\lambda_0$ (which can depend on $\mathcal{A}$) such that $\forall \lambda \geq \lambda_0$, the inequality holds, noting that $\mathcal{A}, G, H, \epsilon$ are all implicit functions of $\lambda$.
         We thank Joseph Jaeger for pointing out the necessity of this condition,
         and some other flaws in defining reductions in a previous version of this paper.
-    } there exists adversaries $\mathcal{B}_1, \ldots, \mathcal{B}_n$ such that:
+    } it holds that:
     $$
     \varepsilon_{\mathcal{A}}(G, H) \leq f_\epsilon(\varepsilon_{\mathcal{B}_1}(\epsilon^1_0, \epsilon^1_1), \ldots, \varepsilon_{\mathcal{B}_n}(\epsilon^n_0, \epsilon^n_1))
     $$
