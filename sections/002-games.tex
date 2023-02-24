@@ -63,12 +63,13 @@ be \emph{families} of objects, parameterized by a security parameter $\lambda$,
 but we will invoke this fact only as necessary.
 
 \begin{definition}[Efficient Functions]
-    We assume that a function $f$ has a runtime, denoted $T(f, x)$,
-    measuring how much time the function takes to execute on a given input $x \in \str$.
+    We assume that a function family $f$ has a runtime, denoted $T(f, x)$,
+    measuring how much time each function takes to execute on a family of inputs $x : \mathbb{N} \to \str$,
+    as a function of $\lambda$.
 
     We say that a function family is \emph{efficient} if:
     $$
-    \forall \lambda.\ \forall x, |x| \in \mathcal{O}(\tx{poly}(\lambda)).\quad T(f_\lambda, x) \in \mathcal{O}(\tx{poly}(\lambda))
+    \forall x, |x| \in \mathcal{O}(\tx{poly}(\lambda)).\quad T(f, x) \in \mathcal{O}(\tx{poly}(\lambda))
     $$
     In other words, the runtime is always polynomial in $\lambda$, regardless
     of its random choices, or its input (as long as that input is of a reasonable size).
@@ -1069,13 +1070,36 @@ which can both allow for a small possibility of success
 in distinguishing two games, as well as the possibility of genuinely
 hard problems, by restricting the resources of the adversary.
 
+First, we need to define the kind of upper bound we use.
+Often, this can just be a number, but we also need to generalize
+the notion in order to be able to handle \emph{reductions} as well.
+
+\begin{definition}[Advantage Bound]
+    An advantage bound $\epsilon = (f_\epsilon, \epsilon_b^1, \ldots, \epsilon_b^n)$
+    consists of an increasing function $f_\epsilon : \mathbb{R}^n \to \mathbb{R}^n$,
+    along with $n$ pairs of games $\epsilon^1_0, \epsilon^1_1, \ldots$, with
+    $\epsilon^i_0$ and $\epsilon^i_1$ having the same shape.
+
+    $\square$
+\end{definition}
+
+We'll have more to say about this definition, and how it relates to reductions
+later.
+For now, note that the case of a single number is captured by setting
+$f_\epsilon(\ldots) = \alpha$, for some constant $\alpha$.
+Next, we look at how we can use this notion of an advantage bound
+to define \emph{indistinguishability}.
+
 \begin{definition}[Game Indistinguishability]
     Given two games $G$ and $H$ with the same shape,
-    we say that $G$ and $H$ are indistinguishable up to $\epsilon$,
-    written $G \overset{\epsilon}{\approx} H$, if for all \emph{efficient}
-    adversaries $\mathcal{A}$, and for sufficiently large $\lambda$\footnote{By this we mean that there exists a $\lambda_0$ (which can depend on $\mathcal{A}$) such that $\forall \lambda \geq \lambda_0$, the inequality holds, noting that $\mathcal{A}, G, H, \epsilon$ are all implicit functions of $\lambda$. We thank Joseph Jaeger for pointing out the necessity of this condition.}, we have:
+    we say that $G$ and $H$ are indistinguishable up to an advantage bound $\epsilon$,
+    written ${G \overset{\epsilon}{\approx} H}$, if for all \emph{efficient}
+    adversaries $\mathcal{A}$, and for sufficiently large $\lambda$\footnote{
+        By this we mean that there exists a $\lambda_0$ (which can depend on $\mathcal{A}$) such that $\forall \lambda \geq \lambda_0$, the inequality holds, noting that $\mathcal{A}, G, H, \epsilon$ are all implicit functions of $\lambda$.
+        We thank Joseph Jaeger for pointing out the necessity of this condition.
+    } there exists adversaries $\mathcal{B}_1, \ldots, \mathcal{B}_n$ such that:
     $$
-    \varepsilon_{\mathcal{A}}(G, H) \leq \epsilon(\mathcal{A}, G, H)
+    \varepsilon_{\mathcal{A}}(G, H) \leq f_\epsilon(\varepsilon_{\mathcal{B}_1}(\epsilon^1_0, \epsilon^1_1), \ldots, \varepsilon_{\mathcal{B}_2}(\epsilon^n_0, \epsilon^n_1))
     $$
 
     $\square$
@@ -1084,12 +1108,9 @@ hard problems, by restricting the resources of the adversary.
 This definition only considers efficient adversaries to allow for
 hard problems to exist, and also allows a bit of a ``gap'',
 letting the adversary have some success at distinguishing
-the two games.
-Note that $\epsilon$ is actually a \emph{function} of $\mathcal{A}$,
-$G$, and $H$.
-This might seem a bit odd at first, but it actually captures
-the most common kind of bound: the one we get from reduction.
+the two games, related to the success of adversaries in other games.
 
+The purpose of these two definitions are to capture reductions.
 When we say that distinguishing a pair of games $G_0, G_1$ reduces
 to distinguishing a pair of games $H_0, H_1$, we mean that
 $G_b$ is at least as hard as $H_b$, in the sense that
@@ -1105,16 +1126,39 @@ This statement is interesting because if $\varepsilon_{\mathcal{B}}$
 is ``small'', then $\varepsilon_{\mathcal{A}}$ will also be ``small''.
 So, $G_b$ is hard assuming $H_b$ is.
 
-This statement is actually talking about the existence of a function $\epsilon$
-mapping $(\mathcal{A}, G_0, G_1)$ to $\varepsilon_{\mathcal{B}}(H_0, H_1)$.
-Thus, we can write
-$G_0 \overset{H_b}{\approx} G_1$, as an abuse of notation,
-letting $H_b$ here denote this implicit function $\epsilon$,
-mapping adversaries $\mathcal{A}$ for $G_b$ to adversaries
-$\mathcal{B}$ for $H_b$.
+The way we'd translate this statement into the definitions we've
+seen is by using the bound $\epsilon := (x \mapsto x, H_b)$.
+Our reduction is then a statement that $G_0 \overset{\epsilon}{\approx} G_1$.
+One common shorthand we use here is to say that $G_0 \overset{H_b}{\approx} G_1$.
+This bound could be more complicated, involving several games and even
+functions of $\lambda$, such as:
+$$
+\begin{aligned}
+&\epsilon := (f_\epsilon, A_b, C_b),
+&f_\epsilon(a, b) := \frac{Q^2}{2^{\lambda}} + 2 \cdot a + \sqrt{b}\cr
+\end{aligned}
+$$
 
-These epsilon functions can also be added together, which we'll
-use to define an analogous notion of transitivity.
+These advantage bounds can also be added together
+in a natural way.
+
+\begin{definition}[Advantage Bound Addition]
+    Given two advantage bounds $\alpha := (f_\alpha, \alpha^1_b, \ldots, \alpha^n_b)$
+    and $\beta := (f_\beta, \beta^1_b, \ldots, \beta^m_b)$, we can define
+    their addition $\alpha + \beta$ as:
+    $$
+    \begin{aligned}
+    &\alpha + \beta = (f_{(\alpha + \beta)}, \alpha^1_b, \ldots, \alpha^n_b, \beta^1_b, \ldots, \beta^m_b)\cr
+    &f_{(\alpha + \beta)}(a^1, \ldots, a^n, b^1, \ldots, b^m) = f_\alpha(a^1, \ldots, a^n) + f_\beta(b^1, \ldots, b^m)
+    \end{aligned}
+    $$
+    $\square$
+\end{definition}
+
+(This definition even extends to any increasing $u : \mathbb{R}^2 \to \mathbb{R}$.)
+
+We can use this addition of bounds to define a notion of transitivity
+for indistinguishability.
 
 \begin{lemma}[Transitivity of Indistinguishability]
     Given games $G$, $H$, $I$ satisfying:
@@ -1127,7 +1171,7 @@ use to define an analogous notion of transitivity.
     $$
     In more detail, for all efficient adversaries $\mathcal{A}$, we have:
     $$
-    \varepsilon_{\mathcal{A}}(G, I) \leq \epsilon_1(\mathcal{A}, G, H) + \epsilon_2(\mathcal{A}, H, I)
+    \varepsilon_{\mathcal{A}}(G, I) \leq \epsilon_1 + \epsilon_2
     $$
 
     \txbf{Proof:} Since $\varepsilon_{\mathcal{A}}$ is a metric, it
@@ -1359,24 +1403,28 @@ We start with tensoring, since the proof is simpler.
     $$
     (and similarly for $B'$). 
     Now, by assumption
-    for any efficient adversary $\mathcal{A}$, we have:
+    for any efficient adversary $\mathcal{A}$, there exists $\mathcal{B}_1, \ldots$ such that:
     $$
-    \varepsilon_{\mathcal{A}}(\tx{Compl}_{\mathcal{C}}(B), \tx{Compl}_{\mathcal{C}}(B')) \leq \epsilon
+    \varepsilon_{\mathcal{A}}(\tx{Compl}_{\mathcal{C}}(B), \tx{Compl}_{\mathcal{C}}(B')) \leq f_\epsilon(\varepsilon_{\mathcal{B}_1}(\epsilon^1_b), \ldots)
     $$
+    for sufficiently large $\lambda$.
+
     In particular, we can apply this to $\mathcal{A}' \circ W$, for any
     adversary $\mathcal{A}'$ against $A \otimes B$,
     since $W$ is efficient, by virtue of $A$ being efficient.
     This gives us:
     $$
-    \varepsilon_{\mathcal{A}'}(W \circ \tx{Compl}_{\mathcal{C}}(B), W \circ \tx{Compl}_{\mathcal{C}}(B')) \leq \epsilon
+    \varepsilon_{\mathcal{A}'}(W \circ \tx{Compl}_{\mathcal{C}}(B), W \circ \tx{Compl}_{\mathcal{C}}(B')) \leq f_\epsilon(\varepsilon_{\mathcal{B}_1}(\epsilon^1_b), \ldots)
     $$
+    for some $\mathcal{B}_1, \ldots$, and all sufficiently large $\lambda$.
+
     This means that:
     $$
-    W \circ \tx{Compl}_{\mathcal{C}}(B) \overset{\epsilon}{=} W \circ \tx{Compl}_{\mathcal{C}}(B')
+    W \circ \tx{Compl}_{\mathcal{C}}(B) \overset{\epsilon}{\approx} W \circ \tx{Compl}_{\mathcal{C}}(B')
     $$
     We then use transitivity to conclude that:
     $$
-    A \otimes B \overset{\epsilon}{=} A \otimes B'
+    A \otimes B \overset{\epsilon}{\approx} A \otimes B'
     $$
 
     $\blacksquare$
@@ -1451,8 +1499,10 @@ Next, we prove the same kind of theorem about composition.
     By applying our assumption to $\mathcal{A}' \circ W$ for any adversary
     $\mathcal{A}'$ against $A \circ B$, we see that:
     $$
-    \varepsilon_{\mathcal{A}'}(W \circ \tx{Compl}_{\mathcal{C}}(B), W \circ \tx{Compl}_{\mathcal{C}}(B')) \leq \epsilon
+    \varepsilon_{\mathcal{A}'}(W \circ \tx{Compl}_{\mathcal{C}}(B), W \circ \tx{Compl}_{\mathcal{C}}(B')) \leq f_\epsilon(\varepsilon_{\mathcal{B}_1}(\epsilon^1_b), \ldots)
     $$
+    for some $\mathcal{B}_1, \ldots$ and all sufficiently large $\lambda$.
+
     In other words,
     $$
     W \circ \tx{Compl}_{\mathcal{C}}(B) \overset{\epsilon}{\approx} W \circ \tx{Compl}_{C}(B')
